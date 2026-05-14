@@ -1,0 +1,30 @@
+# ── Credenciais e segredos ───────────────────────────────────
+api/
+*.json.bak
+*client_secret*
+*credentials*
+.env
+.env.*
+secrets/
+
+# ── Dados pessoais / PII ─────────────────────────────────────
+*.csv
+cvs/
+
+# ── Sistema / IDE ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+__pycache__/
+*.pyc
+*.pyo
+.vscode/
+.idea/
+
+# ── Documentos com dados de clientes / leads (PII) ───────────
+*.pdf
+
+# ── Temporários ───────────────────────────────────────────────
+*.tmp
+*.log
+bkp/
