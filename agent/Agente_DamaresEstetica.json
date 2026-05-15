@@ -633,6 +633,7 @@
       ],
       "id": "dm-envia-wpp",
       "name": "Envia mensagem para o WhatsApp",
+      "continueOnFail": true,
       "credentials": {
         "evolutionApi": {
           "id": "K3ugZTfPL4VfY0sj",
