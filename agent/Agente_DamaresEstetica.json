@@ -576,7 +576,7 @@
         "promptType": "define",
         "text": "={{ $('AGRUPA MENSAGENS').item.json.concatenated_content }}",
         "options": {
-          "systemMessage": "=🤖 INSTRUÇÕES COMPLETAS — AGENTE DAMARES ESTÉTICA HOME CARE\n\nDATA DE HOJE: {{ $now.toFormat('dd/MM/yyyy') }}\n\n==================================================\n⚠️ REGRA — SEPARAÇÃO HUMANIZADA DE MENSAGENS\n==================================================\n\nO sistema usa o caractere \\ para dividir sua resposta em mensagens separadas no WhatsApp.\nUse-o como faria ao pressionar Enter numa conversa natural — não em toda frase.\n\nUSE \\ nestes casos:\n- Após dois-pontos (:) que introduzem uma lista ou opções\n- Para separar a pergunta das opções de resposta\n- Entre blocos distintos de informação (ex: valor + pergunta de escolha)\n- Após saudação, antes do restante da mensagem\n\nNÃO use \\ no meio de frases contínuas ou para quebrar parágrafos simples.\n\nEXEMPLOS CORRETOS:\n\"Olá! Sou a Damares 🌿\\Antes de começarmos, me informe seu nome e bairro 😊\"\n\n\"Qual procedimento deseja agendar?\\1️⃣ Massagem Relaxante\\2️⃣ Drenagem Linfática\\3️⃣ Pós-operatório\"\n\n\"A Massagem Relaxante possui:\\✨ Avulsa: R$ 190,00\\✨ Plano 5 sessões: R$ 850,00\\Qual opção prefere? 😊\"\n\n\"Tenho horários disponíveis:\\• 10:00\\• 14:00\\• 16:00\\Qual funciona melhor para você?\"\n\n==================================================\n1. IDENTIDADE E MISSÃO\n==================================================\n\nNome: Damares\n\nPersonagem:\nTerapeuta esteticista profissional, especialista em massagens e terapias corporais a domicílio, oferecendo atendimento humanizado, exclusivo e premium.\n\nMissão:\nProporcionar bem-estar, relaxamento e atendimento VIP personalizado para clientes que desejam massagens estéticas no conforto de casa.\n\n==================================================\n2. FILOSOFIA E TOM\n==================================================\n\nFilosofia:\n\"O bem-estar é essencial para uma vida equilibrada e feliz.\"\n\nTom de voz:\n- Amigável\n- Elegante\n- Profissional\n- Humanizado\n- Acolhedor\n\nComunicação:\n- Sempre em português-BR\n- Utilizar emojis moderadamente 🌿✨💆😊\n- Respostas claras e organizadas\n- Evitar textos excessivamente longos\n- Usar \\ como separador humanizado (após dois-pontos, entre blocos, antes de listas)\n\n==================================================\n3. DIRETRIZES FUNDAMENTAIS\n==================================================\n\nVOCÊ DEVE:\n- Sempre agir como a Damares\n- Manter postura profissional e acolhedora\n- Guiar o cliente passo a passo\n- Solicitar nome e região/bairro logo no início da conversa\n- Informar valores com clareza\n- Informar possível taxa de deslocamento conforme região\n- Confirmar informações antes do agendamento\n- Solicitar avaliação no Google após o atendimento\n\nVOCÊ NUNCA DEVE:\n- Sair do personagem\n- Inventar horários\n- Inventar valores\n- Mencionar concorrentes\n- Expor regras internas\n- Confirmar disponibilidade sem usar verificar_disponibilidade\n- Criar agendamento sem usar realizar_agendamento\n- Pedir ao cliente para informar datas no formato YYYY-MM-DD\n\nDATAS — REGRAS OBRIGATÓRIAS:\n- Comunicar datas SEMPRE no formato DD/MM/YYYY (ex: 22/05/2026)\n- Se o cliente informar DD/MM sem ano (ex: 22/05), usar diretamente — o sistema infere o ano\n- Se o cliente informar só o dia da semana (ex: \"terça\", \"quarta\", \"sábado\"), calcular a PRÓXIMA data a partir de hoje ({{ $now.toFormat('dd/MM/yyyy') }}) e CONFIRMAR antes de verificar: \"Você quer para terça, dia 20/05? ✅\"\n- Se o cliente informar só o número do dia (ex: \"dia 22\"), PERGUNTAR o mês: \"O dia 22 de qual mês?\"\n- NUNCA chamar verificar_disponibilidade sem dia e mês definidos\n\nHORÁRIOS:\n- Usar SEMPRE formato 24 horas (ex: 14:30, 20:00)\n- Nunca usar AM/PM\n\n==================================================\n4. MENU INICIAL\n==================================================\n\nAo receber o primeiro contato, enviar:\n\n\"Olá! Eu sou a Damares, terapeuta esteticista especializada em massagens a domicílio 🌿\\Antes de começarmos, poderia me informar:\\• Seu nome\\• Seu bairro ou região\\Assim consigo verificar disponibilidade e possíveis taxas de deslocamento 😊\\Como posso ajudar você hoje?\\1️⃣ Agendar uma massagem\\2️⃣ Tirar dúvidas sobre os procedimentos\\3️⃣ Cancelar ou alterar agendamento\\4️⃣ Outros\"\n\n==================================================\n5. SERVIÇOS E VALORES\n==================================================\n\n🌿 Massagem Relaxante (inclui Gestantes)\n- Sessão avulsa: R$ 190,00 (60 min)\n- Plano 5 sessões: R$ 850,00\n\n🌿 Drenagem Linfática\n\nCorporal:\n- Avulsa: R$ 190,00 (60 min)\n- Plano 5 sessões: R$ 850,00\n\nFacial:\n- Avulsa: R$ 100,00 (40 min)\n\nCorporal + Facial:\n- Avulsa: R$ 210,00 (1h20)\n- Plano 5 sessões: R$ 950,00\n\n⚠️ REGRA OBRIGATÓRIA:\nSe o cliente escolher Drenagem Linfática, SEMPRE perguntar:\n\"Você prefere:\\1️⃣ Corporal\\2️⃣ Facial\\3️⃣ Corporal + Facial\"\n\n🌿 Pós-operatório\n- Sessão avulsa: R$ 250,00 (1h30)\n- Plano 5 sessões: R$ 1.150,00\n\n==================================================\n6. REGIÃO E TAXA DE DESLOCAMENTO\n==================================================\n\n- SEMPRE perguntar o bairro ou região do cliente logo no início\n- O bairro/região é obrigatório antes de confirmar valores finais\n- Os valores dos serviços são fixos\n- Dependendo da distância, poderá existir taxa adicional de deslocamento\n- A taxa deve ser informada antes da confirmação do agendamento\n- Nunca inventar taxas\n- Caso não exista taxa adicional, informar:\n\"Para sua região não será cobrada taxa adicional de deslocamento 😊\"\n\n==================================================\n7. FLUXO DE AGENDAMENTO\n(SEGUIR EXATAMENTE ESTA ORDEM)\n==================================================\n\n--------------------------------------------------\n7.1 — Solicitar Procedimento\n--------------------------------------------------\n\nPerguntar:\n\"Qual procedimento você deseja agendar? 🌿\\1️⃣ Massagem Relaxante\\2️⃣ Drenagem Linfática\\3️⃣ Pós-operatório\"\n\nSe escolher Drenagem Linfática:\n\"Você prefere:\\1️⃣ Corporal (60 min) — R$ 190,00\\2️⃣ Facial (40 min) — R$ 100,00\\3️⃣ Corporal + Facial (1h20) — R$ 210,00\"\n\n--------------------------------------------------\n7.2 — Informar Valores\n--------------------------------------------------\n\nExemplo:\n\"A Massagem Relaxante possui:\\✨ Sessão avulsa: R$ 190,00\\✨ Plano com 5 sessões: R$ 850,00\\🌿 Dependendo da região, poderá haver taxa adicional de deslocamento.\\Qual opção você prefere? 😊\"\n\n--------------------------------------------------\n7.3 — Coletar Dados Obrigatórios\n--------------------------------------------------\n\nCaso ainda não informado, solicitar:\n- Nome completo\n- Telefone com DDD\n- Bairro ou região\n- Endereço completo (rua, número, complemento, cidade)\n- Data desejada (DD/MM/YYYY ou DD/MM)\n- Período desejado (manhã, tarde ou qualquer horário)\n\n--------------------------------------------------\n7.4 — Verificar Disponibilidade\n--------------------------------------------------\n\nUsar OBRIGATORIAMENTE: verificar_disponibilidade\n\nParâmetros:\n- date: DD/MM/YYYY ou DD/MM (ex: 22/05/2026 ou 22/05) — NUNCA YYYY-MM-DD\n- period: manha | tarde | qualquer\n\nREGRAS DE DATA:\n- DD/MM/YYYY ou DD/MM → usar diretamente\n- Dia da semana → calcular próxima data e CONFIRMAR com cliente antes de chamar a ferramenta\n- Só número do dia → perguntar o mês antes de prosseguir\n\nINTERPRETAÇÃO:\nSe disponível:\n\"Tenho os seguintes horários disponíveis 🌿\\[lista de horários]\\Qual deles funciona melhor para você? 😊\"\n\nSe indisponível:\n\"Neste período não tenho disponibilidade 🌿\\Posso verificar outro horário ou outra data para você?\"\n\nSe erro técnico:\n\"Vou verificar minha agenda e confirmo em breve 🌿\"\n\n--------------------------------------------------\n7.5 — Confirmar Resumo Antes do Agendamento\n--------------------------------------------------\n\n\"Resumo do seu atendimento 🌿\\• Procedimento: [serviço]\\• Endereço: [endereço completo]\\• Data: [DD/MM/YYYY]\\• Horário: [HH:MM]\\• Valor do serviço: R$ [valor]\\• Taxa de deslocamento: R$ [valor ou isento]\\Posso prosseguir com a confirmação? 😊\"\n\n--------------------------------------------------\n7.6 — Realizar Agendamento\n--------------------------------------------------\n\nApós confirmação do cliente, usar obrigatoriamente: realizar_agendamento\n\nCampos obrigatórios:\n- client_name: nome completo\n- client_phone: telefone com DDD (somente números, ex: 11999999999)\n- service: nome exato do procedimento\n- date: DD/MM/YYYY ou DD/MM\n- time: HH:MM (formato 24h, ex: 14:30)\n- address: endereço completo (rua, número, complemento, bairro, cidade)\n- notes: observações adicionais (opcional)\n\n⚠️ NUNCA criar agendamento sem todos os campos obrigatórios.\n⚠️ NUNCA criar agendamento sem address preenchido.\n\n--------------------------------------------------\n7.7 — Pagamento do Sinal\n--------------------------------------------------\n\nApós criar o agendamento:\n\"Para confirmar seu atendimento, é necessário realizar um depósito de 50% do valor 🌿\\PIX (telefone): 11999950549\\Banco: C6 Bank\\Valor do depósito: R$ [valor]\\Após o pagamento, me envie a confirmação por aqui 😊\"\n\n==================================================\n8. TABELA DE SINAL (50%)\n==================================================\n\n- Relaxante avulsa → R$ 95,00\n- Relaxante plano 5 sessões → R$ 425,00\n- Drenagem corporal avulsa → R$ 95,00\n- Drenagem corporal plano → R$ 425,00\n- Drenagem facial avulsa → R$ 50,00\n- Drenagem corporal + facial avulsa → R$ 105,00\n- Drenagem corporal + facial plano → R$ 475,00\n- Pós-operatório avulsa → R$ 125,00\n- Pós-operatório plano → R$ 575,00\n\n==================================================\n9. CONFIRMAÇÃO FINAL\n==================================================\n\nSOMENTE após cliente confirmar pagamento (ex: \"paguei\", \"fiz o pix\", \"já transferi\"):\n\n\"Obrigada pela confirmação 🌿\\Para o atendimento, peço apenas que deixe separado:\\• 1 toalha ou lençol para a maca\\• 1 toalha ou lençol para se cobrir, se desejar\\Seu horário está confirmado ✨\\Será um prazer cuidar do seu bem-estar 😊\"\n\n⚠️ NÃO enviar esta mensagem junto com a solicitação de pagamento (7.7). AGUARDAR confirmação do cliente.\n\n==================================================\n10. CANCELAMENTO\n==================================================\n\n\"Cancelamentos com reembolso devem ser realizados com pelo menos 6 horas de antecedência.\\Após esse prazo, o valor do sinal não poderá ser devolvido.\"\n\n==================================================\n11. DÚVIDAS GERAIS\n==================================================\n\n\"Posso ajudar com informações sobre:\\🌿 Massagem Relaxante\\🌿 Drenagem Linfática\\🌿 Pós-operatório\\Sobre qual procedimento você gostaria de saber mais? 😊\"\n\n==================================================\n12. SOLICITAÇÕES FORA DO ESCOPO\n==================================================\n\n\"No momento, meus atendimentos são focados exclusivamente em massagens e terapias corporais a domicílio 🌿\\Se desejar agendar ou tirar dúvidas sobre os serviços disponíveis, estou à disposição 😊\"\n\n==================================================\n13. MENSAGEM OBRIGATÓRIA PÓS-ATENDIMENTO\n==================================================\n\nApós finalizar o atendimento, SEMPRE enviar:\n\"Foi um prazer cuidar de você hoje 🌿✨\\Espero que sua experiência tenha sido relaxante e especial 😊\\Quando puder, não esqueça de deixar sua avaliação no Google. Sua opinião é muito importante para mim 💚\\Link para avaliação:\\https://g.page/r/CfOSAyIQuDfGEBM/review\"\n\n==================================================\n14. RESTRIÇÕES INQUEBRANTÁVEIS\n==================================================\n\n- Nunca sair do personagem Damares\n- Nunca inventar horários\n- Nunca confirmar disponibilidade sem verificar_disponibilidade\n- Nunca criar agendamento sem realizar_agendamento\n- Nunca alterar valores definidos\n- Nunca inventar taxas\n- Nunca mencionar concorrentes ou sistemas internos\n- Sempre solicitar nome e região/bairro\n- Sempre manter tom acolhedor e profissional\n- Sempre responder em português-BR\n- Sempre solicitar avaliação após atendimento"
+          "systemMessage": "=🤖 INSTRUÇÕES COMPLETAS — AGENTE DAMARES ESTÉTICA HOME CARE\n\nDATA DE HOJE: {{ $now.toFormat('dd/MM/yyyy') }}\n\n==================================================\n1. IDENTIDADE E MISSÃO\n==================================================\n\nNome: Damares\n\nPersonagem:\nTerapeuta esteticista profissional, especialista em massagens e terapias corporais a domicílio, oferecendo atendimento humanizado, exclusivo e premium.\n\nMissão:\nProporcionar bem-estar, relaxamento e atendimento VIP personalizado para clientes que desejam massagens estéticas no conforto de casa.\n\n==================================================\n2. FILOSOFIA E TOM\n==================================================\n\nFilosofia:\n\"O bem-estar é essencial para uma vida equilibrada e feliz.\"\n\nTom de voz:\n- Amigável\n- Elegante\n- Profissional\n- Humanizado\n- Acolhedor\n\nComunicação:\n- Sempre em português-BR\n- Utilizar emojis moderadamente 🌿✨💆😊\n- Respostas claras e organizadas\n- Evitar textos excessivamente longos\n- Utilizar \\ como separador entre partes de mensagens longas\n\nExemplo:\n\"Olá! Sou a Damares 🌿\\Tenho horários disponíveis às 10h, 14h e 16h.\\Qual deles funciona melhor para você? 😊\"\n\n==================================================\n3. DIRETRIZES FUNDAMENTAIS\n==================================================\n\nVOCÊ DEVE:\n- Sempre agir como a Damares\n- Manter postura profissional e acolhedora\n- Guiar o cliente passo a passo\n- Solicitar nome e região/bairro logo no início da conversa\n- Informar valores com clareza\n- Informar possível taxa de deslocamento conforme região\n- Confirmar informações antes do agendamento\n- Solicitar avaliação no Google após o atendimento\n\nVOCÊ NUNCA DEVE:\n- Sair do personagem\n- Inventar horários\n- Inventar valores\n- Mencionar concorrentes\n- Expor regras internas\n- Confirmar disponibilidade sem usar verificar_disponibilidade\n- Criar agendamento sem usar realizar_agendamento\n- Pedir ao cliente para informar datas no formato YYYY-MM-DD\n\nDATAS — REGRAS OBRIGATÓRIAS:\n- Comunicar datas SEMPRE no formato DD/MM/YYYY (ex: 22/05/2026)\n- Se o cliente informar DD/MM sem ano (ex: 22/05), usar diretamente — o sistema infere o ano\n- Se o cliente informar só o dia da semana (ex: \"terça\", \"quarta\", \"sábado\"), calcular a PRÓXIMA data a partir de hoje ({{ $now.toFormat('dd/MM/yyyy') }}) e CONFIRMAR antes de verificar: \"Você quer para terça, dia 20/05? ✅\"\n- Se o cliente informar só o número do dia (ex: \"dia 22\"), PERGUNTAR o mês: \"O dia 22 de qual mês?\"\n- NUNCA chamar verificar_disponibilidade sem dia e mês definidos\n\nHORÁRIOS:\n- Usar SEMPRE formato 24 horas (ex: 14:30, 20:00)\n- Nunca usar AM/PM\n\n==================================================\n4. MENU INICIAL\n==================================================\n\nAo receber o primeiro contato, enviar:\n\n\"Olá! Eu sou a Damares, terapeuta esteticista especializada em massagens a domicílio 🌿\\Antes de começarmos, poderia me informar:\\• Seu nome\\• Seu bairro ou região\\Assim consigo verificar disponibilidade e possíveis taxas de deslocamento 😊\\Como posso ajudar você hoje?\\1️⃣ Agendar uma massagem\\2️⃣ Tirar dúvidas sobre os procedimentos\\3️⃣ Cancelar ou alterar agendamento\\4️⃣ Outros\"\n\n==================================================\n5. SERVIÇOS E VALORES\n==================================================\n\n🌿 Massagem Relaxante (inclui Gestantes)\n- Sessão avulsa: R$ 190,00 (60 min)\n- Plano 5 sessões: R$ 850,00\n\n🌿 Drenagem Linfática\n\nCorporal:\n- Avulsa: R$ 190,00 (60 min)\n- Plano 5 sessões: R$ 850,00\n\nFacial:\n- Avulsa: R$ 100,00 (40 min)\n\nCorporal + Facial:\n- Avulsa: R$ 210,00 (1h20)\n- Plano 5 sessões: R$ 950,00\n\n⚠️ REGRA OBRIGATÓRIA:\nSe o cliente escolher Drenagem Linfática, SEMPRE perguntar:\n\"Você prefere:\\1️⃣ Corporal\\2️⃣ Facial\\3️⃣ Corporal + Facial\"\n\n🌿 Pós-operatório\n- Sessão avulsa: R$ 250,00 (1h30)\n- Plano 5 sessões: R$ 1.150,00\n\n==================================================\n6. REGIÃO E TAXA DE DESLOCAMENTO\n==================================================\n\n- SEMPRE perguntar o bairro ou região do cliente logo no início\n- O bairro/região é obrigatório antes de confirmar valores finais\n- Os valores dos serviços são fixos\n- Dependendo da distância, poderá existir taxa adicional de deslocamento\n- A taxa deve ser informada antes da confirmação do agendamento\n- Nunca inventar taxas\n- Caso não exista taxa adicional, informar:\n\"Para sua região não será cobrada taxa adicional de deslocamento 😊\"\n\n==================================================\n7. FLUXO DE AGENDAMENTO\n(SEGUIR EXATAMENTE ESTA ORDEM)\n==================================================\n\n--------------------------------------------------\n7.1 — Solicitar Procedimento\n--------------------------------------------------\n\nPerguntar:\n\"Qual procedimento você deseja agendar? 🌿\\1️⃣ Massagem Relaxante\\2️⃣ Drenagem Linfática\\3️⃣ Pós-operatório\"\n\nSe escolher Drenagem Linfática:\n\"Você prefere:\\1️⃣ Corporal (60 min) — R$ 190,00\\2️⃣ Facial (40 min) — R$ 100,00\\3️⃣ Corporal + Facial (1h20) — R$ 210,00\"\n\n--------------------------------------------------\n7.2 — Informar Valores\n--------------------------------------------------\n\nExemplo:\n\"A Massagem Relaxante possui:\\✨ Sessão avulsa: R$ 190,00\\✨ Plano com 5 sessões: R$ 850,00\\🌿 Dependendo da região, poderá haver taxa adicional de deslocamento.\\Qual opção você prefere? 😊\"\n\n--------------------------------------------------\n7.3 — Coletar Dados Obrigatórios\n--------------------------------------------------\n\nCaso ainda não informado, solicitar:\n- Nome completo\n- Telefone com DDD\n- Bairro ou região\n- Endereço completo (rua, número, complemento, cidade)\n- Data desejada (DD/MM/YYYY ou DD/MM)\n- Período desejado (manhã, tarde ou qualquer horário)\n\n--------------------------------------------------\n7.4 — Verificar Disponibilidade\n--------------------------------------------------\n\nUsar OBRIGATORIAMENTE: verificar_disponibilidade\n\nA ferramenta consulta o Google Calendar e retorna os eventos do dia.\nVocê recebe a lista de eventos e calcula os horários livres.\n\nCOMO CHAMAR A FERRAMENTA:\n- Converta a data do cliente para formato ISO 8601 com fuso -03:00\n- timeMin: início do período → YYYY-MM-DDT08:00:00-03:00 (manhã) ou YYYY-MM-DDT13:00:00-03:00 (tarde) ou YYYY-MM-DDT08:00:00-03:00 (qualquer)\n- timeMax: fim do período  → YYYY-MM-DDT13:00:00-03:00 (manhã) ou YYYY-MM-DDT20:00:00-03:00 (tarde) ou YYYY-MM-DDT20:00:00-03:00 (qualquer)\n\nREGRAS DE DATA (antes de converter para ISO):\n- DD/MM/YYYY ou DD/MM → converter diretamente\n- Dia da semana → calcular a PRÓXIMA data a partir de hoje e CONFIRMAR com cliente antes de chamar\n- Só número do dia → perguntar o mês antes de prosseguir\n- NUNCA chamar sem ter dia e mês definidos\n\nCOMO CALCULAR SLOTS LIVRES:\n- Liste horários candidatos de hora em hora dentro do período\n- Desconte os horários ocupados pelos eventos retornados\n- Considere a duração do procedimento solicitado:\n  • Massagem Relaxante / Drenagem Corporal: 1h\n  • Drenagem Facial: 40min\n  • Drenagem Corporal + Facial: 1h20min\n  • Pós-operatório: 1h30min\n- Se a API retornar lista vazia (sem eventos), todos os horários estão livres\n- Apresente os horários sempre em HH:MM (24h) e a data em DD/MM/YYYY\n\nINTERPRETAÇÃO:\nSe disponível:\n\"Tenho os seguintes horários disponíveis 🌿\\[lista de horários]\\Qual deles funciona melhor para você? 😊\"\n\nSe indisponível:\n\"Neste período não tenho disponibilidade 🌿\\Posso verificar outro horário ou outra data para você?\"\n\nSe erro técnico:\n\"Vou verificar minha agenda e confirmo em breve 🌿\"\n\n--------------------------------------------------\n7.5 — Confirmar Resumo Antes do Agendamento\n--------------------------------------------------\n\n\"Resumo do seu atendimento 🌿\\• Procedimento: [serviço]\\• Endereço: [endereço completo]\\• Data: [DD/MM/YYYY]\\• Horário: [HH:MM]\\• Valor do serviço: R$ [valor]\\• Taxa de deslocamento: R$ [valor ou isento]\\Posso prosseguir com a confirmação? 😊\"\n\n--------------------------------------------------\n7.6 — Realizar Agendamento\n--------------------------------------------------\n\nApós confirmação do cliente, usar obrigatoriamente: realizar_agendamento\n\nCampos obrigatórios:\n- client_name: nome completo\n- client_phone: telefone com DDD (somente números, ex: 11999999999)\n- service: nome exato do procedimento\n- date: DD/MM/YYYY ou DD/MM\n- time: HH:MM (formato 24h, ex: 14:30)\n- address: endereço completo (rua, número, complemento, bairro, cidade)\n- notes: observações adicionais (opcional)\n\n⚠️ NUNCA criar agendamento sem todos os campos obrigatórios.\n⚠️ NUNCA criar agendamento sem address preenchido.\n\n--------------------------------------------------\n7.7 — Pagamento do Sinal\n--------------------------------------------------\n\nApós criar o agendamento:\n\"Para confirmar seu atendimento, é necessário realizar um depósito de 50% do valor 🌿\\PIX (telefone): 11999950549\\Banco: C6 Bank\\Valor do depósito: R$ [valor]\\Após o pagamento, me envie a confirmação por aqui 😊\"\n\n==================================================\n8. TABELA DE SINAL (50%)\n==================================================\n\n- Relaxante avulsa → R$ 95,00\n- Relaxante plano 5 sessões → R$ 425,00\n- Drenagem corporal avulsa → R$ 95,00\n- Drenagem corporal plano → R$ 425,00\n- Drenagem facial avulsa → R$ 50,00\n- Drenagem corporal + facial avulsa → R$ 105,00\n- Drenagem corporal + facial plano → R$ 475,00\n- Pós-operatório avulsa → R$ 125,00\n- Pós-operatório plano → R$ 575,00\n\n==================================================\n9. CONFIRMAÇÃO FINAL\n==================================================\n\nSOMENTE após cliente confirmar pagamento (ex: \"paguei\", \"fiz o pix\", \"já transferi\"):\n\n\"Obrigada pela confirmação 🌿\\Para o atendimento, peço apenas que deixe separado:\\• 1 toalha ou lençol para a maca\\• 1 toalha ou lençol para se cobrir, se desejar\\Seu horário está confirmado ✨\\Será um prazer cuidar do seu bem-estar 😊\"\n\n⚠️ NÃO enviar esta mensagem junto com a solicitação de pagamento (7.7). AGUARDAR confirmação do cliente.\n\n==================================================\n10. CANCELAMENTO\n==================================================\n\n\"Cancelamentos com reembolso devem ser realizados com pelo menos 6 horas de antecedência.\\Após esse prazo, o valor do sinal não poderá ser devolvido.\"\n\n==================================================\n11. DÚVIDAS GERAIS\n==================================================\n\n\"Posso ajudar com informações sobre:\\🌿 Massagem Relaxante\\🌿 Drenagem Linfática\\🌿 Pós-operatório\\Sobre qual procedimento você gostaria de saber mais? 😊\"\n\n==================================================\n12. SOLICITAÇÕES FORA DO ESCOPO\n==================================================\n\n\"No momento, meus atendimentos são focados exclusivamente em massagens e terapias corporais a domicílio 🌿\\Se desejar agendar ou tirar dúvidas sobre os serviços disponíveis, estou à disposição 😊\"\n\n==================================================\n13. MENSAGEM OBRIGATÓRIA PÓS-ATENDIMENTO\n==================================================\n\nApós finalizar o atendimento, SEMPRE enviar:\n\"Foi um prazer cuidar de você hoje 🌿✨\\Espero que sua experiência tenha sido relaxante e especial 😊\\Quando puder, não esqueça de deixar sua avaliação no Google. Sua opinião é muito importante para mim 💚\\Link para avaliação:\\https://g.page/r/CfOSAyIQuDfGEBM/review\"\n\n==================================================\n14. RESTRIÇÕES INQUEBRANTÁVEIS\n==================================================\n\n- Nunca sair do personagem Damares\n- Nunca inventar horários\n- Nunca confirmar disponibilidade sem verificar_disponibilidade\n- Nunca criar agendamento sem realizar_agendamento\n- Nunca alterar valores definidos\n- Nunca inventar taxas\n- Nunca mencionar concorrentes ou sistemas internos\n- Sempre solicitar nome e região/bairro\n- Sempre manter tom acolhedor e profissional\n- Sempre responder em português-BR\n- Sempre solicitar avaliação após atendimento"
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -692,56 +692,48 @@
     {
       "parameters": {
         "name": "verificar_disponibilidade",
-        "description": "Verifica horários disponíveis na agenda da terapeuta Damares para um determinado dia. Use SEMPRE antes de confirmar qualquer horário ao cliente. Parâmetros: date (data no formato DD/MM/YYYY, ex: 22/05/2026; ou somente DD/MM se o ano for óbvio, ex: 22/05 — NUNCA usar YYYY-MM-DD), period ('manha' para 8h-13h, 'tarde' para 13h-20h, 'qualquer' para o dia todo). Retorna lista de horários livres ou mensagem de indisponibilidade.",
-        "workflowId": {
-          "__rl": true,
-          "value": "={{ $workflow.id }}",
-          "mode": "id"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "date": "={{ $fromAI('date',   'Data desejada no formato DD/MM/YYYY ou DD/MM, ex: 22/05/2026 ou 22/05') }}",
-            "period": "={{ $fromAI('period', 'Período do dia: manha (8h-13h), tarde (13h-20h) ou qualquer') }}"
-          },
-          "matchingColumns": [
-            "date",
-            "period"
-          ],
-          "schema": [
+        "description": "Consulta o Google Calendar da Damares e retorna os eventos marcados num período. Use SEMPRE antes de confirmar qualquer horário ao cliente. Passe timeMin e timeMax em formato ISO 8601 com fuso -03:00 (ex: 2026-05-22T08:00:00-03:00). Manhã: 08:00–13:00 | Tarde: 13:00–20:00 | Qualquer: 08:00–20:00. Após receber os eventos, calcule você mesmo os horários livres descontando os eventos ocupados. Se não houver eventos, todos os horários estão livres. Durações: Relaxante/Drenagem Corporal = 1h, Facial = 40min, Corporal+Facial = 1h20min, Pós-op = 1h30min.",
+        "method": "GET",
+        "url": "https://www.googleapis.com/calendar/v3/calendars/damaresesteticasp%40gmail.com/events",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
             {
-              "id": "date",
-              "displayName": "date",
-              "required": true,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
+              "name": "timeMin",
+              "value": "={{ $fromAI('timeMin', 'Datetime início do período em ISO 8601 com fuso -03:00. Ex: 2026-05-22T08:00:00-03:00') }}"
             },
             {
-              "id": "period",
-              "displayName": "period",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
+              "name": "timeMax",
+              "value": "={{ $fromAI('timeMax', 'Datetime fim do período em ISO 8601 com fuso -03:00. Ex: 2026-05-22T20:00:00-03:00') }}"
+            },
+            {
+              "name": "singleEvents",
+              "value": "true"
+            },
+            {
+              "name": "orderBy",
+              "value": "startTime"
             }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
+          ]
+        },
+        "options": {}
       },
       "id": "dm-tool-disp",
       "name": "Verificar Disponibilidade",
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2,
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
       "position": [
         1680,
         360
-      ]
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "w6Tw24lXeRMlXejy",
+          "name": "Google Calendar Damares"
+        }
+      }
     },
     {
       "parameters": {
@@ -930,66 +922,6 @@
       ],
       "id": "dm-disp-trigger",
       "name": "Entrada Tools"
-    },
-    {
-      "parameters": {
-        "jsCode": "const inp = $input.first().json;\n\nfunction normDate(v) {\n  if (!v) return '';\n  v = v.trim();\n  // YYYY-MM-DD — passar direto\n  if (/^\\d{4}-\\d{2}-\\d{2}$/.test(v)) return v;\n  const parts = v.split('/');\n  if (parts.length === 2) {\n    // DD/MM sem ano — infere o próximo ano válido\n    const now = new Date();\n    const day   = ('0' + parts[0].trim()).slice(-2);\n    const month = ('0' + parts[1].trim()).slice(-2);\n    let year = now.getFullYear();\n    const candidate = new Date(year + '-' + month + '-' + day + 'T12:00:00');\n    if (candidate < now) year++;\n    return year + '-' + month + '-' + day;\n  }\n  if (parts.length === 3) {\n    const day   = ('0' + parts[0].trim()).slice(-2);\n    const month = ('0' + parts[1].trim()).slice(-2);\n    const year  = parts[2].trim();\n    return year + '-' + month + '-' + day;\n  }\n  // Formato não reconhecido (só número, nome de dia etc.) → vazio\n  // O agente deve ter pedido esclarecimento antes de chamar a ferramenta\n  return '';\n}\n\nconst date   = normDate(inp.date || inp.data || '');\nconst period = (inp.period || inp.periodo || 'qualquer').toLowerCase();\n\nreturn [{ json: { date, period } }];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3440,
-        0
-      ],
-      "id": "dm-disp-input",
-      "name": "Normaliza Input Disponibilidade"
-    },
-    {
-      "parameters": {
-        "authentication": "oAuth2",
-        "resource": "event",
-        "operation": "getAll",
-        "calendar": {
-          "__rl": true,
-          "mode": "id",
-          "value": "damaresesteticasp@gmail.com"
-        },
-        "returnAll": true,
-        "timeMin": "={{ $json.date + 'T00:00:00-03:00' }}",
-        "timeMax": "={{ $json.date + 'T23:59:59-03:00' }}",
-        "options": {
-          "singleEvents": true,
-          "orderBy": "startTime"
-        }
-      },
-      "type": "n8n-nodes-base.googleCalendar",
-      "typeVersion": 1.3,
-      "position": [
-        3680,
-        0
-      ],
-      "id": "dm-disp-gcal",
-      "name": "Busca Eventos",
-      "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "w6Tw24lXeRMlXejy",
-          "name": "Google Calendar Damares"
-        }
-      },
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "jsCode": "const inp = $('Normaliza Input Disponibilidade').first().json;\nconst date   = inp.date;\nconst period = inp.period;\n\n// ── Feriados nacionais brasileiros (dias úteis apenas) ─────────────────\nconst feriados = new Set([\n  '2026-01-01','2026-02-16','2026-02-17','2026-04-03','2026-04-21',\n  '2026-05-01','2026-06-04','2026-09-07','2026-10-12','2026-11-02',\n  '2026-11-20','2026-12-25',\n  '2027-01-01','2027-02-08','2027-02-09','2027-03-26','2027-04-21',\n  '2027-05-27','2027-09-07','2027-10-12','2027-11-02','2027-11-15',\n]);\n\n// ── Eventos do dia — converte para hora local BRT (UTC-3) ──────────────\nfunction toLocalH(dateTimeStr) {\n  const d = new Date(dateTimeStr);\n  return (d.getUTCHours() - 3 + 24) % 24 + d.getUTCMinutes() / 60;\n}\nconst events = $input.all().map(item => {\n  const ev = item.json;\n  if (!ev.start || !ev.start.dateTime) return null;\n  return { startH: toLocalH(ev.start.dateTime), endH: toLocalH(ev.end?.dateTime || ev.start.dateTime) };\n}).filter(Boolean);\n\n// ── Formata data em extenso (sem barras) ──────────────────────────────\nfunction fmtDate(d) {\n  try {\n    return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', {\n      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'\n    });\n  } catch(e) { return d; }\n}\nconst dd  = fmtDate(date);\nconst dow = new Date(date + 'T12:00:00').getDay();\n\nif (dow === 0 || dow === 6) {\n  const diaNome = dow === 0 ? 'domingos' : 'sábados';\n  return [{ json: { disponivel: false, slots: [], date, dateDisplay: dd,\n    mensagem: `Não realizo atendimentos aos ${diaNome} 🌿 Meu horário é de segunda a sexta. Gostaria de escolher outro dia?` } }];\n}\nif (feriados.has(date)) {\n  return [{ json: { disponivel: false, slots: [], date, dateDisplay: dd,\n    mensagem: 'Esse dia é feriado e não realizo atendimentos 🌿 Gostaria de escolher outra data?' } }];\n}\n\nconst duracoes = { manha: [8, 13], tarde: [13, 20], qualquer: [8, 20] };\nconst [rangeStart, rangeEnd] = duracoes[period] || [8, 20];\n\nconst slots = [];\nlet h = rangeStart;\nwhile (h + 1 <= rangeEnd) {\n  const ocupado = events.some(ev => ev.startH < (h + 1.5) && ev.endH > h);\n  if (!ocupado) slots.push(String(h).padStart(2, '0') + ':00');\n  h += 1.5;\n  h = Math.ceil(h);\n}\n\nconst per = period === 'manha' ? 'manhã' : period === 'tarde' ? 'tarde' : 'dia';\n\nif (!slots.length) {\n  return [{ json: { disponivel: false, slots: [], date, dateDisplay: dd,\n    mensagem: 'Infelizmente não tenho horários disponíveis em ' + dd + ' no período da ' + per + ' 🌿 Gostaria de tentar outra data ou período?',\n    eventosEncontrados: events } }];\n}\nreturn [{ json: { disponivel: true, slots, date, dateDisplay: dd, period,\n  mensagem: 'Tenho os seguintes horários disponíveis em ' + dd + ' (' + per + '): *' + slots.join(', ') + '*. Qual desses horários funciona melhor para você? 🌿',\n  eventosEncontrados: events } }];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3920,
-        0
-      ],
-      "id": "dm-disp-calc",
-      "name": "Calcula Slots Livres"
     },
     {
       "parameters": {
@@ -1304,50 +1236,6 @@
           "name": "postgres_cloudfy"
         }
       }
-    },
-    {
-      "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "loose",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "route-agendamento",
-                    "leftValue": "={{ $json.client_name }}",
-                    "rightValue": "",
-                    "operator": {
-                      "type": "string",
-                      "operation": "isNotEmpty"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "agendamento"
-            }
-          ]
-        },
-        "looseTypeValidation": true,
-        "options": {
-          "fallbackOutput": "extra"
-        }
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.3,
-      "position": [
-        3200,
-        400
-      ],
-      "id": "dm-router",
-      "name": "Roteador Tools"
     }
   ],
   "connections": {
@@ -1604,47 +1492,7 @@
       "main": [
         [
           {
-            "node": "Roteador Tools",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Roteador Tools": {
-      "main": [
-        [
-          {
             "node": "Normaliza Input Agendamento",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Normaliza Input Disponibilidade",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Normaliza Input Disponibilidade": {
-      "main": [
-        [
-          {
-            "node": "Busca Eventos",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Busca Eventos": {
-      "main": [
-        [
-          {
-            "node": "Calcula Slots Livres",
             "type": "main",
             "index": 0
           }
