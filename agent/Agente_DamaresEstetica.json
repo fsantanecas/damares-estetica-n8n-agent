@@ -1307,7 +1307,7 @@
     {
       "parameters": {
         "rules": {
-          "rules": [
+          "values": [
             {
               "conditions": {
                 "options": {
