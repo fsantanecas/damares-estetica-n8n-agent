@@ -698,7 +698,7 @@
           "mode": "id"
         },
         "workflowInputs": {
-          "mappingMode": "defineBelow",
+          "mappingMode": "autoMapInputData",
           "value": {},
           "matchingColumns": [
             "date",
@@ -749,7 +749,7 @@
           "mode": "id"
         },
         "workflowInputs": {
-          "mappingMode": "defineBelow",
+          "mappingMode": "autoMapInputData",
           "value": {},
           "matchingColumns": [
             "client_name",
