@@ -928,7 +928,7 @@
         0
       ],
       "id": "dm-disp-trigger",
-      "name": "Recebe Chamada Disponibilidade"
+      "name": "Entrada Tools"
     },
     {
       "parameters": {
@@ -989,19 +989,6 @@
       ],
       "id": "dm-disp-calc",
       "name": "Calcula Slots Livres"
-    },
-    {
-      "parameters": {
-        "inputSource": "passthrough"
-      },
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "typeVersion": 1.1,
-      "position": [
-        3200,
-        800
-      ],
-      "id": "dm-agend-trigger",
-      "name": "Recebe Chamada Agendamento"
     },
     {
       "parameters": {
@@ -1316,6 +1303,44 @@
           "name": "postgres_cloudfy"
         }
       }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "rules": [
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "id": "route-agendamento",
+                    "leftValue": "={{ $json.client_name }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "isNotEmpty"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "agendamento"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        3200,
+        400
+      ],
+      "id": "dm-router",
+      "name": "Roteador Tools"
     }
   ],
   "connections": {
@@ -1568,8 +1593,26 @@
         ]
       ]
     },
-    "Recebe Chamada Disponibilidade": {
+    "Entrada Tools": {
       "main": [
+        [
+          {
+            "node": "Roteador Tools",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Roteador Tools": {
+      "main": [
+        [
+          {
+            "node": "Normaliza Input Agendamento",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Normaliza Input Disponibilidade",
@@ -1595,17 +1638,6 @@
         [
           {
             "node": "Calcula Slots Livres",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Recebe Chamada Agendamento": {
-      "main": [
-        [
-          {
-            "node": "Normaliza Input Agendamento",
             "type": "main",
             "index": 0
           }
