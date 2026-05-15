@@ -1310,6 +1310,12 @@
           "rules": [
             {
               "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
                 "conditions": [
                   {
                     "id": "route-agendamento",
