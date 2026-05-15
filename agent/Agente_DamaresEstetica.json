@@ -971,7 +971,7 @@
       "name": "Busca Eventos",
       "credentials": {
         "googleCalendarOAuth2Api": {
-          "id": "CONFIGURE_GCAL_CREDENTIAL_ID",
+          "id": "w6Tw24lXeRMlXejy",
           "name": "Google Calendar Damares"
         }
       },
@@ -1044,7 +1044,7 @@
       "name": "Cria Evento no Calendário",
       "credentials": {
         "googleCalendarOAuth2Api": {
-          "id": "CONFIGURE_GCAL_CREDENTIAL_ID",
+          "id": "w6Tw24lXeRMlXejy",
           "name": "Google Calendar Damares"
         }
       }
