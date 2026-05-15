@@ -692,32 +692,11 @@
     {
       "parameters": {
         "name": "verificar_disponibilidade",
-        "description": "Consulta o Google Calendar da Damares e retorna os eventos marcados num período. Use SEMPRE antes de confirmar qualquer horário ao cliente. Passe timeMin e timeMax em formato ISO 8601 com fuso -03:00 (ex: 2026-05-22T08:00:00-03:00). Manhã: 08:00–13:00 | Tarde: 13:00–20:00 | Qualquer: 08:00–20:00. Após receber os eventos, calcule você mesmo os horários livres descontando os eventos ocupados. Se não houver eventos, todos os horários estão livres. Durações: Relaxante/Drenagem Corporal = 1h, Facial = 40min, Corporal+Facial = 1h20min, Pós-op = 1h30min.",
+        "description": "Consulta o Google Calendar da Damares e retorna os eventos de um periodo. Use SEMPRE antes de confirmar horarios. timeMin e timeMax devem estar em ISO 8601 com fuso -03:00 (ex: 2026-05-22T08:00:00-03:00). Manha: T08:00:00 a T13:00:00 | Tarde: T13:00:00 a T20:00:00 | Qualquer: T08:00:00 a T20:00:00. A API retorna os eventos ocupados; voce calcula os horarios livres. Se nao houver eventos, todos os horarios estao livres. Duracoes: Relaxante/Drenagem Corporal=1h, Facial=40min, Corporal+Facial=1h20, Pos-op=1h30.",
         "method": "GET",
-        "url": "https://www.googleapis.com/calendar/v3/calendars/damaresesteticasp%40gmail.com/events",
+        "url": "={{ 'https://www.googleapis.com/calendar/v3/calendars/damaresesteticasp%40gmail.com/events?singleEvents=true&orderBy=startTime&timeMin=' + $fromAI('timeMin', 'Datetime inicio do periodo em ISO 8601 com fuso -03:00. Ex: 2026-05-22T08:00:00-03:00') + '&timeMax=' + $fromAI('timeMax', 'Datetime fim do periodo em ISO 8601 com fuso -03:00. Ex: 2026-05-22T20:00:00-03:00') }}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleCalendarOAuth2Api",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "timeMin",
-              "value": "={{ $fromAI('timeMin', 'Datetime início do período em ISO 8601 com fuso -03:00. Ex: 2026-05-22T08:00:00-03:00') }}"
-            },
-            {
-              "name": "timeMax",
-              "value": "={{ $fromAI('timeMax', 'Datetime fim do período em ISO 8601 com fuso -03:00. Ex: 2026-05-22T20:00:00-03:00') }}"
-            },
-            {
-              "name": "singleEvents",
-              "value": "true"
-            },
-            {
-              "name": "orderBy",
-              "value": "startTime"
-            }
-          ]
-        },
         "options": {}
       },
       "id": "dm-tool-disp",
