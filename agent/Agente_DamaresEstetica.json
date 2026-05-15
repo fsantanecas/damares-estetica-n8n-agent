@@ -24,7 +24,7 @@
     },
     {
       "parameters": {
-        "content": "## ⚙️ CONFIGURAÇÃO OBRIGATÓRIA ANTES DE ATIVAR\n\n**1. Evolution API**\n- Criar instância `DAMARES` no painel Evolution\n- Atualizar `instanceName` nos nós de envio\n- Atualizar número da terapeuta no nó `Envia Alerta Técnico`\n\n**2. Credenciais Google Calendar**\n- Criar credencial OAuth2 `Google Calendar Damares`\n- Nos nós `Busca Eventos` e `Cria Evento`: configurar Calendar ID (email da conta Google da Damares)\n\n**3. ID do próprio workflow (ferramentas internas)**\n- Após importar e salvar, copiar o ID do workflow (URL do N8N: /workflow/[ID])\n- Colar nos campos `workflowId` dos nós:\n  → `Verificar Disponibilidade` (ferramenta do agente)\n  → `Realizar Agendamento` (ferramenta do agente)\n\n**4. Credenciais existentes (reutilizadas)**\n- `postgres_cloudfy` — PostgreSQL (buffer de mensagens + leads)\n- `evolution_cloudfy` — WhatsApp\n- `openrouter_cloudfy` — Gemini 2.5 Flash",
+        "content": "## ⚙️ CONFIGURAÇÃO OBRIGATÓRIA ANTES DE ATIVAR\n\n**1. Evolution API**\n- Criar instância `DAMARES` no painel Evolution\n- Atualizar `instanceName` nos nós de envio\n- Atualizar número da terapeuta no nó `Envia Alerta Técnico`\n\n**2. Credenciais Google Calendar**\n- Criar credencial OAuth2 `Google Calendar Damares`\n- Nos nós `Busca Eventos` e `Cria Evento`: configurar Calendar ID (email da conta Google da Damares)\n\n**3. ID do workflow (automático)**\n- Os nós de ferramenta usam `$workflow.id` — resolvido automaticamente pelo N8N.\n- ✅ Nenhuma configuração manual necessária neste passo.\n\n**4. Credenciais existentes (reutilizadas)**\n- `postgres_cloudfy` — PostgreSQL (buffer de mensagens + leads)\n- `evolution_cloudfy` — WhatsApp\n- `openrouter_cloudfy` — Gemini 2.5 Flash",
         "height": 380,
         "width": 500,
         "color": 6
@@ -694,7 +694,7 @@
         "description": "Verifica horários disponíveis na agenda da terapeuta Damares para um determinado dia. Use SEMPRE antes de confirmar qualquer horário ao cliente. Parâmetros: date (data no formato DD/MM/YYYY, ex: 22/05/2026; ou somente DD/MM se o ano for óbvio, ex: 22/05 — NUNCA usar YYYY-MM-DD), period ('manha' para 8h-13h, 'tarde' para 13h-20h, 'qualquer' para o dia todo). Retorna lista de horários livres ou mensagem de indisponibilidade.",
         "workflowId": {
           "__rl": true,
-          "value": "CONFIGURAR_ID_DESTE_WORKFLOW_APOS_IMPORTAR",
+          "value": "={{ $workflow.id }}",
           "mode": "id"
         },
         "workflowInputs": {
@@ -745,7 +745,7 @@
         "description": "Cria um agendamento na agenda da terapeuta Damares. Use SOMENTE após o cliente confirmar o horário desejado e após coletar todos os dados obrigatórios. Parâmetros: client_name (nome completo do cliente), client_phone (telefone com DDD, ex: 11999999999), service (nome exato: 'Massagem Relaxante', 'Drenagem Linfática Corporal', 'Drenagem Linfática Facial', 'Drenagem Linfática Corporal + Facial', 'Pós-operatório', 'Gestantes'), date (data no formato DD/MM/YYYY, ex: 22/05/2026; ou DD/MM se o ano for óbvio — NUNCA YYYY-MM-DD), time (horário no formato HH:MM em 24h, ex: 14:30), notes (observações opcionais, inclua sempre o bairro do cliente). Retorna confirmação do agendamento.",
         "workflowId": {
           "__rl": true,
-          "value": "CONFIGURAR_ID_DESTE_WORKFLOW_APOS_IMPORTAR",
+          "value": "={{ $workflow.id }}",
           "mode": "id"
         },
         "workflowInputs": {
