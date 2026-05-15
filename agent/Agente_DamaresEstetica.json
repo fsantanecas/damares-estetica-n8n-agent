@@ -951,7 +951,7 @@
         "calendar": {
           "__rl": true,
           "mode": "id",
-          "value": "primary"
+          "value": "damaresesteticasp@gmail.com"
         },
         "returnAll": true,
         "timeMin": "={{ $json.date + 'T00:00:00-03:00' }}",
@@ -1024,7 +1024,7 @@
         "calendar": {
           "__rl": true,
           "mode": "id",
-          "value": "primary"
+          "value": "damaresesteticasp@gmail.com"
         },
         "start": "={{ $json.startDT }}",
         "end": "={{ $json.endDT }}",
