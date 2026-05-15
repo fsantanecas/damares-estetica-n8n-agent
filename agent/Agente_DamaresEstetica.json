@@ -698,8 +698,11 @@
           "mode": "id"
         },
         "workflowInputs": {
-          "mappingMode": "autoMapInputData",
-          "value": {},
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ $fromAI('date',   'Data desejada no formato DD/MM/YYYY ou DD/MM, ex: 22/05/2026 ou 22/05') }}",
+            "period": "={{ $fromAI('period', 'Período do dia: manha (8h-13h), tarde (13h-20h) ou qualquer') }}"
+          },
           "matchingColumns": [
             "date",
             "period"
@@ -749,8 +752,15 @@
           "mode": "id"
         },
         "workflowInputs": {
-          "mappingMode": "autoMapInputData",
-          "value": {},
+          "mappingMode": "defineBelow",
+          "value": {
+            "client_name": "={{ $fromAI('client_name',  'Nome completo do cliente') }}",
+            "client_phone": "={{ $fromAI('client_phone', 'Telefone com DDD, somente números, ex: 11999999999') }}",
+            "service": "={{ $fromAI('service',      'Nome exato do procedimento') }}",
+            "date": "={{ $fromAI('date',         'Data no formato DD/MM/YYYY ou DD/MM, ex: 22/05/2026') }}",
+            "time": "={{ $fromAI('time',         'Horário no formato 24h HH:MM, ex: 14:30') }}",
+            "notes": "={{ $fromAI('notes',        'Observações opcionais — incluir sempre o bairro do cliente') }}"
+          },
           "matchingColumns": [
             "client_name",
             "client_phone",
