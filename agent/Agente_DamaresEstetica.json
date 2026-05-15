@@ -962,7 +962,8 @@
           "id": "CONFIGURE_GCAL_CREDENTIAL_ID",
           "name": "Google Calendar Damares"
         }
-      }
+      },
+      "alwaysOutputData": true
     },
     {
       "parameters": {
@@ -1047,7 +1048,8 @@
           "id": "CONFIGURE_GCAL_CREDENTIAL_ID",
           "name": "Google Calendar Damares"
         }
-      }
+      },
+      "alwaysOutputData": true
     },
     {
       "parameters": {
