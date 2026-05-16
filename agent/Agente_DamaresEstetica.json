@@ -1299,11 +1299,11 @@
           "value": "damaresesteticasp@gmail.com"
         },
         "returnAll": true,
+        "timeMin": "={{ $json.timeMin }}",
+        "timeMax": "={{ $json.timeMax }}",
         "options": {
-          "timeMin": "={{ $json.timeMin }}",
-          "timeMax": "={{ $json.timeMax }}",
-          "singleEvents": true,
-          "orderBy": "startTime"
+          "orderBy": "startTime",
+          "singleEvents": true
         }
       },
       "credentials": {
@@ -1311,7 +1311,8 @@
           "id": "w6Tw24lXeRMlXejy",
           "name": "calendar-damares-n8n"
         }
-      }
+      },
+      "alwaysOutputData": true
     },
     {
       "id": "baddc3c8-5c38-4a34-b11d-0a70ff1a0c59",
