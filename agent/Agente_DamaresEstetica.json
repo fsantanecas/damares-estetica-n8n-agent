@@ -724,7 +724,7 @@
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "w6Tw24lXeRMlXejy",
-          "name": "Google Calendar Damares"
+          "name": "calendar-damares-n8n"
         }
       }
     },
@@ -971,7 +971,7 @@
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "w6Tw24lXeRMlXejy",
-          "name": "Google Calendar Damares"
+          "name": "calendar-damares-n8n"
         }
       }
     },
