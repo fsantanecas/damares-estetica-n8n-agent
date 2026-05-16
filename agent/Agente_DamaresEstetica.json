@@ -693,40 +693,55 @@
       "parameters": {
         "name": "verificar_disponibilidade",
         "description": "Consulta o Google Calendar da Damares e retorna os eventos de um periodo. Use SEMPRE antes de confirmar horarios ao cliente. Passe timeMin e timeMax em ISO 8601 com fuso -03:00. Manha: T08:00:00 a T13:00:00 | Tarde: T13:00:00 a T20:00:00 | Qualquer: T08:00:00 a T20:00:00. Ex: timeMin=2026-05-22T08:00:00-03:00 timeMax=2026-05-22T20:00:00-03:00. Apos receber os eventos calcule os horarios livres subtraindo os ocupados. Duracoes: Relaxante/Corporal=1h, Facial=40min, Corporal+Facial=1h20, Pos-op=1h30.",
-        "method": "GET",
-        "url": "https://www.googleapis.com/calendar/v3/calendars/damaresesteticasp%40gmail.com/events?singleEvents=true&orderBy=startTime&timeMin={timeMin}&timeMax={timeMax}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "googleCalendarOAuth2Api",
-        "placeholderDefinitions": {
-          "values": [
+        "workflowId": {
+          "__rl": true,
+          "value": "={{ $workflow.id }}",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timeMin": "={{ $fromAI('timeMin', 'Datetime inicio do periodo em ISO 8601 com fuso -03:00. Ex: 2026-05-22T08:00:00-03:00') }}",
+            "timeMax": "={{ $fromAI('timeMax', 'Datetime fim do periodo em ISO 8601 com fuso -03:00. Ex: 2026-05-22T20:00:00-03:00') }}"
+          },
+          "matchingColumns": [
+            "timeMin",
+            "timeMax"
+          ],
+          "schema": [
             {
-              "name": "timeMin",
-              "description": "Datetime inicio do periodo em formato ISO 8601 com fuso -03:00. Exemplo: 2026-05-22T08:00:00-03:00",
-              "type": "string"
+              "id": "timeMin",
+              "displayName": "timeMin",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
             },
             {
-              "name": "timeMax",
-              "description": "Datetime fim do periodo em formato ISO 8601 com fuso -03:00. Exemplo: 2026-05-22T20:00:00-03:00",
-              "type": "string"
+              "id": "timeMax",
+              "displayName": "timeMax",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
             }
-          ]
-        },
-        "options": {}
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
       },
       "id": "dm-tool-disp",
       "name": "Verificar Disponibilidade",
-      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
-      "typeVersion": 1.1,
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2,
       "position": [
         1680,
         360
-      ],
-      "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "w6Tw24lXeRMlXejy",
-          "name": "calendar-damares-n8n"
-        }
-      }
+      ]
     },
     {
       "parameters": {
@@ -1229,6 +1244,87 @@
           "name": "postgres_cloudfy"
         }
       }
+    },
+    {
+      "id": "01f64458-0cc8-453b-acd3-c2045fc3d295",
+      "name": "Roteador Disponibilidade",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3440,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d3156bb6-a999-4a10-ad7c-420d64507df8",
+              "leftValue": "={{ $json.timeMin }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "f6d8c25b-38de-4776-ac3f-d322798f4fc5",
+      "name": "Busca Eventos Calendar",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        3680,
+        -400
+      ],
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "event",
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "mode": "id",
+          "value": "damaresesteticasp@gmail.com"
+        },
+        "returnAll": true,
+        "options": {
+          "timeMin": "={{ $json.timeMin }}",
+          "timeMax": "={{ $json.timeMax }}",
+          "singleEvents": true,
+          "orderBy": "startTime"
+        }
+      },
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "w6Tw24lXeRMlXejy",
+          "name": "calendar-damares-n8n"
+        }
+      }
+    },
+    {
+      "id": "baddc3c8-5c38-4a34-b11d-0a70ff1a0c59",
+      "name": "Formata Resposta Disponibilidade",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3920,
+        -400
+      ],
+      "parameters": {
+        "jsCode": "// Formata eventos do Google Calendar para o LLM calcular slots livres\nconst items = $input.all();\n\nif (!items || items.length === 0) {\n  return [{ json: { eventos: [], total: 0, mensagem: 'Nenhum evento encontrado. Todos os horarios estao disponiveis no periodo solicitado.' } }];\n}\n\nconst eventos = items.map(item => {\n  const e = item.json;\n  return {\n    titulo: e.summary || 'Compromisso',\n    inicio: e.start?.dateTime || e.start?.date || '',\n    fim: e.end?.dateTime || e.end?.date || ''\n  };\n}).filter(e => e.inicio);\n\nreturn [{ json: { eventos, total: eventos.length } }];"
+      }
     }
   ],
   "connections": {
@@ -1481,17 +1577,6 @@
         ]
       ]
     },
-    "Entrada Tools": {
-      "main": [
-        [
-          {
-            "node": "Normaliza Input Agendamento",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Normaliza Input Agendamento": {
       "main": [
         [
@@ -1619,6 +1704,46 @@
         [
           {
             "node": "Loop Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrada Tools": {
+      "main": [
+        [
+          {
+            "node": "Roteador Disponibilidade",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Roteador Disponibilidade": {
+      "main": [
+        [
+          {
+            "node": "Busca Eventos Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normaliza Input Agendamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca Eventos Calendar": {
+      "main": [
+        [
+          {
+            "node": "Formata Resposta Disponibilidade",
             "type": "main",
             "index": 0
           }
