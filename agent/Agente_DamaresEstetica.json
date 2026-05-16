@@ -698,18 +698,16 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleCalendarOAuth2Api",
         "placeholderDefinitions": {
-          "placeholderDefinitions": [
+          "values": [
             {
               "name": "timeMin",
               "description": "Datetime inicio do periodo em formato ISO 8601 com fuso -03:00. Exemplo: 2026-05-22T08:00:00-03:00",
-              "type": "string",
-              "required": true
+              "type": "string"
             },
             {
               "name": "timeMax",
               "description": "Datetime fim do periodo em formato ISO 8601 com fuso -03:00. Exemplo: 2026-05-22T20:00:00-03:00",
-              "type": "string",
-              "required": true
+              "type": "string"
             }
           ]
         },
