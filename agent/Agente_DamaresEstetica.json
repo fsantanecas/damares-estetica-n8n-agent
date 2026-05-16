@@ -1283,36 +1283,46 @@
     {
       "id": "f6d8c25b-38de-4776-ac3f-d322798f4fc5",
       "name": "Busca Eventos Calendar",
-      "type": "n8n-nodes-base.googleCalendar",
-      "typeVersion": 1.3,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         3680,
         -400
       ],
       "parameters": {
-        "authentication": "oAuth2",
-        "resource": "event",
-        "operation": "getAll",
-        "calendar": {
-          "__rl": true,
-          "mode": "id",
-          "value": "damaresesteticasp@gmail.com"
+        "method": "GET",
+        "url": "https://www.googleapis.com/calendar/v3/calendars/damaresesteticasp%40gmail.com/events",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "singleEvents",
+              "value": "true"
+            },
+            {
+              "name": "orderBy",
+              "value": "startTime"
+            },
+            {
+              "name": "timeMin",
+              "value": "={{ $json.timeMin }}"
+            },
+            {
+              "name": "timeMax",
+              "value": "={{ $json.timeMax }}"
+            }
+          ]
         },
-        "returnAll": true,
-        "timeMin": "={{ $json.timeMin }}",
-        "timeMax": "={{ $json.timeMax }}",
-        "options": {
-          "orderBy": "startTime",
-          "singleEvents": true
-        }
+        "options": {}
       },
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "w6Tw24lXeRMlXejy",
           "name": "calendar-damares-n8n"
         }
-      },
-      "alwaysOutputData": true
+      }
     },
     {
       "id": "baddc3c8-5c38-4a34-b11d-0a70ff1a0c59",
@@ -1324,7 +1334,7 @@
         -400
       ],
       "parameters": {
-        "jsCode": "// Formata eventos do Google Calendar para o LLM calcular slots livres\nconst items = $input.all();\n\nif (!items || items.length === 0) {\n  return [{ json: { eventos: [], total: 0, mensagem: 'Nenhum evento encontrado. Todos os horarios estao disponiveis no periodo solicitado.' } }];\n}\n\nconst eventos = items.map(item => {\n  const e = item.json;\n  return {\n    titulo: e.summary || 'Compromisso',\n    inicio: e.start?.dateTime || e.start?.date || '',\n    fim: e.end?.dateTime || e.end?.date || ''\n  };\n}).filter(e => e.inicio);\n\nreturn [{ json: { eventos, total: eventos.length } }];"
+        "jsCode": "// httpRequest sempre retorna 1 item com o body da resposta Google Calendar\nconst response = $input.first().json;\nconst items = response.items || [];\n\nif (items.length === 0) {\n  return [{ json: { eventos: [], total: 0, mensagem: 'Nenhum evento encontrado. Todos os horarios estao disponiveis no periodo solicitado.' } }];\n}\n\nconst eventos = items.map(e => ({\n  titulo: e.summary || 'Compromisso',\n  inicio: e.start?.dateTime || e.start?.date || '',\n  fim: e.end?.dateTime || e.end?.date || ''\n})).filter(e => e.inicio);\n\nreturn [{ json: { eventos, total: eventos.length } }];"
       }
     }
   ],
