@@ -1588,7 +1588,7 @@
     {
       "id": "93bd5bf7-c363-4c5a-a635-df634b269cc2",
       "name": "Notifica Damares Cancelamento",
-      "type": "n8n-nodes-base.evolutionApi",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
         5360,
@@ -1605,7 +1605,7 @@
       "credentials": {
         "evolutionApi": {
           "id": "K3ugZTfPL4VfY0sj",
-          "name": "Evolution API Damares"
+          "name": "evolution_cloudfy"
         }
       }
     },
