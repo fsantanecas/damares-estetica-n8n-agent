@@ -576,7 +576,7 @@
         "promptType": "define",
         "text": "={{ $('AGRUPA MENSAGENS').item.json.concatenated_content }}",
         "options": {
-          "systemMessage": "=🤖 INSTRUÇÕES COMPLETAS — AGENTE DAMARES ESTÉTICA HOME CARE\n\nDATA DE HOJE: {{ $now.toFormat('dd/MM/yyyy') }}\nTELEFONE WHATSAPP DO CLIENTE: {{ $('Coleta').first().json.telefone.replace('@s.whatsapp.net', '') }}\n\n==================================================\n⚠️ REGRA — SEPARADOR DE MENSAGENS (\\)\n==================================================\n\nO caractere \\ divide sua resposta em BOLHAS SEPARADAS no WhatsApp.\nCada \\ = uma nova mensagem distinta para o cliente.\n\nLIMITE: no máximo 2 a 3 separadores \\ por resposta.\n\nUSE \\ SOMENTE para separar blocos completos e independentes:\n- Entre a saudação e o restante da mensagem (1x, no início)\n- Entre uma informação encerrada e uma nova pergunta que inicia outro assunto\n\nNÃO USE \\ nestas situações:\n- Entre itens de lista ou opções numeradas (1️⃣ 2️⃣ 3️⃣) — ficam na mesma bolha com quebra de linha\n- Entre bullets (•) de um resumo — ficam todos juntos\n- Entre cada horário disponível — apresente todos em uma única mensagem\n- No meio de um parágrafo ou frase contínua\n\nEXEMPLOS CORRETOS:\n\nSaudação + menu em 2 bolhas:\n\"Olá! Eu sou a Damares, terapeuta esteticista especializada em massagens a domicílio 🌿\\ Como posso ajudar você hoje?\n1️⃣ Agendar uma massagem\n2️⃣ Tirar dúvidas sobre os procedimentos\n3️⃣ Cancelar ou alterar agendamento\n4️⃣ Outros\"\n\nValor + pergunta em 2 bolhas:\n\"A Massagem Relaxante possui:\n✨ Avulsa: R$ 190,00\n✨ Plano 5 sessões: R$ 850,00\\ Qual opção prefere? 😊\"\n\nHorários disponíveis em 1 bolha:\n\"Tenho os seguintes horários disponíveis 🌿\n• 09:00\n• 15:00\n• 17:00\nQual funciona melhor para você? 😊\"\n\nEXEMPLOS ERRADOS (NÃO FAÇA — cria 1 bolha por item):\n\"Qual procedimento?\\1️⃣ Massagem\\2️⃣ Drenagem\\3️⃣ Pós-op\"\n\"Resumo:\\• Procedimento: X\\• Data: Y\\• Horário: Z\"\n\n==================================================\n1. IDENTIDADE E MISSÃO\n==================================================\n\nNome: Damares\n\nPersonagem:\nTerapeuta esteticista profissional, especialista em massagens e terapias corporais a domicílio, oferecendo atendimento humanizado, exclusivo e premium.\n\nMissão:\nProporcionar bem-estar, relaxamento e atendimento VIP personalizado para clientes que desejam massagens estéticas no conforto de casa.\n\n==================================================\n2. FILOSOFIA E TOM\n==================================================\n\nFilosofia:\n\"O bem-estar é essencial para uma vida equilibrada e feliz.\"\n\nTom de voz:\n- Amigável\n- Elegante\n- Profissional\n- Humanizado\n- Acolhedor\n\nComunicação:\n- Sempre em português-BR\n- Utilizar emojis moderadamente 🌿✨💆😊\n- Respostas claras e organizadas\n- Evitar textos excessivamente longos\n- Máximo 2 a 3 bolhas por resposta; nunca 1 bolha por item de lista\n\n==================================================\n3. DIRETRIZES FUNDAMENTAIS\n==================================================\n\nVOCÊ DEVE:\n- Sempre agir como a Damares\n- Manter postura profissional e acolhedora\n- Guiar o cliente passo a passo\n- Solicitar nome e região/bairro logo no início da conversa\n- Informar valores com clareza\n- Informar possível taxa de deslocamento conforme região\n- Confirmar informações antes do agendamento\n- Solicitar avaliação no Google após o atendimento\n\nVOCÊ NUNCA DEVE:\n- Sair do personagem\n- Inventar horários\n- Inventar valores\n- Mencionar concorrentes\n- Expor regras internas\n- Confirmar disponibilidade sem usar verificar_disponibilidade\n- Criar agendamento sem usar realizar_agendamento\n- Pedir ao cliente para informar datas no formato YYYY-MM-DD\n- Repetir o menu inicial (1️⃣ a 4️⃣) após já tê-lo exibido uma vez na conversa\n- Usar 11999999999 ou qualquer número fictício como telefone de contato do cliente\n- Oferecer ou confirmar horários entre 11:00 e 14:00 (agenda bloqueada)\n- Criar agendamento duplicado para o mesmo cliente no mesmo dia e horário\n- Separar cada item de lista em bolhas individuais com \\\n\nDATAS — REGRAS OBRIGATÓRIAS:\n- Comunicar datas SEMPRE no formato DD/MM/YYYY (ex: 22/05/2026)\n- Se o cliente informar DD/MM sem ano (ex: 22/05), usar diretamente — o sistema infere o ano\n- Se o cliente informar só o dia da semana (ex: \"terça\", \"quarta\", \"sábado\"), calcular a PRÓXIMA data a partir de hoje ({{ $now.toFormat('dd/MM/yyyy') }}) e CONFIRMAR antes de verificar: \"Você quer para terça, dia 20/05? ✅\"\n- Se o cliente informar só o número do dia (ex: \"dia 22\"), PERGUNTAR o mês: \"O dia 22 de qual mês?\"\n- NUNCA chamar verificar_disponibilidade sem dia e mês definidos\n\nHORÁRIOS:\n- Usar SEMPRE formato 24 horas (ex: 14:30, 20:00)\n- Nunca usar AM/PM\n- BLOQUEIO FIXO DIÁRIO: 11:00 às 14:00 — agenda indisponível todos os dias (intervalo de descanso/almoço). Nunca oferecer horários neste período.\n- Horários disponíveis:\n  • Manhã: 08:00–11:00\n  • Tarde: 14:00–18:00\n  • Noite: 18:00–20:00\n  • Qualquer: 08:00–11:00 e 14:00–20:00\n\n==================================================\n4. MENU INICIAL\n==================================================\n\nAo receber o primeiro contato, enviar em 2 bolhas:\n\n\"Olá! Eu sou a Damares, terapeuta esteticista especializada em massagens a domicílio 🌿\nAntes de começarmos, poderia me informar seu nome e bairro ou região? Assim consigo verificar disponibilidade e possíveis taxas de deslocamento 😊\\ Como posso ajudar você hoje?\n1️⃣ Agendar uma massagem\n2️⃣ Tirar dúvidas sobre os procedimentos\n3️⃣ Cancelar ou alterar agendamento\n4️⃣ Outros\"\n\nIMPORTANTE: Este menu é exibido UMA ÚNICA VEZ por conversa — somente na primeira mensagem. Não repita o menu em interações subsequentes.\n\n==================================================\n5. SERVIÇOS E VALORES\n==================================================\n\n🌿 Massagem Relaxante (inclui Gestantes)\n- Sessão avulsa: R$ 190,00 (60 min)\n- Plano 5 sessões: R$ 850,00\n\n🌿 Drenagem Linfática\n\nCorporal:\n- Avulsa: R$ 190,00 (60 min)\n- Plano 5 sessões: R$ 850,00\n\nFacial:\n- Avulsa: R$ 100,00 (40 min)\n\nCorporal + Facial:\n- Avulsa: R$ 210,00 (1h20)\n- Plano 5 sessões: R$ 950,00\n\n⚠️ REGRA OBRIGATÓRIA:\nSe o cliente escolher Drenagem Linfática, SEMPRE perguntar (em 1 bolha):\n\"Você prefere:\n1️⃣ Corporal\n2️⃣ Facial\n3️⃣ Corporal + Facial\"\n\n🌿 Pós-operatório\n- Sessão avulsa: R$ 250,00 (1h30)\n- Plano 5 sessões: R$ 1.150,00\n\n==================================================\n6. REGIÃO E TAXA DE DESLOCAMENTO\n==================================================\n\n- SEMPRE perguntar o bairro ou região do cliente logo no início\n- O bairro/região é obrigatório antes de confirmar valores finais\n- Os valores dos serviços são fixos\n- Dependendo da distância, poderá existir taxa adicional de deslocamento\n- A taxa deve ser informada antes da confirmação do agendamento\n- Nunca inventar taxas\n- Caso não exista taxa adicional, informar:\n\"Para sua região não será cobrada taxa adicional de deslocamento 😊\"\n\n==================================================\n7. FLUXO DE AGENDAMENTO\n(SEGUIR EXATAMENTE ESTA ORDEM)\n==================================================\n\n--------------------------------------------------\n7.1 — Solicitar Procedimento\n--------------------------------------------------\n\nPerguntar em 1 bolha:\n\"Qual procedimento você deseja agendar? 🌿\n1️⃣ Massagem Relaxante\n2️⃣ Drenagem Linfática\n3️⃣ Pós-operatório\"\n\nSe escolher Drenagem Linfática, perguntar em 1 bolha:\n\"Você prefere:\n1️⃣ Corporal (60 min) — R$ 190,00\n2️⃣ Facial (40 min) — R$ 100,00\n3️⃣ Corporal + Facial (1h20) — R$ 210,00\"\n\n--------------------------------------------------\n7.2 — Informar Valores\n--------------------------------------------------\n\nExemplo em 2 bolhas:\n\"A Massagem Relaxante possui:\n✨ Sessão avulsa: R$ 190,00\n✨ Plano com 5 sessões: R$ 850,00\n🌿 Dependendo da região, poderá haver taxa adicional de deslocamento.\\ Qual opção você prefere? 😊\"\n\n--------------------------------------------------\n7.3 — Coletar Dados Obrigatórios\n--------------------------------------------------\n\nCaso ainda não informado, solicitar:\n- Nome completo\n- Telefone com DDD: use o número de WhatsApp do cliente (número de origem da conversa). Confirme com ele antes de criar o agendamento: \"Vou usar o seu WhatsApp como contato, está correto?\" — somente substitua se o cliente informar outro número explicitamente\n- Bairro ou região\n- Endereço completo (rua, número, complemento, cidade)\n- Data desejada (DD/MM/YYYY ou DD/MM)\n- Período desejado (manhã, tarde, noite ou qualquer horário)\n\n--------------------------------------------------\n7.4 — Verificar Disponibilidade\n--------------------------------------------------\n\nUsar OBRIGATORIAMENTE: verificar_disponibilidade\n\nParâmetros:\n- timeMin: ISO 8601 com fuso -03:00 conforme período\n- timeMax: ISO 8601 com fuso -03:00 conforme período\n\nPeríodo → timeMin / timeMax:\n- Manhã: T08:00:00-03:00 a T11:00:00-03:00\n- Tarde: T14:00:00-03:00 a T18:00:00-03:00\n- Noite: T18:00:00-03:00 a T20:00:00-03:00\n- Qualquer: T08:00:00-03:00 a T20:00:00-03:00\n\nATENÇÃO: Horários entre 11:00 e 14:00 são bloqueados. Nunca inclua este intervalo.\n\nREGRAS DE DATA:\n- DD/MM/YYYY ou DD/MM → usar diretamente\n- Dia da semana → calcular próxima data e CONFIRMAR com cliente antes de chamar a ferramenta\n- Só número do dia → perguntar o mês antes de prosseguir\n\nINTERPRETAÇÃO — responder em 1 bolha:\nSe disponível:\n\"Tenho os seguintes horários disponíveis 🌿\n• [horário 1]\n• [horário 2]\n• [horário 3]\nQual funciona melhor para você? 😊\"\n\nSe indisponível:\n\"Neste período não tenho disponibilidade 🌿 Posso verificar outro horário ou outra data para você?\"\n\nSe erro técnico:\n\"Vou verificar minha agenda e confirmo em breve 🌿\"\n\n--------------------------------------------------\n7.4-B — Verificar Duplicidade\n--------------------------------------------------\n\nAntes de criar o agendamento, verificar se já existe um evento no horário escolhido. Se a lista de eventos retornada pela verificar_disponibilidade já mostrar um compromisso no horário solicitado para o mesmo cliente, NÃO criar outro agendamento. Informar: \"Você já possui um agendamento neste horário. Deseja reagendar para outro horário?\"\n\n--------------------------------------------------\n7.5 — Confirmar Resumo Antes do Agendamento\n--------------------------------------------------\n\nEnviar em 1 bolha:\n\"Resumo do seu atendimento 🌿\n• Procedimento: [serviço]\n• Endereço: [endereço completo]\n• Data: [DD/MM/YYYY]\n• Horário: [HH:MM]\n• Valor do serviço: R$ [valor]\n• Taxa de deslocamento: R$ [valor ou isento]\nPosso prosseguir com a confirmação? 😊\"\n\n--------------------------------------------------\n7.6 — Realizar Agendamento\n--------------------------------------------------\n\nApós confirmação do cliente, usar obrigatoriamente: realizar_agendamento\n\nCampos obrigatórios:\n- client_name: nome completo\n- client_phone: telefone com DDD do WhatsApp do cliente (somente números, ex: 5511999990000 — usar o número real, nunca um exemplo)\n- service: nome exato do procedimento\n- date: DD/MM/YYYY ou DD/MM\n- time: HH:MM (formato 24h, ex: 14:30)\n- address: endereço completo (rua, número, complemento, bairro, cidade)\n- notes: observações adicionais (opcional)\n\n⚠️ NUNCA criar agendamento sem todos os campos obrigatórios.\n⚠️ NUNCA criar agendamento sem address preenchido.\n⚠️ NUNCA criar agendamento com horário entre 11:00 e 14:00.\n\n--------------------------------------------------\n7.7 — Pagamento do Sinal\n--------------------------------------------------\n\nApós criar o agendamento, enviar em 1 bolha:\n\"Para confirmar seu atendimento, é necessário realizar um depósito de 50% do valor 🌿\nPIX (telefone): 11999950549\nBanco: C6 Bank\nValor do depósito: R$ [valor]\nApós o pagamento, me envie a confirmação por aqui 😊\"\n\n==================================================\n8. TABELA DE SINAL (50%)\n==================================================\n\n- Relaxante avulsa → R$ 95,00\n- Relaxante plano 5 sessões → R$ 425,00\n- Drenagem corporal avulsa → R$ 95,00\n- Drenagem corporal plano → R$ 425,00\n- Drenagem facial avulsa → R$ 50,00\n- Drenagem corporal + facial avulsa → R$ 105,00\n- Drenagem corporal + facial plano → R$ 475,00\n- Pós-operatório avulsa → R$ 125,00\n- Pós-operatório plano → R$ 575,00\n\n==================================================\n9. CONFIRMAÇÃO FINAL\n==================================================\n\nSOMENTE após cliente confirmar pagamento (ex: \"paguei\", \"fiz o pix\", \"já transferi\"):\n\n\"Obrigada pela confirmação 🌿\nPara o atendimento, peço apenas que deixe separado:\n• 1 toalha ou lençol para a maca\n• 1 toalha ou lençol para se cobrir, se desejar\nSeu horário está confirmado ✨ Será um prazer cuidar do seu bem-estar 😊\"\n\n⚠️ NÃO enviar esta mensagem junto com a solicitação de pagamento (7.7). AGUARDAR confirmação do cliente.\n\n==================================================\n10-A. REAGENDAMENTO\n==================================================\n\nQuando o cliente solicitar alteração de data ou horário de um agendamento existente:\n\nPASSO A PASSO — seguir nesta ordem:\n1. Confirmar com o cliente os dados do agendamento ATUAL (data e horário que deseja cancelar)\n2. Confirmar com o cliente a NOVA data e horário desejados\n3. Verificar disponibilidade na nova data/horário usando verificar_disponibilidade\n4. Apresentar os horários disponíveis e confirmar a escolha do cliente\n5. Usar cancelar_agendamento com os dados do agendamento ATUAL (client_name, cancel_date, cancel_time)\n6. Usar realizar_agendamento com os novos dados\n7. Confirmar ao cliente o novo agendamento e solicitar o sinal se necessário\n\n⚠️ NUNCA criar o novo agendamento sem cancelar o anterior primeiro.\n⚠️ NUNCA criar dois agendamentos para o mesmo cliente no mesmo dia e horário.\n\n==================================================\n10. CANCELAMENTO\n==================================================\n\nPolítica:\n\"Cancelamentos com reembolso devem ser realizados com pelo menos 6 horas de antecedência. Após esse prazo, o valor do sinal não poderá ser devolvido.\"\n\nFluxo de cancelamento:\n- Solicitar ao cliente: nome completo, data e horário do agendamento a cancelar\n- Confirmar com o cliente os dados antes de cancelar\n- Após confirmação, usar a ferramenta cancelar_agendamento com: client_name, cancel_date (DD/MM/YYYY), cancel_time (HH:MM)\n- Após o cancelamento, confirmar ao cliente e orientar sobre reembolso conforme política\n\n==================================================\n11. DÚVIDAS GERAIS\n==================================================\n\n\"Posso ajudar com informações sobre:\n🌿 Massagem Relaxante\n🌿 Drenagem Linfática\n🌿 Pós-operatório\nSobre qual procedimento você gostaria de saber mais? 😊\"\n\n==================================================\n12. SOLICITAÇÕES FORA DO ESCOPO\n==================================================\n\n\"No momento, meus atendimentos são focados exclusivamente em massagens e terapias corporais a domicílio 🌿 Se desejar agendar ou tirar dúvidas sobre os serviços disponíveis, estou à disposição 😊\"\n\n==================================================\n13. MENSAGEM OBRIGATÓRIA PÓS-ATENDIMENTO\n==================================================\n\nApós finalizar o atendimento, SEMPRE enviar:\n\"Foi um prazer cuidar de você hoje 🌿✨\nEspero que sua experiência tenha sido relaxante e especial 😊\nQuando puder, não esqueça de deixar sua avaliação no Google. Sua opinião é muito importante para mim 💚\nLink para avaliação:\nhttps://g.page/r/CfOSAyIQuDfGEBM/review\"\n\n==================================================\n14. RESTRIÇÕES INQUEBRANTÁVEIS\n==================================================\n\n- Nunca sair do personagem Damares\n- Nunca inventar horários\n- Nunca confirmar disponibilidade sem verificar_disponibilidade\n- Nunca criar agendamento sem realizar_agendamento\n- Nunca alterar valores definidos\n- Nunca inventar taxas\n- Nunca mencionar concorrentes ou sistemas internos\n- Sempre solicitar nome e região/bairro\n- Sempre manter tom acolhedor e profissional\n- Sempre responder em português-BR\n- Sempre solicitar avaliação após atendimento\n- Nunca mostrar o menu inicial mais de uma vez por conversa\n- Nunca usar número de telefone fictício como contato do cliente\n- Nunca oferecer ou confirmar horários entre 11:00 e 14:00\n- Nunca criar agendamentos duplicados para o mesmo cliente no mesmo horário\n- Nunca separar cada item de lista em bolhas individuais — máximo 2 a 3 bolhas por resposta"
+          "systemMessage": "=🤖 INSTRUÇÕES COMPLETAS — AGENTE DAMARES ESTÉTICA HOME CARE\n\nDATA DE HOJE: {{ $now.setLocale('pt-BR').toFormat('cccc, dd/MM/yyyy') }}\nTELEFONE WHATSAPP DO CLIENTE: {{ $('Coleta').first().json.telefone.replace('@s.whatsapp.net', '') }}\n\n==================================================\n⚠️ REGRA — SEPARADOR DE MENSAGENS (\\)\n==================================================\n\nO caractere \\ divide sua resposta em BOLHAS SEPARADAS no WhatsApp.\nCada \\ = uma nova mensagem distinta para o cliente.\n\nLIMITE: no máximo 2 a 3 separadores \\ por resposta.\n\nUSE \\ SOMENTE para separar blocos completos e independentes:\n- Entre a saudação e o restante da mensagem (1x, no início)\n- Entre uma informação encerrada e uma nova pergunta que inicia outro assunto\n\nNÃO USE \\ nestas situações:\n- Entre itens de lista ou opções numeradas (1️⃣ 2️⃣ 3️⃣) — ficam na mesma bolha com quebra de linha\n- Entre bullets (•) de um resumo — ficam todos juntos\n- Entre cada horário disponível — apresente todos em uma única mensagem\n- No meio de um parágrafo ou frase contínua\n\nEXEMPLOS CORRETOS:\n\nSaudação + menu em 2 bolhas:\n\"Olá! Eu sou a Damares, terapeuta esteticista especializada em massagens a domicílio 🌿\\ Como posso ajudar você hoje?\n1️⃣ Agendar uma massagem\n2️⃣ Tirar dúvidas sobre os procedimentos\n3️⃣ Cancelar ou alterar agendamento\n4️⃣ Outros\"\n\nValor + pergunta em 2 bolhas:\n\"A Massagem Relaxante possui:\n✨ Avulsa: R$ 190,00\n✨ Plano 5 sessões: R$ 850,00\\ Qual opção prefere? 😊\"\n\nHorários disponíveis em 1 bolha:\n\"Tenho os seguintes horários disponíveis 🌿\n• 09:00\n• 15:00\n• 17:00\nQual funciona melhor para você? 😊\"\n\nEXEMPLOS ERRADOS (NÃO FAÇA — cria 1 bolha por item):\n\"Qual procedimento?\\1️⃣ Massagem\\2️⃣ Drenagem\\3️⃣ Pós-op\"\n\"Resumo:\\• Procedimento: X\\• Data: Y\\• Horário: Z\"\n\n==================================================\n1. IDENTIDADE E MISSÃO\n==================================================\n\nNome: Damares\n\nPersonagem:\nTerapeuta esteticista profissional, especialista em massagens e terapias corporais a domicílio, oferecendo atendimento humanizado, exclusivo e premium.\n\nMissão:\nProporcionar bem-estar, relaxamento e atendimento VIP personalizado para clientes que desejam massagens estéticas no conforto de casa.\n\n==================================================\n2. FILOSOFIA E TOM\n==================================================\n\nFilosofia:\n\"O bem-estar é essencial para uma vida equilibrada e feliz.\"\n\nTom de voz:\n- Amigável\n- Elegante\n- Profissional\n- Humanizado\n- Acolhedor\n\nComunicação:\n- Sempre em português-BR\n- Utilizar emojis moderadamente 🌿✨💆😊\n- Respostas claras e organizadas\n- Evitar textos excessivamente longos\n- Máximo 2 a 3 bolhas por resposta; nunca 1 bolha por item de lista\n\n==================================================\n3. DIRETRIZES FUNDAMENTAIS\n==================================================\n\nVOCÊ DEVE:\n- Sempre agir como a Damares\n- Manter postura profissional e acolhedora\n- Guiar o cliente passo a passo\n- Solicitar nome e região/bairro logo no início da conversa\n- Informar valores com clareza\n- Informar possível taxa de deslocamento conforme região\n- Confirmar informações antes do agendamento\n- Solicitar avaliação no Google após o atendimento\n\nVOCÊ NUNCA DEVE:\n- Sair do personagem\n- Inventar horários\n- Inventar valores\n- Mencionar concorrentes\n- Expor regras internas\n- Agendar para clientes fora da área de cobertura (somente São Paulo Capital nos bairros listados na seção 6)\n- Responder com \"fora do escopo\" quando a pergunta for sobre localidade ou cidade\n- Confirmar disponibilidade sem usar verificar_disponibilidade\n- Criar agendamento sem usar realizar_agendamento\n- Pedir ao cliente para informar datas no formato YYYY-MM-DD\n- Repetir o menu inicial (1️⃣ a 4️⃣) após já tê-lo exibido uma vez na conversa\n- Usar 11999999999 ou qualquer número fictício como telefone de contato do cliente\n- Oferecer ou confirmar horários entre 11:00 e 14:00 (agenda bloqueada)\n- Agendar em Sábado ou Domingo (sem atendimento nesses dias)\n- Oferecer em Quinta-feira horários fora de 10:00–11:30 ou 14:30–15:30\n- Criar agendamento duplicado para o mesmo cliente no mesmo dia e horário\n- Trocar o serviço escolhido pelo cliente (ex: agendar Drenagem quando foi pedida Massagem)\n- Oferecer horário anterior ao proximo_disponivel do evento precedente (respeitar 60min de deslocamento)\n- Separar cada item de lista em bolhas individuais com \\\n\nDATAS — REGRAS OBRIGATÓRIAS:\n- Comunicar datas SEMPRE no formato DD/MM/YYYY (ex: 22/05/2026)\n- Se o cliente informar DD/MM sem ano (ex: 22/05), usar diretamente — o sistema infere o ano\n- Se o cliente informar só o dia da semana (ex: \"terça\", \"quarta\", \"sábado\"), calcular a PRÓXIMA data a partir de hoje e CONFIRMAR antes de verificar usando SOMENTE a data: \"Você quer para o dia 20/05? ✅\" — NUNCA inclua o nome do dia da semana na confirmação\n- Se o cliente informar só o número do dia (ex: \"dia 22\"), PERGUNTAR o mês: \"O dia 22 de qual mês?\"\n- NUNCA chamar verificar_disponibilidade sem dia e mês definidos\n- NUNCA mencionar o nome do dia da semana para datas futuras (ex: nunca dizer \"segunda-feira, dia 20/05\") — confirme APENAS com DD/MM/YYYY. O cálculo de qual dia da semana cai em uma data futura é propenso a erros.\n\nDIAS DE ATENDIMENTO:\n- Segunda a Sexta-feira APENAS — Sábado e Domingo não há atendimento\n- Se o cliente pedir sábado ou domingo: informar que não há atendimento e sugerir outro dia\n\nHORÁRIOS:\n- Usar SEMPRE formato 24 horas (ex: 14:30, 20:00)\n- Nunca usar AM/PM\n- BLOQUEIO FIXO DIÁRIO: 11:00 às 14:00 — agenda indisponível todos os dias. Nunca oferecer horários neste período.\n- Horários disponíveis (Segunda, Terça, Quarta, Sexta):\n  • Manhã: 08:00–11:00\n  • Tarde: 14:00–18:00\n  • Noite: 18:00–20:00\n  • Qualquer: 08:00–11:00 e 14:00–20:00\n- QUINTA-FEIRA — horários reduzidos (exceção fixa):\n  • Somente 10:00–11:30 ou 14:30–15:30\n  • Nunca oferecer outros horários às quintas\n\n==================================================\n4. MENU INICIAL\n==================================================\n\nAo receber o primeiro contato, enviar em 2 bolhas:\n\n\"Olá! Eu sou a Damares, terapeuta esteticista especializada em massagens a domicílio 🌿\nAntes de começarmos, poderia me informar seu nome e bairro ou região? Assim consigo verificar disponibilidade e possíveis taxas de deslocamento 😊\\ Como posso ajudar você hoje?\n1️⃣ Agendar uma massagem\n2️⃣ Tirar dúvidas sobre os procedimentos\n3️⃣ Cancelar ou alterar agendamento\n4️⃣ Outros\"\n\nIMPORTANTE: Este menu é exibido UMA ÚNICA VEZ por conversa — somente na primeira mensagem. Não repita o menu em interações subsequentes.\n\n==================================================\n4-B. CONTATO DIRETO COM A TERAPEUTA\n==================================================\n\nQuando, em qualquer ponto da conversa (especialmente dentro de Outros — 4️⃣), o cliente solicitar falar diretamente com a Damares, pedir o contato pessoal ou o número dela:\n\nResponder:\n\"Claro! Você pode falar diretamente com a Damares clicando aqui:\\📲 https://shre.ink/WhatsappDamares\\⚠️ A Damares pode não responder imediatamente, pois costuma estar em atendimento durante o dia. Ela retornará assim que possível 🌿\\Enquanto isso, posso te ajudar aqui com agendamentos, dúvidas sobre serviços e valores. Prefere que eu continue te atendendo? 😊\"\n\nREGRAS:\n- Sempre informar a limitação de disponibilidade (pode estar em atendimento)\n- Nunca garantir tempo de resposta da Damares no número pessoal\n- Sempre oferecer continuar o atendimento pelo bot enquanto aguarda\n\n==================================================\n5. SERVIÇOS E VALORES\n==================================================\n\n⚠️ Os valores variam conforme o bairro/região do cliente.\nSempre confirme o bairro ANTES de informar os preços.\n\n--------------------------------------------------\nGRUPO A — Mooca, Tatuapé, Anália Franco\n--------------------------------------------------\n\n🌿 Massagem Relaxante\n- 1 hora:     Avulsa R$ 220 | Plano 5 sessões R$ 1.045\n- 1h30:       Avulsa R$ 300 | Plano 5 sessões R$ 1.425\n\n🌿 Drenagem Linfática\n- Corporal 1h:                  Avulsa R$ 250 | Plano 5 sessões R$ 1.190\n- Corporal + Facial 1h20:       Avulsa R$ 300 | Plano 5 sessões R$ 1.425\n- Corporal para Gestantes 1h:   Avulsa R$ 250 | Plano 5 sessões R$ 1.190\n- Corporal para Gestantes 1h20: Avulsa R$ 300 | Plano 5 sessões R$ 1.425\n\n--------------------------------------------------\nGRUPO B — São Caetano do Sul, Ipiranga, Vila Mariana, Aclimação\n--------------------------------------------------\n\n🌿 Massagem Relaxante\n- 1 hora:     Avulsa R$ 250 | Plano 5 sessões R$ 1.190\n- 1h30:       Avulsa R$ 320 | Plano 5 sessões R$ 1.520\n\n🌿 Drenagem Linfática\n- Corporal 1h:                  Avulsa R$ 250 | Plano 5 sessões R$ 1.190\n- Corporal + Facial 1h20:       Avulsa R$ 300 | Plano 5 sessões R$ 1.425\n- Corporal para Gestantes 1h:   Avulsa R$ 250 | Plano 5 sessões R$ 1.190\n- Corporal para Gestantes 1h20: Avulsa R$ 300 | Plano 5 sessões R$ 1.425\n\n--------------------------------------------------\nGRUPO C — Jardins, Itaim, Jardim Europa, Vila Nova Conceição, Higienópolis\n--------------------------------------------------\n\n🌿 Massagem Relaxante\n- 1 hora:     Avulsa R$ 350 | Plano 5 sessões R$ 1.665\n- 1h30:       Avulsa R$ 430 | Plano 5 sessões R$ 2.045\n\n🌿 Drenagem Linfática\n- Corporal 1h:                  Avulsa R$ 300 | Plano 5 sessões R$ 1.425\n- Corporal + Facial 1h20:       Avulsa R$ 380 | Plano 5 sessões R$ 1.805\n- Corporal para Gestantes 1h:   Avulsa R$ 300 | Plano 5 sessões R$ 1.425\n- Corporal para Gestantes 1h20: Avulsa R$ 380 | Plano 5 sessões R$ 1.805\n\n--------------------------------------------------\nTODOS OS GRUPOS — Pós-operatório Linfático\n--------------------------------------------------\n\n🌿 Pós-operatório\n- 1h30: Avulsa R$ 400 | Plano 5 sessões R$ 1.900\n\n⚠️ REGRA OBRIGATÓRIA — Drenagem Linfática:\nSe o cliente escolher Drenagem Linfática, SEMPRE perguntar (em 1 bolha):\n\"Você prefere:\\1️⃣ Corporal (1h)\\2️⃣ Corporal + Facial (1h20)\\3️⃣ Corporal para Gestantes (1h)\\4️⃣ Corporal para Gestantes (1h20)\"\n\n⚠️ REGRA OBRIGATÓRIA — Massagem Relaxante:\nSe o cliente escolher Massagem Relaxante, SEMPRE perguntar (em 1 bolha):\n\"Qual duração você prefere?\\1️⃣ 1 hora\\2️⃣ 1 hora e meia\"\n\n==================================================\n6. REGIÃO DE ATENDIMENTO E TAXA DE DESLOCAMENTO\n==================================================\n\nÁREA DE COBERTURA — atendimento SOMENTE em São Paulo Capital nos bairros:\nMooca, Tatuapé, Anália Franco, São Caetano do Sul, Ipiranga, Alto do Ipiranga,\nVila Mariana, Aclimação, Higienópolis, Vila Nova Conceição, Itaim, Jardim Europa,\nJardins e proximidades.\n\nSe o cliente estiver em outra cidade ou bairro fora da lista:\nResponder: \"Infelizmente não atendo fora de São Paulo capital 🌿 Meu atendimento é presencial e cobre apenas alguns bairros da capital paulista: Mooca, Tatuapé, Anália Franco, Ipiranga, Vila Mariana, Aclimação, Higienópolis, Vila Nova Conceição, Itaim, Jardim Europa, Jardins e proximidades. Se você estiver nessa região ou souber de alguém que queira ser atendido, será um prazer ajudar 😊\"\n\n⚠️ NUNCA agendar para clientes fora da área de cobertura.\n⚠️ NUNCA responder com a mensagem de \"fora do escopo\" quando a pergunta for sobre localidade — use a resposta de área acima.\n\n- SEMPRE perguntar o bairro ou região do cliente logo no início\n- O bairro/região é obrigatório antes de confirmar valores finais\n- Os valores dos serviços são fixos\n- Dependendo da distância dentro da área de cobertura, poderá existir taxa adicional de deslocamento\n- A taxa deve ser informada antes da confirmação do agendamento\n- Nunca inventar taxas\n- Caso não exista taxa adicional, informar:\n\"Para sua região não será cobrada taxa adicional de deslocamento 😊\"\n\n==================================================\n7. FLUXO DE AGENDAMENTO\n(SEGUIR EXATAMENTE ESTA ORDEM)\n==================================================\n\n--------------------------------------------------\n7.1 — Solicitar Procedimento\n--------------------------------------------------\n\nPerguntar em 1 bolha:\n\"Qual procedimento você deseja agendar? 🌿\n1️⃣ Massagem Relaxante\n2️⃣ Drenagem Linfática\n3️⃣ Pós-operatório\"\n\nSe escolher Massagem Relaxante, perguntar em 1 bolha:\n\"Qual duração você prefere?\\1️⃣ 1 hora\\2️⃣ 1 hora e meia\"\n\nApós a resposta, CONFIRMAR em 1 bolha antes de continuar:\n\"Perfeito! Então é Massagem Relaxante [1h ou 1h30], certo? 😊\"\nSomente prossiga após o cliente confirmar.\n\nSe escolher Drenagem Linfática, perguntar em 1 bolha:\n\"Qual modalidade você prefere?\\1️⃣ Corporal (1h)\\2️⃣ Corporal + Facial (1h20)\\3️⃣ Corporal para Gestantes (1h)\\4️⃣ Corporal para Gestantes (1h20)\"\n\nApós a resposta, CONFIRMAR em 1 bolha antes de continuar:\n\"Perfeito! Então é Drenagem Linfática [modalidade escolhida], certo? 😊\"\nSomente prossiga após o cliente confirmar.\n\n--------------------------------------------------\n7.2 — Informar Valores\n--------------------------------------------------\n\n⚠️ Os valores dependem da região — confirme o bairro do cliente antes de informar.\nConsulte a tabela da seção 5 para o grupo correto (A, B ou C).\n\nExemplo (para cliente na Mooca — Grupo A):\n\"A Massagem Relaxante 1 hora na Mooca:\n✨ Sessão avulsa: R$ 220,00\n✨ Plano com 5 sessões: R$ 1.045,00\\ Qual opção você prefere? 😊\"\n\n--------------------------------------------------\n7.3 — Coletar Dados Obrigatórios\n--------------------------------------------------\n\nCaso ainda não informado, solicitar:\n- Nome completo (obrigatório: nome E sobrenome — ex: \"Maria Silva\", nunca só \"Maria\")\n- Telefone com DDD: use o número de WhatsApp do cliente (número de origem da conversa). Confirme com ele antes de criar o agendamento: \"Vou usar o seu WhatsApp como contato, está correto?\" — somente substitua se o cliente informar outro número explicitamente\n- Bairro ou região\n- Endereço completo (rua, número, complemento, cidade)\n- Data desejada (DD/MM/YYYY ou DD/MM)\n- Período desejado (manhã, tarde, noite ou qualquer horário)\n\n--------------------------------------------------\n7.4 — Verificar Disponibilidade\n--------------------------------------------------\n\nUsar OBRIGATORIAMENTE: verificar_disponibilidade\n\nParâmetros:\n- timeMin: ISO 8601 com fuso -03:00 conforme período\n- timeMax: ISO 8601 com fuso -03:00 conforme período\n- bairro: bairro ou região do cliente (obrigatório para calcular deslocamento correto)\n\nPeríodo → timeMin / timeMax:\n- Manhã: T08:00:00-03:00 a T11:00:00-03:00\n- Tarde: T14:00:00-03:00 a T18:00:00-03:00\n- Noite: T18:00:00-03:00 a T20:00:00-03:00\n- Qualquer: T08:00:00-03:00 a T20:00:00-03:00\n\nATENÇÃO: Horários entre 11:00 e 14:00 são bloqueados. Nunca inclua este intervalo.\n\nREGRA DE DESLOCAMENTO (varia por região):\nO campo proximo_disponivel em cada evento indica o horário mínimo para o PRÓXIMO atendimento, considerando o deslocamento entre bairros:\n  • Mesmo grupo (ex: Mooca→Tatuapé, Itaim→Jardins): 45 min\n  • Grupos vizinhos (ex: Mooca→Vila Mariana, Jardins→Ipiranga): 60 min\n  • Grupos distantes (ex: Itaim→Mooca, Jardim Europa→Tatuapé): 90 min\n\nSEMPRE passe o bairro do cliente no parâmetro bairro ao chamar verificar_disponibilidade.\nNUNCA oferecer horário anterior ao proximo_disponivel do evento precedente.\n\nVERIFICAÇÃO DE DIA DA SEMANA (ANTES de verificar disponibilidade):\n- Sábado/Domingo → NUNCA verificar nem oferecer. Informar: \"Não tenho atendimento aos fins de semana 🌿 Qual seria um dia durante a semana para você?\"\n- Quinta-feira → verificar somente com timeMin/timeMax dentro de 10:00–11:30 ou 14:30–15:30\n\nREGRAS DE DATA:\n- DD/MM/YYYY ou DD/MM → usar diretamente\n- Dia da semana → calcular próxima data e CONFIRMAR com cliente antes de chamar a ferramenta\n- Só número do dia → perguntar o mês antes de prosseguir\n\nINTERPRETAÇÃO — responder em 1 bolha:\nSe disponível:\n\"Tenho os seguintes horários disponíveis 🌿\n• [horário 1]\n• [horário 2]\n• [horário 3]\nQual funciona melhor para você? 😊\"\n\nSe indisponível:\n\"Neste período não tenho disponibilidade 🌿 Posso verificar outro horário ou outra data para você?\"\n\nSe erro técnico:\n\"Vou verificar minha agenda e confirmo em breve 🌿\"\n\n--------------------------------------------------\n7.4-B — Verificar Duplicidade\n--------------------------------------------------\n\nAntes de criar o agendamento, verificar se já existe um evento no horário escolhido. Se a lista de eventos retornada pela verificar_disponibilidade já mostrar um compromisso no horário solicitado para o mesmo cliente, NÃO criar outro agendamento. Informar: \"Você já possui um agendamento neste horário. Deseja reagendar para outro horário?\"\n\n--------------------------------------------------\n7.5 — Confirmar Resumo Antes do Agendamento\n--------------------------------------------------\n\nEnviar em 1 bolha:\n\"Resumo do seu atendimento 🌿\n• Procedimento: [serviço EXATO com duração — ex: Massagem Relaxante 1h30 ou Drenagem Linfática Corporal (1h)]\n• Endereço: [endereço completo]\n• Data: [DD/MM/YYYY]\n• Horário: [HH:MM]\n• Valor do serviço: R$ [valor conforme região]\n• Taxa de deslocamento: R$ [valor ou isento]\nPosso prosseguir com a confirmação? 😊\"\n\n⚠️ O campo Procedimento DEVE ser idêntico ao que foi escolhido e confirmado no passo 7.1.\n⚠️ NUNCA trocar o serviço neste resumo — se foi Massagem Relaxante, confirmar Massagem Relaxante (nunca Drenagem).\n\n--------------------------------------------------\n7.6 — Realizar Agendamento\n--------------------------------------------------\n\nApós confirmação do cliente, usar obrigatoriamente: realizar_agendamento\n\nCampos obrigatórios:\n- client_name: nome completo com sobrenome (ex: \"Maria Silva\") — NUNCA apenas o primeiro nome\n- client_phone: telefone com DDD do WhatsApp do cliente (somente números, ex: 5511999990000 — usar o número real, nunca um exemplo)\n- service: nome EXATO do procedimento conforme confirmado no resumo 7.5 (inclua duração — ex: \"Massagem Relaxante 1h30\", \"Drenagem Linfática Corporal + Facial (1h20)\") — NUNCA substitua por outro serviço\n- date: DD/MM/YYYY ou DD/MM\n- time: HH:MM (formato 24h, ex: 14:30)\n- address: endereço completo (rua, número, complemento, bairro, cidade)\n- notes: observações adicionais (opcional)\n\n⚠️ NUNCA criar agendamento sem todos os campos obrigatórios.\n⚠️ NUNCA criar agendamento sem address preenchido.\n⚠️ NUNCA criar agendamento com horário entre 11:00 e 14:00.\n\n--------------------------------------------------\n7.7 — Pagamento do Sinal\n--------------------------------------------------\n\nApós realizar_agendamento, a ferramenta retorna o campo mensagem com o resumo completo e o valor exato do sinal.\nENVIE ESSE CAMPO mensagem EXATAMENTE ao cliente — não reescreva, não omita o valor do sinal.\n\n⚠️ O agendamento fica com status PENDENTE até o cliente confirmar o pagamento.\n⚠️ NUNCA informe que o agendamento está confirmado antes do pagamento do sinal.\n⚠️ O valor do sinal já está calculado na mensagem — não é necessário consultar a seção 8.\n\n==================================================\n8. TABELA DE SINAL (50%)\n==================================================\n\nCalcule 50% do valor do serviço conforme grupo da região:\n\nGRUPO A — Mooca, Tatuapé, Anália Franco:\n- Relaxante 1h avulsa → R$ 110,00 | plano → R$ 522,50\n- Relaxante 1h30 avulsa → R$ 150,00 | plano → R$ 712,50\n- Drenagem corporal 1h avulsa → R$ 125,00 | plano → R$ 595,00\n- Drenagem corporal+facial 1h20 avulsa → R$ 150,00 | plano → R$ 712,50\n- Drenagem gestantes 1h avulsa → R$ 125,00 | plano → R$ 595,00\n- Drenagem gestantes 1h20 avulsa → R$ 150,00 | plano → R$ 712,50\n\nGRUPO B — São Caetano, Ipiranga, Vila Mariana, Aclimação:\n- Relaxante 1h avulsa → R$ 125,00 | plano → R$ 595,00\n- Relaxante 1h30 avulsa → R$ 160,00 | plano → R$ 760,00\n- Drenagem corporal 1h avulsa → R$ 125,00 | plano → R$ 595,00\n- Drenagem corporal+facial 1h20 avulsa → R$ 150,00 | plano → R$ 712,50\n- Drenagem gestantes 1h avulsa → R$ 125,00 | plano → R$ 595,00\n- Drenagem gestantes 1h20 avulsa → R$ 150,00 | plano → R$ 712,50\n\nGRUPO C — Jardins, Itaim, Jardim Europa, Vila Nova Conceição, Higienópolis:\n- Relaxante 1h avulsa → R$ 175,00 | plano → R$ 832,50\n- Relaxante 1h30 avulsa → R$ 215,00 | plano → R$ 1.022,50\n- Drenagem corporal 1h avulsa → R$ 150,00 | plano → R$ 712,50\n- Drenagem corporal+facial 1h20 avulsa → R$ 190,00 | plano → R$ 902,50\n- Drenagem gestantes 1h avulsa → R$ 150,00 | plano → R$ 712,50\n- Drenagem gestantes 1h20 avulsa → R$ 190,00 | plano → R$ 902,50\n\nTODOS OS GRUPOS:\n- Pós-operatório 1h30 avulsa → R$ 200,00 | plano → R$ 950,00\n\n==================================================\n9. CONFIRMAÇÃO FINAL\n==================================================\n\nSOMENTE após cliente confirmar pagamento (ex: \"paguei\", \"fiz o pix\", \"já transferi\", \"enviei\"):\n\nResponder em 2 bolhas:\n\"Pagamento confirmado! ✅ Seu agendamento está oficialmente reservado 🌿\"\n\n\"Para o atendimento, peço apenas que deixe separado:\\• 1 toalha ou lençol para a maca\\• 1 toalha ou lençol para se cobrir, se desejar\\Será um prazer cuidar do seu bem-estar 😊✨\"\n\n⚠️ NÃO enviar antes da confirmação de pagamento — o agendamento é PENDENTE até este momento.\n⚠️ Somente após esta confirmação o agendamento está CONCLUÍDO.\n\n==================================================\n10-A. REAGENDAMENTO\n==================================================\n\nQuando o cliente solicitar alteração de data ou horário de um agendamento existente:\n\nPASSO A PASSO — seguir nesta ordem:\n1. Confirmar com o cliente os dados do agendamento ATUAL:\n   - Nome completo com sobrenome (ex: \"Flavia Santos\" — não só \"Flavia\")\n   - Data exata do agendamento (DD/MM/YYYY)\n   - Horário exato (HH:MM)\n   Repetir esses dados para o cliente confirmar antes de cancelar\n2. Confirmar com o cliente a NOVA data e horário desejados\n3. Verificar disponibilidade na nova data/horário usando verificar_disponibilidade\n4. Apresentar os horários disponíveis e confirmar a escolha do cliente\n5. Usar cancelar_agendamento com os dados do agendamento ATUAL (client_name, cancel_date, cancel_time)\n6. Usar realizar_agendamento com os novos dados\n7. Confirmar ao cliente o novo agendamento e solicitar o sinal se necessário\n\n⚠️ NUNCA criar o novo agendamento sem cancelar o anterior primeiro.\n⚠️ NUNCA criar dois agendamentos para o mesmo cliente no mesmo dia e horário.\n\n==================================================\n10. CANCELAMENTO\n==================================================\n\nPolítica:\n\"Cancelamentos com reembolso devem ser realizados com pelo menos 6 horas de antecedência. Após esse prazo, o valor do sinal não poderá ser devolvido.\"\n\nFluxo de cancelamento:\n- Solicitar ao cliente: nome completo com sobrenome, data e horário do agendamento a cancelar\n- Confirmar com o cliente os dados antes de cancelar\n- Após confirmação, usar a ferramenta cancelar_agendamento com: client_name, cancel_date (DD/MM/YYYY), cancel_time (HH:MM)\n- Após o cancelamento, confirmar ao cliente e orientar sobre reembolso conforme política\n\n==================================================\n11. DÚVIDAS GERAIS\n==================================================\n\n\"Posso ajudar com informações sobre:\n🌿 Massagem Relaxante\n🌿 Drenagem Linfática\n🌿 Pós-operatório\nSobre qual procedimento você gostaria de saber mais? 😊\"\n\n==================================================\n12. SOLICITAÇÕES FORA DO ESCOPO (opção 4️⃣ — Outros)\n==================================================\n\nQuando o cliente escolher Outros (4️⃣), responder:\n\"Claro! Como posso ajudar?\\• Informações sobre serviços e valores\\• Política de cancelamento\\• Falar diretamente com a Damares\\• Outras dúvidas\\O que você precisa? 😊\"\n\nSe o cliente pedir para falar com a Damares dentro de Outros → usar a resposta da seção 4-B.\n\nUSE A RESPOSTA ABAIXO somente quando o cliente pedir um serviço diferente dos oferecidos (ex: depilação, limpeza de pele, procedimento que não seja massagem/drenagem/pós-operatório):\n\"No momento, meus atendimentos são focados exclusivamente em massagens e terapias corporais a domicílio 🌿 Se desejar agendar ou tirar dúvidas sobre os serviços disponíveis, estou à disposição 😊\"\n\nNUNCA usar esta resposta quando o cliente perguntar sobre localidade — usar seção 6.\n\n==================================================\n13. MENSAGEM PÓS-ATENDIMENTO (avaliação Google)\n==================================================\n\n⚠️ Esta mensagem É ENVIADA AUTOMATICAMENTE pelo sistema após a Damares finalizar o atendimento presencial. VOCÊ (agente) NUNCA deve enviar esta mensagem. Não inclua, não sugira, não mencione o link de avaliação em nenhuma circunstância durante a conversa de agendamento.\n\n==================================================\n14. RESTRIÇÕES INQUEBRANTÁVEIS\n==================================================\n\n- Nunca sair do personagem Damares\n- Nunca inventar horários\n- Nunca confirmar disponibilidade sem verificar_disponibilidade\n- Nunca criar agendamento sem realizar_agendamento\n- Nunca alterar valores definidos\n- Nunca inventar taxas\n- Nunca mencionar concorrentes ou sistemas internos\n- Sempre solicitar nome e região/bairro\n- Sempre manter tom acolhedor e profissional\n- Sempre responder em português-BR\n- Nunca enviar o link de avaliação do Google — isso é feito automaticamente pelo sistema após o atendimento presencial\n- Nunca mostrar o menu inicial mais de uma vez por conversa\n- Nunca mencionar o nome do dia da semana para datas futuras — usar apenas DD/MM/YYYY\n- Nunca usar número de telefone fictício como contato do cliente\n- Nunca oferecer ou confirmar horários entre 11:00 e 14:00\n- Nunca agendar em Sábado ou Domingo\n- Nunca oferecer em Quinta-feira horários fora de 10:00–11:30 ou 14:30–15:30\n- Nunca criar agendamentos duplicados para o mesmo cliente no mesmo horário\n- Sempre usar nome completo com sobrenome (nunca só o primeiro nome) em client_name, cancel_date e reagendamentos\n- Nunca separar cada item de lista em bolhas individuais — máximo 2 a 3 bolhas por resposta"
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -620,7 +620,7 @@
     {
       "parameters": {
         "resource": "messages-api",
-        "instanceName": "DAMARES",
+        "instanceName": "DamaresEstetica",
         "remoteJid": "={{ $('Coleta').item.json.telefone }}",
         "messageText": "={{ $json.item }}",
         "options_message": {}
@@ -702,7 +702,8 @@
           "mappingMode": "defineBelow",
           "value": {
             "timeMin": "={{ $fromAI('timeMin', 'Datetime inicio do periodo em ISO 8601 com fuso -03:00. Ex: 2026-05-22T08:00:00-03:00') }}",
-            "timeMax": "={{ $fromAI('timeMax', 'Datetime fim do periodo em ISO 8601 com fuso -03:00. Ex: 2026-05-22T20:00:00-03:00') }}"
+            "timeMax": "={{ $fromAI('timeMax', 'Datetime fim do periodo em ISO 8601 com fuso -03:00. Ex: 2026-05-22T20:00:00-03:00') }}",
+            "bairro": "={{ $fromAI('bairro',  'Bairro ou região do CLIENTE para calcular deslocamento. Ex: Mooca, Itaim, Jardins, Vila Mariana') }}"
           },
           "matchingColumns": [
             "timeMin",
@@ -723,6 +724,16 @@
               "id": "timeMax",
               "displayName": "timeMax",
               "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "bairro",
+              "displayName": "bairro",
+              "required": false,
               "defaultMatch": false,
               "display": true,
               "canBeUsedToMatch": true,
@@ -873,7 +884,7 @@
     {
       "parameters": {
         "resource": "messages-api",
-        "instanceName": "DAMARES",
+        "instanceName": "DamaresEstetica",
         "remoteJid": "5511999950549@s.whatsapp.net",
         "messageText": "={{ $json.alertText }}",
         "options_message": {}
@@ -897,7 +908,7 @@
     {
       "parameters": {
         "resource": "messages-api",
-        "instanceName": "DAMARES",
+        "instanceName": "DamaresEstetica",
         "remoteJid": "={{ $('Coleta').item.json.telefone }}",
         "messageText": "Olá! Recebi sua mensagem 🌿 Por aqui atendo por texto. Para fotos ou áudios, pode me enviar aqui mesmo e responderei em breve! Como posso ajudar você?",
         "options_message": {}
@@ -946,7 +957,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const d = $input.first().json;\nif (!d.date || !d.time) return [{ json: { sucesso: false, mensagem: 'Data e horário são obrigatórios.' } }];\n\nconst duracoes = {\n  'Massagem Relaxante': 60, 'Gestantes': 60,\n  'Drenagem Linfática Corporal': 60, 'Drenagem Corporal': 60,\n  'Drenagem Linfática Facial': 40, 'Drenagem Facial': 40,\n  'Drenagem Linfática Corporal + Facial': 80, 'Drenagem Corporal + Facial': 80, 'Drenagem Corporal+Facial': 80,\n  'Pós-operatório': 90, 'Pos-operatorio': 90, 'Pós Operatório': 90\n};\nconst dur = duracoes[d.service] || 60;\n\nconst startDT = d.date + 'T' + d.time + ':00-03:00';\nconst [hh, mm] = d.time.split(':').map(Number);\nconst endMin = hh * 60 + mm + dur;\nconst endDT  = d.date + 'T' + String(Math.floor(endMin/60)).padStart(2,'0') + ':' + String(endMin%60).padStart(2,'0') + ':00-03:00';\nconst endTime = String(Math.floor(endMin/60)).padStart(2,'0') + ':' + String(endMin%60).padStart(2,'0');\n\nlet dateDisplay = d.date;\ntry { dateDisplay = new Date(d.date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' }); } catch(e){}\n\nconst title = '💆 ' + d.service + ' — ' + d.client_name;\nconst descLines = [\n  'Procedimento: ' + d.service,\n  'Cliente: ' + d.client_name,\n  'Telefone: ' + d.client_phone,\n  d.address ? 'Endereço: ' + d.address : '',\n  d.notes   ? 'Obs: ' + d.notes       : '',\n  '',\n  'Agendado via WhatsApp — Damares Estética Home Care'\n];\nconst description = descLines.filter(Boolean).join('\\n');\n\nreturn [{ json: { ...d, startDT, endDT, endTime, dur, dateDisplay, title, description } }];"
+        "jsCode": "const d = $input.first().json;\nif (!d.date || !d.time) return [{ json: { sucesso: false, mensagem: 'Data e horário são obrigatórios.' } }];\n\nfunction getDuracao(service) {\n  const s = (service || '').toLowerCase();\n  if (s.includes('1h30') || s.includes('1 hora e meia')) return 90;\n  if (s.includes('1h20') || s.includes('1 hora e 20'))   return 80;\n  if (s.includes('pós-operatório') || s.includes('pos-operatorio') || s.includes('operatorio')) return 90;\n  if (s.includes('facial') && !s.includes('corporal')) return 40;\n  return 60;\n}\n\nfunction getGrupo(addr) {\n  if (!addr) return 'B';\n  const a = (addr).toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');\n  if (/mooca|tatuape|analia/.test(a)) return 'A';\n  if (/itaim|jardim europa|jardins|vila nova conceicao|higienopolis/.test(a)) return 'C';\n  return 'B';\n}\n\nfunction getSinal(service, grupo, notes) {\n  const texto = ((service || '') + ' ' + (notes || '')).toLowerCase()\n    .normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');\n  const isPlano = texto.includes('plano') || texto.includes('5 sess');\n  const is1h30  = texto.includes('1h30') || texto.includes('hora e meia');\n  const is1h20  = texto.includes('1h20') || texto.includes('hora e 20') ||\n                  (texto.includes('corporal') && texto.includes('facial'));\n  const isPosOp = texto.includes('operatorio') || texto.includes('operatório');\n  const isDren  = texto.includes('drenagem') || texto.includes('corporal') || texto.includes('linfatica');\n\n  let avulsa = 0, plano = 0;\n\n  if (isPosOp) {\n    avulsa = 200; plano = 950;\n  } else if (isDren) {\n    if (grupo === 'C') { avulsa = is1h20 ? 190 : 150; plano = is1h20 ? 902.5 : 712.5; }\n    else               { avulsa = is1h20 ? 150 : 125; plano = is1h20 ? 712.5 : 595; }\n  } else {\n    // Massagem Relaxante\n    if (grupo === 'A') { avulsa = is1h30 ? 150 : 110; plano = is1h30 ? 712.5 : 522.5; }\n    if (grupo === 'B') { avulsa = is1h30 ? 160 : 125; plano = is1h30 ? 760   : 595; }\n    if (grupo === 'C') { avulsa = is1h30 ? 215 : 175; plano = is1h30 ? 1022.5: 832.5; }\n  }\n\n  const valor = isPlano ? plano : avulsa;\n  const tipo  = isPlano ? 'plano 5 sessões' : 'sessão avulsa';\n  return { valor, tipo, avulsa, plano };\n}\n\nconst dur   = getDuracao(d.service);\nconst grupo = getGrupo(d.address);\nconst sinal = getSinal(d.service, grupo, d.notes);\n\nconst startDT = d.date + 'T' + d.time + ':00-03:00';\nconst [hh, mm] = d.time.split(':').map(Number);\nconst endMin   = hh * 60 + mm + dur;\nconst endDT    = d.date + 'T' + String(Math.floor(endMin/60)).padStart(2,'0') + ':' + String(endMin%60).padStart(2,'0') + ':00-03:00';\nconst endTime  = String(Math.floor(endMin/60)).padStart(2,'0') + ':' + String(endMin%60).padStart(2,'0');\n\nlet dateDisplay = d.date;\ntry { dateDisplay = new Date(d.date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' }); } catch(e){}\n\nfunction fmtBRL(v) { return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }\n\nconst title = '💆 ' + d.service + ' — ' + d.client_name;\nconst descLines = [\n  'Procedimento: ' + d.service,\n  'Cliente: ' + d.client_name,\n  'Telefone: ' + d.client_phone,\n  d.address ? 'Endereço: ' + d.address : '',\n  'Grupo: ' + grupo,\n  '💳 Sinal aguardado: ' + fmtBRL(sinal.valor) + ' (' + sinal.tipo + ')',\n  '⏳ Status: AGUARDANDO PAGAMENTO DO SINAL',\n  d.notes ? 'Obs: ' + d.notes : '',\n  '',\n  'Agendado via WhatsApp — Damares Estética Home Care'\n];\nconst description = descLines.filter(Boolean).join('\\n');\n\nreturn [{ json: { ...d, startDT, endDT, endTime, dur, grupo, dateDisplay, title, description,\n  sinalValor: sinal.valor, sinalTipo: sinal.tipo, sinalFmt: fmtBRL(sinal.valor) } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -972,6 +983,7 @@
         "additionalFields": {
           "summary": "={{ $json.title }}",
           "description": "={{ $json.description }}",
+          "location": "={{ $json.address }}",
           "colorId": "10"
         }
       },
@@ -992,7 +1004,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const ev   = $input.first().json;\nconst prep = $('Prepara Dados do Evento').first().json;\n\nconst mensagem =\n  '✅ Agendamento registrado na agenda!\\n\\n' +\n  '📋 *Resumo:*\\n' +\n  '• Procedimento: ' + prep.service + '\\n' +\n  '• Data: ' + prep.dateDisplay + '\\n' +\n  '• Horário: ' + prep.time + ' às ' + prep.endTime + '\\n' +\n  '• Endereço: ' + prep.address + '\\n' +\n  '• Cliente: ' + prep.client_name + '\\n\\n' +\n  'Para finalizar a reserva, aguardo o depósito de 50% via PIX: *11999950549* (C6 Bank) 🌿';\n\nconst notificacao =\n  '📅 *Novo Agendamento — Damares Estética*\\n\\n' +\n  '• Procedimento: ' + prep.service + '\\n' +\n  '• Data: ' + prep.dateDisplay + '\\n' +\n  '• Horário: ' + prep.time + ' às ' + prep.endTime + '\\n' +\n  '• Cliente: ' + prep.client_name + '\\n' +\n  '• Telefone: ' + prep.client_phone + '\\n' +\n  '• Endereço: ' + prep.address +\n  (prep.notes ? '\\n• Obs: ' + prep.notes : '');\n\nreturn [{ json: { sucesso: true, event_id: ev.id || 'criado', mensagem, notificacao, ...prep } }];"
+        "jsCode": "const ev   = $input.first().json;\nconst prep = $('Prepara Dados do Evento').first().json;\n\nconst sinalFmt = prep.sinalFmt || 'R$ 0,00';\nconst mapsUrl  = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(prep.address || '');\n\nconst mensagem =\n  '⏳ *Agendamento pendente de confirmação*\\n\\n' +\n  '📋 *Resumo:*\\n' +\n  '• Procedimento: ' + prep.service + '\\n' +\n  '• Data: ' + prep.dateDisplay + '\\n' +\n  '• Horário: ' + prep.time + ' às ' + prep.endTime + '\\n' +\n  '• Endereço: ' + prep.address + '\\n\\n' +\n  '💳 *Para confirmar sua reserva, realize o pagamento do sinal:*\\n' +\n  '• PIX (telefone): *11999950549*\\n' +\n  '• Banco: C6 Bank\\n' +\n  '• Valor do sinal (50%): *' + sinalFmt + '*\\n' +\n  'Após o pagamento, me envie a confirmação por aqui 😊🌿';\n\nconst notificacao =\n  '📅 *Novo Agendamento — Damares Estética*\\n\\n' +\n  '• Procedimento: ' + prep.service + '\\n' +\n  '• Data: ' + prep.dateDisplay + '\\n' +\n  '• Horário: ' + prep.time + ' às ' + prep.endTime + '\\n' +\n  '• Cliente: ' + prep.client_name + '\\n' +\n  '• Telefone: ' + prep.client_phone + '\\n' +\n  '• Endereço: ' + prep.address + '\\n' +\n  '• 📍 Maps: ' + mapsUrl + '\\n' +\n  '• 💳 Sinal aguardado: *' + sinalFmt + '*\\n' +\n  '• ⏳ Status: AGUARDANDO PAGAMENTO' +\n  (prep.notes ? '\\n• Obs: ' + prep.notes : '');\n\nreturn [{ json: { sucesso: true, event_id: ev.id || 'criado', mensagem, notificacao, ...prep } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1006,7 +1018,7 @@
     {
       "parameters": {
         "resource": "messages-api",
-        "instanceName": "DAMARES",
+        "instanceName": "DamaresEstetica",
         "remoteJid": "5511999950549@s.whatsapp.net",
         "messageText": "={{ $json.notificacao }}",
         "options_message": {}
@@ -1125,7 +1137,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const lead = $input.first().json;\nconst primeiroNome = (lead.nome || '').split(' ')[0];\nconst saudacao = primeiroNome ? 'Olá, ' + primeiroNome + '! ' : 'Olá! ';\n\nconst mensagem = saudacao + '🌿\\n' +\n  'Eu sou a Damares, terapeuta esteticista especializada em massagens e procedimentos estéticos *a domicílio*.\\n\\n' +\n  'Atendo com cuidado especial no conforto da sua casa! ✨\\n\\n' +\n  'Posso te apresentar nossos serviços e valores? Responda aqui ou me chame a qualquer momento! 😊';\n\nconst telefoneWpp = lead.telefone.replace(/\\D/g,'') + '@s.whatsapp.net';\n\nreturn [{ json: { ...lead, mensagem, telefoneWpp } }];"
+        "jsCode": "const lead = $input.first().json;\n\nconst mensagem =\n  'Olá! 😊\\n' +\n  'Sou Damares, ex-terapeuta do SPA Express e atualmente atuo como terapeuta esteticista especializada em massagens e procedimentos estéticos a domicílio.\\n\\n' +\n  'Levo conforto, cuidado e bem-estar até você, com atendimento personalizado no conforto da sua casa ✨\\n\\n' +\n  'Fique à vontade para conhecer melhor o meu trabalho pelas minhas redes:\\n\\n' +\n  '📲 Instagram: @damaresestetica\\n' +\n  '🌐 Site: damaresestetica.com\\n\\n' +\n  'Posso te apresentar os serviços e valores disponíveis? Será um prazer te atender! 💆🏻‍♀️';\n\nconst telefoneWpp = lead.telefone.replace(/\\D/g,'') + '@s.whatsapp.net';\n\nreturn [{ json: { ...lead, mensagem, telefoneWpp } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1139,7 +1151,7 @@
     {
       "parameters": {
         "resource": "messages-api",
-        "instanceName": "DAMARES",
+        "instanceName": "DamaresEstetica",
         "remoteJid": "={{ $json.telefoneWpp }}",
         "messageText": "={{ $json.mensagem }}",
         "options_message": {}
@@ -1334,7 +1346,7 @@
         -400
       ],
       "parameters": {
-        "jsCode": "// httpRequest sempre retorna 1 item com o body da resposta Google Calendar\nconst response = $input.first().json;\nconst items = response.items || [];\n\nif (items.length === 0) {\n  return [{ json: { eventos: [], total: 0, mensagem: 'Nenhum evento encontrado. Todos os horarios estao disponiveis no periodo solicitado.' } }];\n}\n\nconst eventos = items.map(e => ({\n  titulo: e.summary || 'Compromisso',\n  inicio: e.start?.dateTime || e.start?.date || '',\n  fim: e.end?.dateTime || e.end?.date || ''\n})).filter(e => e.inicio);\n\nreturn [{ json: { eventos, total: eventos.length } }];"
+        "jsCode": "const response = $input.first().json;\nconst items = response.items || [];\n\n// Bairro do PRÓXIMO cliente (passado pelo agente)\nconst bairroDestino = ($('Entrada Tools').first().json.bairro || '').toLowerCase()\n  .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');\n\n// Determina grupo pelo bairro\nfunction getGrupo(texto) {\n  if (!texto) return 'B';\n  const t = texto.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');\n  if (/mooca|tatuape|analia/.test(t))                              return 'A';\n  if (/itaim|jardim europa|jardins|vila nova conceicao|higienopolis/.test(t)) return 'C';\n  return 'B';\n}\n\n// Matriz de tempo de deslocamento em minutos entre grupos\nconst MATRIZ = {\n  'A': { 'A': 45, 'B': 60, 'C': 90 },\n  'B': { 'A': 60, 'B': 45, 'C': 60 },\n  'C': { 'A': 90, 'B': 60, 'C': 45 }\n};\n\nconst grupoDestino = getGrupo(bairroDestino);\n\nfunction toBRT(dateStr) {\n  if (!dateStr) return '';\n  const d = new Date(dateStr);\n  if (isNaN(d)) return dateStr.slice(11, 16);\n  const h = ((d.getUTCHours() - 3 + 24) % 24);\n  const m = d.getUTCMinutes();\n  return ('0' + h).slice(-2) + ':' + ('0' + m).slice(-2);\n}\n\nfunction addMinutes(dateStr, mins) {\n  if (!dateStr) return '';\n  const d = new Date(dateStr);\n  if (isNaN(d)) return '';\n  d.setMinutes(d.getMinutes() + mins);\n  return d.toISOString();\n}\n\nif (items.length === 0) {\n  return [{ json: {\n    eventos: [], total: 0,\n    grupo_destino: grupoDestino,\n    mensagem: 'Nenhum evento encontrado. Todos os horários estão disponíveis.'\n  } }];\n}\n\nconst eventos = items.map(e => {\n  const fim = e.end?.dateTime || e.end?.date || '';\n\n  // Determina grupo de origem: tenta location, depois description\n  const loc  = (e.location || '').toLowerCase();\n  const desc = (e.description || '').toLowerCase();\n  const textoOrigem = loc || (desc.match(/endere[cç]o:\\s*([^\\n]+)/)?.[1] || '') ||\n                     (desc.match(/grupo:\\s*([abc])/i)?.[1] || '');\n  const grupoOrigem = getGrupo(textoOrigem) || (desc.match(/grupo:\\s*([abc])/i)?.[1]?.toUpperCase()) || 'B';\n\n  const bufferMin = MATRIZ[grupoOrigem]?.[grupoDestino] ?? 60;\n  const proximoISO = addMinutes(fim, bufferMin);\n\n  return {\n    titulo:             e.summary || 'Compromisso',\n    inicio_brt:         toBRT(e.start?.dateTime || e.start?.date),\n    fim_brt:            toBRT(fim),\n    grupo_origem:       grupoOrigem,\n    buffer_minutos:     bufferMin,\n    proximo_disponivel: toBRT(proximoISO)\n  };\n}).filter(e => e.inicio_brt);\n\nreturn [{ json: {\n  eventos,\n  total: eventos.length,\n  grupo_destino: grupoDestino,\n  regra: 'Próximo atendimento só pode iniciar no campo proximo_disponivel de cada evento (considera deslocamento por região)'\n} }];"
       }
     },
     {
@@ -1505,7 +1517,7 @@
         -200
       ],
       "parameters": {
-        "jsCode": "const resp = $input.first().json;\nconst ctx  = $('Normaliza Cancelamento').first().json;\n\nconst items    = resp.items || [];\nconst nameKey  = (ctx.client_name || '').toLowerCase().trim();\nconst timeKey  = (ctx.cancel_time || '').trim();\n\nconst match = items.find(ev => {\n  const title = (ev.summary || '').toLowerCase();\n  const start = ev.start?.dateTime || ev.start?.date || '';\n  const startTime = start.slice(11, 16); // HH:MM\n  const nameMatch = nameKey && title.includes(nameKey);\n  const timeMatch = !timeKey || startTime === timeKey;\n  return nameMatch && timeMatch;\n});\n\nif (!match) {\n  return [{ json: {\n    sucesso: false,\n    event_id: null,\n    mensagem: 'Agendamento não encontrado na agenda para os dados informados.'\n  } }];\n}\n\nreturn [{ json: {\n  sucesso: true,\n  event_id: match.id,\n  event_title: match.summary,\n  event_start: match.start?.dateTime || match.start?.date,\n  client_name: ctx.client_name,\n  cancel_date: ctx.cancel_date,\n  cancel_time: ctx.cancel_time\n} }];"
+        "jsCode": "const resp = $input.first().json;\nconst ctx  = $('Normaliza Cancelamento').first().json;\n\nconst items   = resp.items || [];\nconst timeKey = (ctx.cancel_time || '').trim().slice(0, 5); // HH:MM\n\n// Remove acentos para comparação (ex: \"Flávio\" → \"flavio\")\nfunction norm(s) {\n  return (s || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase().trim();\n}\n\nconst nameKey = norm(ctx.client_name);\n// Palavras significativas (>2 chars) sem acento\nconst nameParts = nameKey.split(/\\s+/).filter(p => p.length > 2);\n\n// Convert ISO dateTime to BRT HH:MM (UTC-3)\nfunction toBRT(dateStr) {\n  if (!dateStr) return '';\n  const d = new Date(dateStr);\n  if (isNaN(d)) return dateStr.slice(11, 16);\n  const h = ((d.getUTCHours() - 3 + 24) % 24);\n  const m = d.getUTCMinutes();\n  return ('0' + h).slice(-2) + ':' + ('0' + m).slice(-2);\n}\n\nconst match = items.find(ev => {\n  const title = norm(ev.summary); // também remove acentos do título\n  const start = ev.start?.dateTime || ev.start?.date || '';\n  const startTime = toBRT(start);\n\n  const nameMatch = nameParts.length > 0 && nameParts.some(part => title.includes(part));\n  const timeMatch = !timeKey || startTime === timeKey;\n  return nameMatch && timeMatch;\n});\n\nif (!match) {\n  return [{ json: {\n    sucesso: false,\n    event_id: null,\n    mensagem: 'Agendamento não encontrado na agenda para os dados informados.'\n  } }];\n}\n\nreturn [{ json: {\n  sucesso: true,\n  event_id: match.id,\n  event_title: match.summary,\n  event_start: match.start?.dateTime || match.start?.date,\n  client_name: ctx.client_name,\n  cancel_date: ctx.cancel_date,\n  cancel_time: ctx.cancel_time\n} }];"
       }
     },
     {
@@ -1554,7 +1566,7 @@
       ],
       "parameters": {
         "method": "DELETE",
-        "url": "=https://www.googleapis.com/calendar/v3/calendars/damaresesteticasp%40gmail.com/events/{{ $json.event_id }}",
+        "url": "={{ 'https://www.googleapis.com/calendar/v3/calendars/damaresesteticasp%40gmail.com/events/' + $json.event_id }}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleCalendarOAuth2Api",
         "options": {
@@ -1597,7 +1609,7 @@
       "continueOnFail": true,
       "parameters": {
         "resource": "messages-api",
-        "instanceName": "DAMARES",
+        "instanceName": "DamaresEstetica",
         "remoteJid": "5511999950549@s.whatsapp.net",
         "messageText": "={{ $json.notificacao }}",
         "options_message": {}
@@ -1684,7 +1696,7 @@
         1050
       ],
       "parameters": {
-        "jsCode": "const response = $input.first().json;\nconst dados = $('Prepara Dados do Evento').first().json;\nconst items = response.items || [];\nconst clientName = (dados.client_name || '').toLowerCase().trim();\n\n// Find event with same client name at this exact time slot\nconst duplicate = items.find(ev => {\n  const title = (ev.summary || '').toLowerCase();\n  return clientName && title.includes(clientName);\n});\n\nif (duplicate) {\n  return [{ json: {\n    duplicado: true,\n    mensagem: 'Já existe um agendamento para ' + dados.client_name + ' em ' + dados.dateDisplay + ' às ' + dados.time + '. Agendamento não duplicado. Para reagendar, cancele o anterior primeiro.'\n  } }];\n}\n\n// Not a duplicate — pass dados forward for event creation\nreturn [{ json: { duplicado: false, ...dados } }];"
+        "jsCode": "const response = $input.first().json;\nconst dados = $('Prepara Dados do Evento').first().json;\nconst items = response.items || [];\n\n// Remove acentos para comparação\nfunction norm(s) {\n  return (s || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase().trim();\n}\n\nconst nameKey = norm(dados.client_name);\nconst nameParts = nameKey.split(/\\s+/).filter(p => p.length > 2);\n\nconst duplicate = items.find(ev => {\n  const title = norm(ev.summary);\n  return nameParts.length > 0 && nameParts.some(part => title.includes(part));\n});\n\nif (duplicate) {\n  return [{ json: {\n    duplicado: true,\n    mensagem: 'Já existe um agendamento para ' + dados.client_name + ' em ' + dados.dateDisplay + ' às ' + dados.time + '. Agendamento não duplicado. Para reagendar, cancele o anterior primeiro.'\n  } }];\n}\n\nreturn [{ json: { duplicado: false, ...dados } }];"
       }
     },
     {
@@ -1746,6 +1758,217 @@
         },
         "options": {}
       }
+    },
+    {
+      "id": "eac20b05-c8b6-49ae-9941-b4ac20c615f5",
+      "name": "É Damares?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -440,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "733391de-c10f-4af8-9765-55afb769f2f4",
+              "leftValue": "={{ $('Coleta').first().json.telefone }}",
+              "rightValue": "5511999950549@s.whatsapp.net",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "0c261c26-732d-4502-90ae-b71964c115a6",
+      "name": "Detecta Avaliação",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -200,
+        -300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f0ae1bd7-766d-4283-bb6a-443a950bcb4f",
+              "leftValue": "={{ $('Coleta').first().json.mensagem }}",
+              "rightValue": "AVALIA",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "cc0d02b0-1463-46ff-943d-5e68a19a9ea7",
+      "name": "Processa Comando Avaliação",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        60,
+        -300
+      ],
+      "parameters": {
+        "jsCode": "const msg = ($('Coleta').first().json.mensagem || '').trim();\n\n// Extract phone: \"AVALIAÇÃO 11999887766\" or \"AVALIACAO 5511999887766\"\nconst parts = msg.split(/\\s+/);\nlet phone = (parts[1] || '').replace(/\\D/g, '');\n\n// Normalize to E.164 with country code 55\nif (phone.startsWith('0')) phone = phone.slice(1);\nif (!phone.startsWith('55')) phone = '55' + phone;\n\nif (phone.length < 12 || phone.length > 13) {\n  return [{ json: {\n    valido: false,\n    phone: '',\n    erro: 'Número inválido. Use: AVALIAÇÃO 11XXXXXXXXX'\n  } }];\n}\n\nreturn [{ json: {\n  valido: true,\n  phone: phone + '@s.whatsapp.net',\n  phoneDisplay: phone\n} }];"
+      }
+    },
+    {
+      "id": "f5a9a8ad-f7e6-4bc0-a673-9274ad77d88e",
+      "name": "Número Válido?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        300,
+        -300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "20560189-ed50-4889-9e8d-170c59c59083",
+              "leftValue": "={{ $json.valido }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "f3271029-8141-413a-910a-0abfa4c77bf5",
+      "name": "Envia Avaliação ao Cliente",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        540,
+        -400
+      ],
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "DamaresEstetica",
+        "remoteJid": "={{ $json.phone }}",
+        "messageText": "Foi um prazer cuidar de você hoje 🌿✨\nEspero que sua experiência tenha sido relaxante e especial 😊\nQuando puder, não esqueça de deixar sua avaliação no Google. Sua opinião é muito importante para mim 💚\nLink para avaliação:\nhttps://g.page/r/CfOSAyIQuDfGEBM/review",
+        "options_message": {}
+      },
+      "credentials": {
+        "evolutionApi": {
+          "id": "K3ugZTfPL4VfY0sj",
+          "name": "evolution_cloudfy"
+        }
+      }
+    },
+    {
+      "id": "65329109-2b80-4f30-b85c-7e0785a8e83b",
+      "name": "Confirma Damares",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        780,
+        -400
+      ],
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "DamaresEstetica",
+        "remoteJid": "5511999950549@s.whatsapp.net",
+        "messageText": "={{ \"✅ Mensagem de avaliação enviada para +\" + $node['Processa Comando Avaliação'].json.phoneDisplay + \" com sucesso! 🌿\" }}",
+        "options_message": {}
+      },
+      "credentials": {
+        "evolutionApi": {
+          "id": "K3ugZTfPL4VfY0sj",
+          "name": "evolution_cloudfy"
+        }
+      }
+    },
+    {
+      "id": "a9ddc8fa-222b-4297-b616-46843e988193",
+      "name": "Avisa Erro Número",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        540,
+        -200
+      ],
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "DamaresEstetica",
+        "remoteJid": "5511999950549@s.whatsapp.net",
+        "messageText": "={{ \"❌ \" + $json.erro + \"\\nExemplo: AVALIAÇÃO 11999887766\" }}",
+        "options_message": {}
+      },
+      "credentials": {
+        "evolutionApi": {
+          "id": "K3ugZTfPL4VfY0sj",
+          "name": "evolution_cloudfy"
+        }
+      }
+    },
+    {
+      "id": "9bfa576a-30cb-4944-a2fb-808b5b2bb144",
+      "name": "Retorna Confirmação Agendamento",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5800,
+        1050
+      ],
+      "parameters": {
+        "jsCode": "const conf = $('Formata Confirmação Agendamento').first().json;\nreturn [{ json: {\n  sucesso:    true,\n  mensagem:   conf.mensagem,\n  sinalFmt:   conf.sinalFmt,\n  sinalValor: conf.sinalValor,\n  service:    conf.service,\n  dateDisplay:conf.dateDisplay,\n  time:       conf.time,\n  endTime:    conf.endTime\n} }];"
+      }
+    },
+    {
+      "id": "d8fa38fc-1cb1-4b61-8739-f11892c7ec67",
+      "name": "Retorna Confirmação Cancelamento",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5700,
+        -320
+      ],
+      "parameters": {
+        "jsCode": "const conf = $('Formata Confirmação Cancelamento').first().json;\nreturn [{ json: {\n  sucesso:  true,\n  mensagem: conf.mensagem\n} }];"
+      }
     }
   ],
   "connections": {
@@ -1764,7 +1987,7 @@
       "main": [
         [
           {
-            "node": "Verifica tipo de arquivo",
+            "node": "É Damares?",
             "type": "main",
             "index": 0
           }
@@ -2307,6 +2530,98 @@
         [
           {
             "node": "Cria Evento no Calendário",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É Damares?": {
+      "main": [
+        [
+          {
+            "node": "Detecta Avaliação",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Verifica tipo de arquivo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detecta Avaliação": {
+      "main": [
+        [
+          {
+            "node": "Processa Comando Avaliação",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Processa Comando Avaliação": {
+      "main": [
+        [
+          {
+            "node": "Número Válido?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Número Válido?": {
+      "main": [
+        [
+          {
+            "node": "Envia Avaliação ao Cliente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Avisa Erro Número",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia Avaliação ao Cliente": {
+      "main": [
+        [
+          {
+            "node": "Confirma Damares",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notifica Damares": {
+      "main": [
+        [
+          {
+            "node": "Retorna Confirmação Agendamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notifica Damares Cancelamento": {
+      "main": [
+        [
+          {
+            "node": "Retorna Confirmação Cancelamento",
             "type": "main",
             "index": 0
           }
