@@ -129,6 +129,12 @@
               "name": "mensagem",
               "value": "={{ $json.body.data.message.conversation ? $json.body.data.message.conversation : $json.body.data.messageType === 'imageMessage' ? ('📷 Foto recebida' + ($json.body.data.message.imageMessage?.caption ? ': ' + $json.body.data.message.imageMessage.caption : '')) : $json.body.data.messageType === 'videoMessage' ? ('🎬 Vídeo recebido' + ($json.body.data.message.videoMessage?.caption ? ': ' + $json.body.data.message.videoMessage.caption : '')) : $json.body.data.messageType === 'audioMessage' ? '🎵 Áudio recebido' : $json.body.data.message.extendedTextMessage?.text ? $json.body.data.message.extendedTextMessage.text : '[Mensagem recebida]' }}",
               "type": "string"
+            },
+            {
+              "id": "dm-col-fromme",
+              "name": "fromMe",
+              "value": "={{ $json.body.data.key.fromMe === true }}",
+              "type": "boolean"
             }
           ]
         },
@@ -164,9 +170,18 @@
                       "operation": "equals"
                     },
                     "id": "dm-sw-txt"
+                  },
+                  {
+                    "id": "dm-sw-ext",
+                    "leftValue": "={{ $('Recebe mensagem').item.json.body.data.messageType }}",
+                    "rightValue": "extendedTextMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
                   }
                 ],
-                "combinator": "and"
+                "combinator": "or"
               },
               "renameOutput": true,
               "outputKey": "texto"
@@ -1969,6 +1984,415 @@
       "parameters": {
         "jsCode": "const conf = $('Formata Confirmação Cancelamento').first().json;\nreturn [{ json: {\n  sucesso:  true,\n  mensagem: conf.mensagem\n} }];"
       }
+    },
+    {
+      "id": "dm-ignora-bot",
+      "name": "Ignora Bot",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -440,
+        -180
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dm-ib-fromme",
+              "leftValue": "={{ $json.fromMe }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-crm-setup-trigger",
+      "name": "Criar Tabela dm_crm — EXECUTAR UMA VEZ",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        6500,
+        200
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "dm-crm-setup-sql",
+      "name": "Cria Tabela dm_crm",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        6740,
+        200
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "LQ6Uqet7mGbpcLOH",
+          "name": "postgres_cloudfy"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE IF NOT EXISTS dm_crm (\n  id SERIAL PRIMARY KEY,\n  nome VARCHAR(200),\n  telefone VARCHAR(30) UNIQUE NOT NULL,\n  ultimo_procedimento VARCHAR(100),\n  ultimo_atendimento TIMESTAMP,\n  proximo_followup TIMESTAMP,\n  avaliacao_pendente BOOLEAN DEFAULT FALSE,\n  avaliacao_enviada_em TIMESTAMP,\n  avaliacao_confirmada BOOLEAN DEFAULT FALSE,\n  lembretes_avaliacao INTEGER DEFAULT 0,\n  total_atendimentos INTEGER DEFAULT 0,\n  status VARCHAR(20) DEFAULT 'ativo',\n  criado_em TIMESTAMP DEFAULT NOW(),\n  atualizado_em TIMESTAMP DEFAULT NOW()\n);",
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-crm-upsert",
+      "name": "CRM — Salva Agendamento",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4640,
+        800
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "LQ6Uqet7mGbpcLOH",
+          "name": "postgres_cloudfy"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO dm_crm (nome, telefone, ultimo_procedimento, ultimo_atendimento, avaliacao_pendente, avaliacao_confirmada, lembretes_avaliacao, total_atendimentos, proximo_followup, status, atualizado_em)\nVALUES (\n  '{{ $('Formata Confirmação Agendamento').first().json.client_name.replace(/'/g, \"''\") }}',\n  REPLACE('{{ $('Formata Confirmação Agendamento').first().json.client_phone }}', '@s.whatsapp.net', ''),\n  '{{ $('Formata Confirmação Agendamento').first().json.service }}',\n  '{{ $('Prepara Dados do Evento').first().json.startDT }}'::TIMESTAMP WITH TIME ZONE,\n  true,\n  false,\n  0,\n  1,\n  NOW() + INTERVAL '30 days',\n  'ativo',\n  NOW()\n)\nON CONFLICT (telefone) DO UPDATE SET\n  nome = EXCLUDED.nome,\n  ultimo_procedimento = EXCLUDED.ultimo_procedimento,\n  ultimo_atendimento = EXCLUDED.ultimo_atendimento,\n  avaliacao_pendente = true,\n  avaliacao_confirmada = false,\n  lembretes_avaliacao = 0,\n  total_atendimentos = dm_crm.total_atendimentos + 1,\n  atualizado_em = NOW();",
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-crm-cancela",
+      "name": "CRM — Marca Cancelamento",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5620,
+        -320
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "LQ6Uqet7mGbpcLOH",
+          "name": "postgres_cloudfy"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE dm_crm SET\n  status = 'cancelou',\n  avaliacao_pendente = false,\n  atualizado_em = NOW()\nWHERE telefone = REPLACE('{{ $('Encontra Evento').first().json.client_phone || $('Normaliza Cancelamento').first().json.client_phone }}', '@s.whatsapp.net', '');",
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-detecta-avaliou",
+      "name": "Detecta Confirmação Avaliação",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        -240
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dm-da-1",
+              "leftValue": "={{ $('Coleta').first().json.mensagem }}",
+              "rightValue": "avaliei",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "dm-da-2",
+              "leftValue": "={{ $('Coleta').first().json.mensagem }}",
+              "rightValue": "deixei avalia",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "dm-da-3",
+              "leftValue": "={{ $('Coleta').first().json.mensagem }}",
+              "rightValue": "fiz a avalia",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-marca-avaliado",
+      "name": "Marca Avaliação Confirmada",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1360,
+        -240
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "LQ6Uqet7mGbpcLOH",
+          "name": "postgres_cloudfy"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE dm_crm SET\n  avaliacao_confirmada = true,\n  avaliacao_pendente = false,\n  atualizado_em = NOW()\nWHERE telefone = REPLACE('{{ $('Coleta').first().json.telefone }}', '@s.whatsapp.net', '');",
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-aval-note",
+      "name": "Doc Avaliação Automática",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        6500,
+        540
+      ],
+      "parameters": {
+        "content": "## ⭐ Avaliação Automática\n\n**Scheduler:** a cada 30 minutos\n**Critério:** avaliacao_pendente=true, não confirmada, < 5 lembretes, atendimento há > 30 min, último lembrete há > 24h\n**Confirmação:** cliente digita \"avaliei\" no chat → detectado automaticamente no fluxo principal",
+        "height": 180,
+        "width": 440,
+        "color": 5
+      }
+    },
+    {
+      "id": "dm-aval-scheduler",
+      "name": "Agendador Avaliação",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        6500,
+        800
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "*/30 * * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "dm-aval-busca",
+      "name": "Busca Pendentes de Avaliação",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        6740,
+        800
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "LQ6Uqet7mGbpcLOH",
+          "name": "postgres_cloudfy"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM dm_crm\nWHERE avaliacao_pendente = true\n  AND avaliacao_confirmada = false\n  AND lembretes_avaliacao < 5\n  AND ultimo_atendimento < NOW() - INTERVAL '30 minutes'\n  AND (avaliacao_enviada_em IS NULL OR avaliacao_enviada_em < NOW() - INTERVAL '24 hours');",
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-aval-loop",
+      "name": "Loop Avaliação",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        6980,
+        800
+      ],
+      "parameters": {
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-aval-envia",
+      "name": "Envia Pedido Avaliação",
+      "type": "n8n-nodes-base.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        7220,
+        800
+      ],
+      "credentials": {
+        "evolutionApi": {
+          "id": "K3ugZTfPL4VfY0sj",
+          "name": "evolution_cloudfy"
+        }
+      },
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "DamaresEstetica",
+        "remoteJid": "={{ $json.telefone.includes('@') ? $json.telefone : $json.telefone + '@s.whatsapp.net' }}",
+        "messageText": "=Olá {{ $json.nome }} 🌿\n\nEspero que sua sessão de *{{ $json.ultimo_procedimento }}* tenha sido maravilhosa! ✨\n\nSua avaliação no Google me ajuda muito a continuar levando bem-estar a mais pessoas 💚\n\n👉 https://g.page/r/CfOSAyIQuDfGEBM/review\n\nObrigada de coração! 🌿",
+        "options_message": {}
+      }
+    },
+    {
+      "id": "dm-aval-atualiza",
+      "name": "Atualiza Lembrete Avaliação",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        7460,
+        800
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "LQ6Uqet7mGbpcLOH",
+          "name": "postgres_cloudfy"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE dm_crm SET\n  avaliacao_enviada_em = NOW(),\n  lembretes_avaliacao = lembretes_avaliacao + 1,\n  atualizado_em = NOW()\nWHERE id = {{ $json.id }};",
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-followup-note",
+      "name": "Doc Follow-up CRM",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        6500,
+        1080
+      ],
+      "parameters": {
+        "content": "## 💚 Follow-up CRM — Fidelização\n\n**Scheduler:** toda segunda-feira às 9h\n**Critério:** status=ativo, último atendimento há > 30 dias, proximo_followup vencido\n**Ação:** envia mensagem carinhosa de reativação + agenda próximo follow-up em 30 dias",
+        "height": 160,
+        "width": 440,
+        "color": 5
+      }
+    },
+    {
+      "id": "dm-followup-scheduler",
+      "name": "Agendador Follow-up",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        6500,
+        1340
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "dm-followup-busca",
+      "name": "Busca Clientes para Follow-up",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        6740,
+        1340
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "LQ6Uqet7mGbpcLOH",
+          "name": "postgres_cloudfy"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM dm_crm\nWHERE status = 'ativo'\n  AND ultimo_atendimento < NOW() - INTERVAL '30 days'\n  AND (proximo_followup IS NULL OR proximo_followup < NOW())\nORDER BY ultimo_atendimento ASC\nLIMIT 50;",
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-followup-loop",
+      "name": "Loop Follow-up",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        6980,
+        1340
+      ],
+      "parameters": {
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-followup-envia",
+      "name": "Envia Mensagem Follow-up",
+      "type": "n8n-nodes-base.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        7220,
+        1340
+      ],
+      "credentials": {
+        "evolutionApi": {
+          "id": "K3ugZTfPL4VfY0sj",
+          "name": "evolution_cloudfy"
+        }
+      },
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "DamaresEstetica",
+        "remoteJid": "={{ $json.telefone.includes('@') ? $json.telefone : $json.telefone + '@s.whatsapp.net' }}",
+        "messageText": "=Olá {{ $json.nome }} 🌿\n\nFaz um tempinho que não nos vemos! Tenho saudades de cuidar do seu bem-estar ✨\n\nEstou com agenda aberta e adoraria te receber para uma nova sessão de *{{ $json.ultimo_procedimento || 'massagem' }}*.\n\nQuer agendar? É só me chamar por aqui 😊🌿",
+        "options_message": {}
+      }
+    },
+    {
+      "id": "dm-followup-atualiza",
+      "name": "Atualiza Próximo Follow-up",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        7460,
+        1340
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "LQ6Uqet7mGbpcLOH",
+          "name": "postgres_cloudfy"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE dm_crm SET\n  proximo_followup = NOW() + INTERVAL '30 days',\n  atualizado_em = NOW()\nWHERE id = {{ $json.id }};",
+        "options": {}
+      }
     }
   ],
   "connections": {
@@ -1987,7 +2411,7 @@
       "main": [
         [
           {
-            "node": "É Damares?",
+            "node": "Ignora Bot",
             "type": "main",
             "index": 0
           }
@@ -2093,6 +2517,11 @@
         [
           {
             "node": "AGENTE DE I.A.",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Detecta Confirmação Avaliação",
             "type": "main",
             "index": 0
           }
@@ -2610,7 +3039,7 @@
       "main": [
         [
           {
-            "node": "Retorna Confirmação Agendamento",
+            "node": "CRM — Salva Agendamento",
             "type": "main",
             "index": 0
           }
@@ -2621,7 +3050,176 @@
       "main": [
         [
           {
+            "node": "CRM — Marca Cancelamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ignora Bot": {
+      "main": [
+        [],
+        [
+          {
+            "node": "É Damares?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRM — Salva Agendamento": {
+      "main": [
+        [
+          {
+            "node": "Retorna Confirmação Agendamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRM — Marca Cancelamento": {
+      "main": [
+        [
+          {
             "node": "Retorna Confirmação Cancelamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detecta Confirmação Avaliação": {
+      "main": [
+        [
+          {
+            "node": "Marca Avaliação Confirmada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Criar Tabela dm_crm — EXECUTAR UMA VEZ": {
+      "main": [
+        [
+          {
+            "node": "Cria Tabela dm_crm",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agendador Avaliação": {
+      "main": [
+        [
+          {
+            "node": "Busca Pendentes de Avaliação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca Pendentes de Avaliação": {
+      "main": [
+        [
+          {
+            "node": "Loop Avaliação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Avaliação": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Envia Pedido Avaliação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia Pedido Avaliação": {
+      "main": [
+        [
+          {
+            "node": "Atualiza Lembrete Avaliação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualiza Lembrete Avaliação": {
+      "main": [
+        [
+          {
+            "node": "Loop Avaliação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agendador Follow-up": {
+      "main": [
+        [
+          {
+            "node": "Busca Clientes para Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca Clientes para Follow-up": {
+      "main": [
+        [
+          {
+            "node": "Loop Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Follow-up": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Envia Mensagem Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia Mensagem Follow-up": {
+      "main": [
+        [
+          {
+            "node": "Atualiza Próximo Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualiza Próximo Follow-up": {
+      "main": [
+        [
+          {
+            "node": "Loop Follow-up",
             "type": "main",
             "index": 0
           }
