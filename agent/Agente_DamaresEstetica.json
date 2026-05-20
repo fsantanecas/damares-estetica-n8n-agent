@@ -693,7 +693,7 @@
     {
       "parameters": {
         "sessionIdType": "customKey",
-        "sessionKey": "={{ $('Coleta').item.json.telefone }}",
+        "sessionKey": "={{ $json.telefone }}",
         "tableName": "n8n_chat_histories"
       },
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
@@ -2441,7 +2441,7 @@
         240
       ],
       "parameters": {
-        "jsCode": "const agrupado = $('AGRUPA MENSAGENS').first().json.concatenated_content || '';\nconst crm = $input.first().json;\n\nlet ctx = '';\nif (crm && crm.telefone) {\n  const dt = crm.ultimo_atendimento\n    ? new Date(crm.ultimo_atendimento).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' })\n    : 'nenhum';\n  ctx = '[CONTEXTO_SISTEMA]\\n'\n      + 'Nome: ' + (crm.nome || '') + '\\n'\n      + 'Total de atendimentos: ' + (crm.total_atendimentos || 0) + '\\n'\n      + 'Ultimo procedimento: ' + (crm.ultimo_procedimento || 'nenhum') + '\\n'\n      + 'Ultimo atendimento: ' + dt + '\\n'\n      + 'Avaliacao confirmada: ' + (crm.avaliacao_confirmada ? 'SIM' : 'NAO') + '\\n'\n      + 'Status: ' + (crm.status || 'ativo') + '\\n'\n      + '[/CONTEXTO_SISTEMA]\\n\\n';\n}\n\nreturn [{ json: { enriched_text: ctx + agrupado } }];"
+        "jsCode": "const agrupado = $('AGRUPA MENSAGENS').first().json.concatenated_content || '';\nconst tel = $('Coleta').first().json.telefone || '';\nconst crm = $input.first().json;\n\nlet ctx = '';\nif (crm && crm.telefone) {\n  const dt = crm.ultimo_atendimento\n    ? new Date(crm.ultimo_atendimento).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' })\n    : 'nenhum';\n  ctx = '[CONTEXTO_SISTEMA]\n'\n      + 'Nome: ' + (crm.nome || '') + '\n'\n      + 'Total de atendimentos: ' + (crm.total_atendimentos || 0) + '\n'\n      + 'Ultimo procedimento: ' + (crm.ultimo_procedimento || 'nenhum') + '\n'\n      + 'Ultimo atendimento: ' + dt + '\n'\n      + 'Avaliacao confirmada: ' + (crm.avaliacao_confirmada ? 'SIM' : 'NAO') + '\n'\n      + 'Status: ' + (crm.status || 'ativo') + '\n'\n      + '[/CONTEXTO_SISTEMA]\n\n';\n}\n\nreturn [{ json: { enriched_text: ctx + agrupado, telefone: tel } }];"
       }
     }
   ],
