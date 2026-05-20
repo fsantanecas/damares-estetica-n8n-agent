@@ -2077,7 +2077,8 @@
         "operation": "executeQuery",
         "query": "=INSERT INTO dm_crm (nome, telefone, ultimo_procedimento, ultimo_atendimento, avaliacao_pendente, avaliacao_confirmada, lembretes_avaliacao, total_atendimentos, proximo_followup, status, atualizado_em)\nVALUES (\n  '{{ $('Formata Confirmação Agendamento').first().json.client_name.replace(/'/g, \"''\") }}',\n  REPLACE('{{ $('Formata Confirmação Agendamento').first().json.client_phone }}', '@s.whatsapp.net', ''),\n  '{{ $('Formata Confirmação Agendamento').first().json.service }}',\n  '{{ $('Prepara Dados do Evento').first().json.startDT }}'::TIMESTAMP WITH TIME ZONE,\n  true,\n  false,\n  0,\n  1,\n  NOW() + INTERVAL '30 days',\n  'ativo',\n  NOW()\n)\nON CONFLICT (telefone) DO UPDATE SET\n  nome = EXCLUDED.nome,\n  ultimo_procedimento = EXCLUDED.ultimo_procedimento,\n  ultimo_atendimento = EXCLUDED.ultimo_atendimento,\n  avaliacao_pendente = true,\n  avaliacao_confirmada = false,\n  lembretes_avaliacao = 0,\n  total_atendimentos = dm_crm.total_atendimentos + 1,\n  atualizado_em = NOW();",
         "options": {}
-      }
+      },
+      "continueOnFail": true
     },
     {
       "id": "dm-crm-cancela",
@@ -2098,7 +2099,8 @@
         "operation": "executeQuery",
         "query": "=UPDATE dm_crm SET\n  status = 'cancelou',\n  avaliacao_pendente = false,\n  atualizado_em = NOW()\nWHERE telefone = REPLACE('{{ $('Encontra Evento').first().json.client_phone || $('Normaliza Cancelamento').first().json.client_phone }}', '@s.whatsapp.net', '');",
         "options": {}
-      }
+      },
+      "continueOnFail": true
     },
     {
       "id": "dm-detecta-avaliou",
@@ -2171,7 +2173,8 @@
         "operation": "executeQuery",
         "query": "=UPDATE dm_crm SET\n  avaliacao_confirmada = true,\n  avaliacao_pendente = false,\n  atualizado_em = NOW()\nWHERE telefone = REPLACE('{{ $('Coleta').first().json.telefone }}', '@s.whatsapp.net', '');",
         "options": {}
-      }
+      },
+      "continueOnFail": true
     },
     {
       "id": "dm-aval-note",
@@ -2228,7 +2231,8 @@
         "operation": "executeQuery",
         "query": "SELECT * FROM dm_crm\nWHERE avaliacao_pendente = true\n  AND avaliacao_confirmada = false\n  AND lembretes_avaliacao < 5\n  AND ultimo_atendimento < NOW() - INTERVAL '30 minutes'\n  AND (avaliacao_enviada_em IS NULL OR avaliacao_enviada_em < NOW() - INTERVAL '24 hours');",
         "options": {}
-      }
+      },
+      "continueOnFail": true
     },
     {
       "id": "dm-aval-loop",
@@ -2285,7 +2289,8 @@
         "operation": "executeQuery",
         "query": "=UPDATE dm_crm SET\n  avaliacao_enviada_em = NOW(),\n  lembretes_avaliacao = lembretes_avaliacao + 1,\n  atualizado_em = NOW()\nWHERE id = {{ $json.id }};",
         "options": {}
-      }
+      },
+      "continueOnFail": true
     },
     {
       "id": "dm-followup-note",
@@ -2342,7 +2347,8 @@
         "operation": "executeQuery",
         "query": "SELECT * FROM dm_crm\nWHERE status = 'ativo'\n  AND ultimo_atendimento < NOW() - INTERVAL '30 days'\n  AND (proximo_followup IS NULL OR proximo_followup < NOW())\nORDER BY ultimo_atendimento ASC\nLIMIT 50;",
         "options": {}
-      }
+      },
+      "continueOnFail": true
     },
     {
       "id": "dm-followup-loop",
@@ -2399,7 +2405,8 @@
         "operation": "executeQuery",
         "query": "=UPDATE dm_crm SET\n  proximo_followup = NOW() + INTERVAL '30 days',\n  atualizado_em = NOW()\nWHERE id = {{ $json.id }};",
         "options": {}
-      }
+      },
+      "continueOnFail": true
     },
     {
       "id": "dm-ctx-busca",
@@ -2419,9 +2426,10 @@
       },
       "parameters": {
         "operation": "executeQuery",
-        "query": "=SELECT * FROM dm_crm WHERE telefone = REPLACE('{{ $('Coleta').first().json.telefone }}', '@s.whatsapp.net', '') LIMIT 1",
+        "query": "=CREATE TABLE IF NOT EXISTS dm_crm (\n  id SERIAL PRIMARY KEY,\n  nome VARCHAR(200),\n  telefone VARCHAR(30) UNIQUE NOT NULL,\n  ultimo_procedimento VARCHAR(100),\n  ultimo_atendimento TIMESTAMP,\n  proximo_followup TIMESTAMP,\n  avaliacao_pendente BOOLEAN DEFAULT FALSE,\n  avaliacao_enviada_em TIMESTAMP,\n  avaliacao_confirmada BOOLEAN DEFAULT FALSE,\n  lembretes_avaliacao INTEGER DEFAULT 0,\n  total_atendimentos INTEGER DEFAULT 0,\n  status VARCHAR(20) DEFAULT 'ativo',\n  criado_em TIMESTAMP DEFAULT NOW(),\n  atualizado_em TIMESTAMP DEFAULT NOW()\n);\nSELECT * FROM dm_crm WHERE telefone = REPLACE('{{ $('Coleta').first().json.telefone }}', '@s.whatsapp.net', '') LIMIT 1",
         "options": {}
-      }
+      },
+      "continueOnFail": true
     },
     {
       "id": "dm-ctx-prepara",
