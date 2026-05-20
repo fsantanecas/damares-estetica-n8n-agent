@@ -2246,7 +2246,7 @@
     {
       "id": "dm-aval-envia",
       "name": "Envia Pedido Avaliação",
-      "type": "n8n-nodes-base.evolutionApi",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
         7220,
@@ -2360,7 +2360,7 @@
     {
       "id": "dm-followup-envia",
       "name": "Envia Mensagem Follow-up",
-      "type": "n8n-nodes-base.evolutionApi",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
         7220,
