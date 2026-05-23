@@ -625,7 +625,7 @@
       "parameters": {
         "resource": "messages-api",
         "instanceName": "DamaresEstetica",
-        "remoteJid": "={{ $('Coleta').item.json.telefone }}",
+        "remoteJid": "={{ $('Coleta').first().json.telefone }}",
         "messageText": "={{ $json.item }}",
         "options_message": {}
       },
@@ -3048,7 +3048,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "Envia mensagem para o WhatsApp",
             "type": "main",
             "index": 0
           }
@@ -3080,13 +3080,7 @@
     },
     "DELAY 1 SEGUNDO": {
       "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Monta Alerta Técnico": {
