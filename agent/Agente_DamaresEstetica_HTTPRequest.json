@@ -3057,14 +3057,14 @@
     },
     "Loop Over Items": {
       "main": [
-        [],
         [
           {
             "node": "Envia mensagem para o WhatsApp",
             "type": "main",
             "index": 0
           }
-        ]
+        ],
+        []
       ]
     },
     "Envia mensagem para o WhatsApp": {
