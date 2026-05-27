@@ -623,27 +623,17 @@
     },
     {
       "parameters": {
-        "resource": "messages-api",
-        "instanceName": "DamaresEstetica",
-        "remoteJid": "={{ $('Coleta').first().json.telefone }}",
-        "messageText": "={{ $json.item }}",
-        "options_message": {}
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Envia mensagens ao cliente via YCloud, uma por bolha com 1s de delay\nconst API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\n\nconst telefone = $('Coleta').first().json.telefone;\nconst toPhone = '+' + telefone.split('@')[0];\n\nconst items = $input.all();\nconst results = [];\n\nfor (let i = 0; i < items.length; i++) {\n  const message = items[i].json.item;\n  const resp = await fetch(URL, {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n    body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n  });\n  const result = await resp.json();\n  results.push({ json: result });\n  if (i < items.length - 1) await new Promise(r => setTimeout(r, 1000));\n}\nreturn results;"
       },
-      "type": "n8n-nodes-evolution-api.evolutionApi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
         2080,
         0
       ],
       "id": "dm-envia-wpp",
-      "name": "Envia mensagem para o WhatsApp",
-      "continueOnFail": true,
-      "credentials": {
-        "evolutionApi": {
-          "id": "K3ugZTfPL4VfY0sj",
-          "name": "evolution_cloudfy"
-        }
-      }
+      "name": "Envia mensagem para o WhatsApp"
     },
     {
       "parameters": {
@@ -674,51 +664,67 @@
     },
     {
       "parameters": {
-        "resource": "messages-api",
-        "instanceName": "DamaresEstetica",
-        "remoteJid": "5511999950549@s.whatsapp.net",
-        "messageText": "={{ $json.alertText }}",
-        "options_message": {}
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ from: '+5511994265257', to: '+5511999950549', type: 'text', text: { body: $json.alertText } }) }}",
+        "options": {}
       },
-      "type": "n8n-nodes-evolution-api.evolutionApi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         160,
         500
       ],
       "id": "dm-envia-alerta",
-      "name": "Envia Alerta Técnico",
-      "continueOnFail": true,
-      "credentials": {
-        "evolutionApi": {
-          "id": "K3ugZTfPL4VfY0sj",
-          "name": "evolution_cloudfy"
-        }
-      }
+      "name": "Envia Alerta Técnico"
     },
     {
       "parameters": {
-        "resource": "messages-api",
-        "instanceName": "DamaresEstetica",
-        "remoteJid": "={{ $('Coleta').item.json.telefone }}",
-        "messageText": "Recebi sua mensagem de voz! 🎵\nPor aqui funciono melhor com texto 😊\nPode me escrever o que precisa? Será um prazer ajudar! 🌿",
-        "options_message": {}
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ from: '+5511994265257', to: (($('Coleta').first().json.telefone).includes('@') ? '+' + ($('Coleta').first().json.telefone).split('@')[0] : (($('Coleta').first().json.telefone).startsWith('+') ? ($('Coleta').first().json.telefone) : '+' + ($('Coleta').first().json.telefone).replace('+',''))), type: 'text', text: { body: 'Recebi sua mensagem de voz! 🎵\nPor aqui funciono melhor com texto 😊\nPode me escrever o que precisa? Será um prazer ajudar! 🌿' } }) }}",
+        "options": {}
       },
-      "type": "n8n-nodes-evolution-api.evolutionApi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         400,
         500
       ],
       "id": "dm-resp-midia",
-      "name": "Resposta para Mídia",
-      "continueOnFail": true,
-      "credentials": {
-        "evolutionApi": {
-          "id": "K3ugZTfPL4VfY0sj",
-          "name": "evolution_cloudfy"
-        }
-      }
+      "name": "Resposta para Mídia"
     },
     {
       "parameters": {
@@ -808,27 +814,35 @@
     },
     {
       "parameters": {
-        "resource": "messages-api",
-        "instanceName": "DamaresEstetica",
-        "remoteJid": "5511999950549@s.whatsapp.net",
-        "messageText": "={{ $json.notificacao }}",
-        "options_message": {}
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ from: '+5511994265257', to: '+5511999950549', type: 'text', text: { body: $json.notificacao } }) }}",
+        "options": {}
       },
-      "type": "n8n-nodes-evolution-api.evolutionApi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         4400,
         800
       ],
       "id": "dm-agend-notifica",
-      "name": "Notifica Damares",
-      "continueOnFail": true,
-      "credentials": {
-        "evolutionApi": {
-          "id": "K3ugZTfPL4VfY0sj",
-          "name": "evolution_cloudfy"
-        }
-      }
+      "name": "Notifica Damares"
     },
     {
       "parameters": {
@@ -940,27 +954,35 @@
     },
     {
       "parameters": {
-        "resource": "messages-api",
-        "instanceName": "DamaresEstetica",
-        "remoteJid": "={{ $json.telefoneWpp }}",
-        "messageText": "={{ $json.mensagem }}",
-        "options_message": {}
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ from: '+5511994265257', to: (($json.telefoneWpp).includes('@') ? '+' + ($json.telefoneWpp).split('@')[0] : (($json.telefoneWpp).startsWith('+') ? ($json.telefoneWpp) : '+' + ($json.telefoneWpp).replace('+',''))), type: 'text', text: { body: $json.mensagem } }) }}",
+        "options": {}
       },
-      "type": "n8n-nodes-evolution-api.evolutionApi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         4400,
         1600
       ],
       "id": "dm-leads-envia",
-      "name": "Envia Mensagem Lead",
-      "continueOnFail": true,
-      "credentials": {
-        "evolutionApi": {
-          "id": "K3ugZTfPL4VfY0sj",
-          "name": "evolution_cloudfy"
-        }
-      }
+      "name": "Envia Mensagem Lead"
     },
     {
       "parameters": {
@@ -1325,25 +1347,33 @@
     {
       "id": "93bd5bf7-c363-4c5a-a635-df634b269cc2",
       "name": "Notifica Damares Cancelamento",
-      "type": "n8n-nodes-evolution-api.evolutionApi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         5360,
         -320
       ],
-      "continueOnFail": true,
       "parameters": {
-        "resource": "messages-api",
-        "instanceName": "DamaresEstetica",
-        "remoteJid": "5511999950549@s.whatsapp.net",
-        "messageText": "={{ $json.notificacao }}",
-        "options_message": {}
-      },
-      "credentials": {
-        "evolutionApi": {
-          "id": "K3ugZTfPL4VfY0sj",
-          "name": "evolution_cloudfy"
-        }
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ from: '+5511994265257', to: '+5511999950549', type: 'text', text: { body: $json.notificacao } }) }}",
+        "options": {}
       }
     },
     {
@@ -1603,70 +1633,97 @@
     {
       "id": "f3271029-8141-413a-910a-0abfa4c77bf5",
       "name": "Envia Avaliação ao Cliente",
-      "type": "n8n-nodes-evolution-api.evolutionApi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         540,
         -400
       ],
       "parameters": {
-        "resource": "messages-api",
-        "instanceName": "DamaresEstetica",
-        "remoteJid": "={{ $json.phone }}",
-        "messageText": "Foi um prazer cuidar de você hoje 🌿✨\nEspero que sua experiência tenha sido relaxante e especial 😊\nQuando puder, não esqueça de deixar sua avaliação no Google. Sua opinião é muito importante para mim 💚\nLink para avaliação:\nhttps://g.page/r/CfOSAyIQuDfGEBM/review",
-        "options_message": {}
-      },
-      "credentials": {
-        "evolutionApi": {
-          "id": "K3ugZTfPL4VfY0sj",
-          "name": "evolution_cloudfy"
-        }
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ from: '+5511994265257', to: (($json.phone).includes('@') ? '+' + ($json.phone).split('@')[0] : (($json.phone).startsWith('+') ? ($json.phone) : '+' + ($json.phone).replace('+',''))), type: 'text', text: { body: 'Foi um prazer cuidar de você hoje 🌿✨\nEspero que sua experiência tenha sido relaxante e especial 😊\nQuando puder, não esqueça de deixar sua avaliação no Google. Sua opinião é muito importante para mim 💚\nLink para avaliação:\nhttps://g.page/r/CfOSAyIQuDfGEBM/review' } }) }}",
+        "options": {}
       }
     },
     {
       "id": "65329109-2b80-4f30-b85c-7e0785a8e83b",
       "name": "Confirma Damares",
-      "type": "n8n-nodes-evolution-api.evolutionApi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         780,
         -400
       ],
       "parameters": {
-        "resource": "messages-api",
-        "instanceName": "DamaresEstetica",
-        "remoteJid": "5511999950549@s.whatsapp.net",
-        "messageText": "={{ \"✅ Mensagem de avaliação enviada para +\" + $node['Processa Comando Avaliação'].json.phoneDisplay + \" com sucesso! 🌿\" }}",
-        "options_message": {}
-      },
-      "credentials": {
-        "evolutionApi": {
-          "id": "K3ugZTfPL4VfY0sj",
-          "name": "evolution_cloudfy"
-        }
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ from: '+5511994265257', to: '+5511999950549', type: 'text', text: { body: '✅ Mensagem de avaliação enviada para +' + $node['Processa Comando Avaliação'].json.phoneDisplay + ' com sucesso! 🌿' } }) }}",
+        "options": {}
       }
     },
     {
       "id": "a9ddc8fa-222b-4297-b616-46843e988193",
       "name": "Avisa Erro Número",
-      "type": "n8n-nodes-evolution-api.evolutionApi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         540,
         -200
       ],
       "parameters": {
-        "resource": "messages-api",
-        "instanceName": "DamaresEstetica",
-        "remoteJid": "5511999950549@s.whatsapp.net",
-        "messageText": "={{ \"❌ \" + $json.erro + \"\\nExemplo: AVALIAÇÃO 11999887766\" }}",
-        "options_message": {}
-      },
-      "credentials": {
-        "evolutionApi": {
-          "id": "K3ugZTfPL4VfY0sj",
-          "name": "evolution_cloudfy"
-        }
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ from: '+5511994265257', to: '+5511999950549', type: 'text', text: { body: '❌ ' + $json.erro + '\nExemplo: AVALIAÇÃO 11999887766' } }) }}",
+        "options": {}
       }
     },
     {
@@ -1953,24 +2010,33 @@
     {
       "id": "dm-aval-envia",
       "name": "Envia Pedido Avaliação",
-      "type": "n8n-nodes-evolution-api.evolutionApi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         7220,
         800
       ],
-      "credentials": {
-        "evolutionApi": {
-          "id": "K3ugZTfPL4VfY0sj",
-          "name": "evolution_cloudfy"
-        }
-      },
       "parameters": {
-        "resource": "messages-api",
-        "instanceName": "DamaresEstetica",
-        "remoteJid": "={{ $json.telefone.includes('@') ? $json.telefone : $json.telefone + '@s.whatsapp.net' }}",
-        "messageText": "=Olá {{ $json.nome }} 🌿\n\nEspero que sua sessão de *{{ $json.ultimo_procedimento }}* tenha sido maravilhosa! ✨\n\nSua avaliação no Google me ajuda muito a continuar levando bem-estar a mais pessoas 💚\n\n👉 https://g.page/r/CfOSAyIQuDfGEBM/review\n\nObrigada de coração! 🌿",
-        "options_message": {}
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ from: '+5511994265257', to: (($json.telefone).includes('@') ? '+' + ($json.telefone).split('@')[0] : (($json.telefone).startsWith('+') ? ($json.telefone) : '+' + ($json.telefone).replace('+',''))), type: 'text', text: { body: `Olá ${$json.nome} 🌿\n\nEspero que sua sessão de *${$json.ultimo_procedimento}* tenha sido maravilhosa! ✨\n\nSua avaliação no Google me ajuda muito a continuar levando bem-estar a mais pessoas 💚\n\n👉 https://g.page/r/CfOSAyIQuDfGEBM/review\n\nObrigada de coração! 🌿` } }) }}",
+        "options": {}
       }
     },
     {
@@ -2069,24 +2135,33 @@
     {
       "id": "dm-followup-envia",
       "name": "Envia Mensagem Follow-up",
-      "type": "n8n-nodes-evolution-api.evolutionApi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         7220,
         1340
       ],
-      "credentials": {
-        "evolutionApi": {
-          "id": "K3ugZTfPL4VfY0sj",
-          "name": "evolution_cloudfy"
-        }
-      },
       "parameters": {
-        "resource": "messages-api",
-        "instanceName": "DamaresEstetica",
-        "remoteJid": "={{ $json.telefone.includes('@') ? $json.telefone : $json.telefone + '@s.whatsapp.net' }}",
-        "messageText": "=Olá {{ $json.nome }} 🌿\n\nFaz um tempinho que não nos vemos! Tenho saudades de cuidar do seu bem-estar ✨\n\nEstou com agenda aberta e adoraria te receber para uma nova sessão de *{{ $json.ultimo_procedimento || 'massagem' }}*.\n\nQuer agendar? É só me chamar por aqui 😊🌿",
-        "options_message": {}
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ from: '+5511994265257', to: (($json.telefone).includes('@') ? '+' + ($json.telefone).split('@')[0] : (($json.telefone).startsWith('+') ? ($json.telefone) : '+' + ($json.telefone).replace('+',''))), type: 'text', text: { body: `Olá ${$json.nome} 🌿\n\nFaz um tempinho que não nos vemos! Tenho saudades de cuidar do seu bem-estar ✨\n\nEstou com agenda aberta e adoraria te receber para uma nova sessão de *${$json.ultimo_procedimento || 'massagem'}*.\n\nQuer agendar? É só me chamar por aqui 😊🌿` } }) }}",
+        "options": {}
       }
     },
     {
