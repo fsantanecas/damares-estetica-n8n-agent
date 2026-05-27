@@ -109,31 +109,31 @@
             {
               "id": "dm-col-nome",
               "name": "nome",
-              "value": "={{ $json.body.data.pushName }}",
+              "value": "={{ $json.body.whatsappMessage.contact && $json.body.whatsappMessage.contact.name ? $json.body.whatsappMessage.contact.name : ($json.body.whatsappMessage.fromName || 'Cliente') }}",
               "type": "string"
             },
             {
               "id": "dm-col-tel",
               "name": "telefone",
-              "value": "={{ $json.body.data.key.remoteJid }}",
+              "value": "={{ ($json.body.whatsappMessage.from || '').replace('+', '') + '@s.whatsapp.net' }}",
               "type": "string"
             },
             {
               "id": "dm-col-tipo",
               "name": "tipo",
-              "value": "={{ $json.body.data.messageType }}",
+              "value": "={{ $json.body.whatsappMessage.type === 'text' ? 'conversation' : $json.body.whatsappMessage.type === 'audio' ? 'audioMessage' : $json.body.whatsappMessage.type === 'image' ? 'imageMessage' : $json.body.whatsappMessage.type === 'video' ? 'videoMessage' : ($json.body.whatsappMessage.type || 'unknown') }}",
               "type": "string"
             },
             {
               "id": "dm-col-msg",
               "name": "mensagem",
-              "value": "={{ $json.body.data.message.conversation ? $json.body.data.message.conversation : $json.body.data.messageType === 'imageMessage' ? ('📷 Foto recebida' + ($json.body.data.message.imageMessage?.caption ? ': ' + $json.body.data.message.imageMessage.caption : '')) : $json.body.data.messageType === 'videoMessage' ? ('🎬 Vídeo recebido' + ($json.body.data.message.videoMessage?.caption ? ': ' + $json.body.data.message.videoMessage.caption : '')) : $json.body.data.messageType === 'audioMessage' ? '🎵 Áudio recebido' : $json.body.data.message.extendedTextMessage?.text ? $json.body.data.message.extendedTextMessage.text : '[Mensagem recebida]' }}",
+              "value": "={{ $json.body.whatsappMessage.type === 'text' ? $json.body.whatsappMessage.text.body : $json.body.whatsappMessage.type === 'image' ? ('📷 Foto recebida' + ($json.body.whatsappMessage.image && $json.body.whatsappMessage.image.caption ? ': ' + $json.body.whatsappMessage.image.caption : '')) : $json.body.whatsappMessage.type === 'video' ? ('🎬 Vídeo recebido' + ($json.body.whatsappMessage.video && $json.body.whatsappMessage.video.caption ? ': ' + $json.body.whatsappMessage.video.caption : '')) : $json.body.whatsappMessage.type === 'audio' ? '🎵 Áudio recebido' : '[Mensagem recebida]' }}",
               "type": "string"
             },
             {
               "id": "dm-col-fromme",
               "name": "fromMe",
-              "value": "={{ $json.body.data.key.fromMe === true }}",
+              "value": false,
               "type": "boolean"
             }
           ]
@@ -143,7 +143,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -560,
+        -320,
         0
       ],
       "id": "dm-coleta",
@@ -163,7 +163,7 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $('Recebe mensagem').item.json.body.data.messageType }}",
+                    "leftValue": "={{ $('Coleta').first().json.tipo }}",
                     "rightValue": "conversation",
                     "operator": {
                       "type": "string",
@@ -173,7 +173,7 @@
                   },
                   {
                     "id": "dm-sw-ext",
-                    "leftValue": "={{ $('Recebe mensagem').item.json.body.data.messageType }}",
+                    "leftValue": "={{ $('Coleta').first().json.tipo }}",
                     "rightValue": "extendedTextMessage",
                     "operator": {
                       "type": "string",
@@ -197,7 +197,7 @@
                 "conditions": [
                   {
                     "id": "dm-sw-aud",
-                    "leftValue": "={{ $('Recebe mensagem').item.json.body.data.messageType }}",
+                    "leftValue": "={{ $('Coleta').first().json.tipo }}",
                     "rightValue": "audioMessage",
                     "operator": {
                       "type": "string",
@@ -206,7 +206,7 @@
                   },
                   {
                     "id": "dm-sw-ptt",
-                    "leftValue": "={{ $('Recebe mensagem').item.json.body.data.messageType }}",
+                    "leftValue": "={{ $('Coleta').first().json.tipo }}",
                     "rightValue": "pttMessage",
                     "operator": {
                       "type": "string",
@@ -230,7 +230,7 @@
                 "conditions": [
                   {
                     "id": "dm-sw-img",
-                    "leftValue": "={{ $('Recebe mensagem').item.json.body.data.messageType }}",
+                    "leftValue": "={{ $('Coleta').first().json.tipo }}",
                     "rightValue": "imageMessage",
                     "operator": {
                       "type": "string",
@@ -254,7 +254,7 @@
                 "conditions": [
                   {
                     "id": "dm-sw-vid",
-                    "leftValue": "={{ $('Recebe mensagem').item.json.body.data.messageType }}",
+                    "leftValue": "={{ $('Coleta').first().json.tipo }}",
                     "rightValue": "videoMessage",
                     "operator": {
                       "type": "string",
@@ -3091,6 +3091,40 @@
         "rawContentType": "application/json",
         "body": "={{ $json.body }}"
       }
+    },
+    {
+      "id": "211d4e1d-835e-45ae-ad4c-9b770ea3b373",
+      "name": "Filtra Evento YCloud",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -560,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f373e33f-409d-4318-8887-f54086e357fc",
+              "leftValue": "={{ $json.body.type }}",
+              "rightValue": "whatsapp.inbound_message",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
     }
   ],
   "connections": {
@@ -3098,7 +3132,7 @@
       "main": [
         [
           {
-            "node": "Coleta",
+            "node": "Filtra Evento YCloud",
             "type": "main",
             "index": 0
           }
@@ -4358,6 +4392,18 @@
             "index": 0
           }
         ]
+      ]
+    },
+    "Filtra Evento YCloud": {
+      "main": [
+        [
+          {
+            "node": "Coleta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
       ]
     }
   },
