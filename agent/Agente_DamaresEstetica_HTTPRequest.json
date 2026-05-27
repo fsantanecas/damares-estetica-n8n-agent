@@ -624,7 +624,7 @@
     {
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "// Envia mensagens ao cliente via YCloud, uma por bolha com 1s de delay\nconst API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\n\nconst telefone = $('Coleta').first().json.telefone;\nconst toPhone = '+' + telefone.split('@')[0];\n\nconst items = $input.all();\nconst results = [];\n\nfor (let i = 0; i < items.length; i++) {\n  const message = items[i].json.item;\n  const resp = await fetch(URL, {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n    body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n  });\n  const result = await resp.json();\n  results.push({ json: result });\n  if (i < items.length - 1) await new Promise(r => setTimeout(r, 1000));\n}\nreturn results;"
+        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\n\nconst telefone = $('Coleta').first().json.telefone;\nconst toPhone = '+' + telefone.split('@')[0];\n\nconst items = $input.all();\nconst results = [];\n\nfor (let i = 0; i < items.length; i++) {\n  const message = items[i].json.item;\n  const result = await $http.request({\n    method: 'POST',\n    url: URL,\n    headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n    body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n  });\n  results.push({ json: result });\n  if (i < items.length - 1) await new Promise(r => setTimeout(r, 1000));\n}\nreturn results;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -664,7 +664,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst message = $input.first().json.alertText;\nconst resp = await fetch(URL, {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nconst result = await resp.json();\nreturn [{ json: result }];"
+        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst message = $input.first().json.alertText;\nconst result = await $http.request({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -677,7 +677,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst telefone = $('Coleta').first().json.telefone;\nconst toPhone = '+' + telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Recebi sua mensagem de voz! 🎵\nPor aqui funciono melhor com texto 😊\nPode me escrever o que precisa? Será um prazer ajudar! 🌿';\nconst resp = await fetch(URL, {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nconst result = await resp.json();\nreturn [{ json: result }];"
+        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst telefone = $('Coleta').first().json.telefone;\nconst toPhone = '+' + telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Recebi sua mensagem de voz! 🎵\nPor aqui funciono melhor com texto 😊\nPode me escrever o que precisa? Será um prazer ajudar! 🌿';\nconst result = await $http.request({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -776,7 +776,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst message = $input.first().json.notificacao;\nconst resp = await fetch(URL, {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nconst result = await resp.json();\nreturn [{ json: result }];"
+        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst message = $input.first().json.notificacao;\nconst result = await $http.request({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -897,7 +897,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst item = $input.first().json;\nconst toPhone = '+' + item.telefoneWpp.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = item.mensagem;\nconst resp = await fetch(URL, {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nconst result = await resp.json();\nreturn [{ json: result }];"
+        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst item = $input.first().json;\nconst toPhone = '+' + item.telefoneWpp.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = item.mensagem;\nconst result = await $http.request({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1278,7 +1278,7 @@
         -320
       ],
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst message = $input.first().json.notificacao;\nconst resp = await fetch(URL, {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nconst result = await resp.json();\nreturn [{ json: result }];"
+        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst message = $input.first().json.notificacao;\nconst result = await $http.request({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
       }
     },
     {
@@ -1545,7 +1545,7 @@
         -400
       ],
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst phone = $input.first().json.phone;\nconst toPhone = '+' + phone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Foi um prazer cuidar de você hoje 🌿✨\nEspero que sua experiência tenha sido relaxante e especial 😊\nQuando puder, não esqueça de deixar sua avaliação no Google. Sua opinião é muito importante para mim 💚\nLink para avaliação:\nhttps://g.page/r/CfOSAyIQuDfGEBM/review';\nconst resp = await fetch(URL, {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nconst result = await resp.json();\nreturn [{ json: result }];"
+        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst phone = $input.first().json.phone;\nconst toPhone = '+' + phone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Foi um prazer cuidar de você hoje 🌿✨\nEspero que sua experiência tenha sido relaxante e especial 😊\nQuando puder, não esqueça de deixar sua avaliação no Google. Sua opinião é muito importante para mim 💚\nLink para avaliação:\nhttps://g.page/r/CfOSAyIQuDfGEBM/review';\nconst result = await $http.request({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
       }
     },
     {
@@ -1558,7 +1558,7 @@
         -400
       ],
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst phoneDisplay = $('Processa Comando Avaliação').first().json.phoneDisplay;\nconst message = '✅ Mensagem de avaliação enviada para +' + phoneDisplay + ' com sucesso! 🌿';\nconst resp = await fetch(URL, {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nconst result = await resp.json();\nreturn [{ json: result }];"
+        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst phoneDisplay = $('Processa Comando Avaliação').first().json.phoneDisplay;\nconst message = '✅ Mensagem de avaliação enviada para +' + phoneDisplay + ' com sucesso! 🌿';\nconst result = await $http.request({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
       }
     },
     {
@@ -1571,7 +1571,7 @@
         -200
       ],
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst erro = $input.first().json.erro;\nconst message = '❌ ' + erro + '\nExemplo: AVALIAÇÃO 11999887766';\nconst resp = await fetch(URL, {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nconst result = await resp.json();\nreturn [{ json: result }];"
+        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst erro = $input.first().json.erro;\nconst message = '❌ ' + erro + '\nExemplo: AVALIAÇÃO 11999887766';\nconst result = await $http.request({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
       }
     },
     {
@@ -1865,7 +1865,7 @@
         800
       ],
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Olá ' + item.nome + ' 🌿\n\nEspero que sua sessão de *' + item.ultimo_procedimento + '* tenha sido maravilhosa! ✨\n\nSua avaliação no Google me ajuda muito a continuar levando bem-estar a mais pessoas 💚\n\n👉 https://g.page/r/CfOSAyIQuDfGEBM/review\n\nObrigada de coração! 🌿';\nconst resp = await fetch(URL, {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nconst result = await resp.json();\nreturn [{ json: result }];"
+        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Olá ' + item.nome + ' 🌿\n\nEspero que sua sessão de *' + item.ultimo_procedimento + '* tenha sido maravilhosa! ✨\n\nSua avaliação no Google me ajuda muito a continuar levando bem-estar a mais pessoas 💚\n\n👉 https://g.page/r/CfOSAyIQuDfGEBM/review\n\nObrigada de coração! 🌿';\nconst result = await $http.request({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
       }
     },
     {
@@ -1971,7 +1971,7 @@
         1340
       ],
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Olá ' + item.nome + ' 🌿\n\nFaz um tempinho que não nos vemos! Tenho saudades de cuidar do seu bem-estar ✨\n\nEstou com agenda aberta e adoraria te receber para uma nova sessão de *' + (item.ultimo_procedimento || 'massagem') + '*.\n\nQuer agendar? É só me chamar por aqui 😊🌿';\nconst resp = await fetch(URL, {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nconst result = await resp.json();\nreturn [{ json: result }];"
+        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Olá ' + item.nome + ' 🌿\n\nFaz um tempinho que não nos vemos! Tenho saudades de cuidar do seu bem-estar ✨\n\nEstou com agenda aberta e adoraria te receber para uma nova sessão de *' + (item.ultimo_procedimento || 'massagem') + '*.\n\nQuer agendar? É só me chamar por aqui 😊🌿';\nconst result = await $http.request({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
       }
     },
     {
