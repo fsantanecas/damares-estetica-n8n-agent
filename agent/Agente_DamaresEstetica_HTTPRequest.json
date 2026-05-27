@@ -624,7 +624,7 @@
     {
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\n\nconst telefone = $('Coleta').first().json.telefone;\nconst toPhone = '+' + telefone.split('@')[0];\n\nconst items = $input.all();\nconst results = [];\n\nfor (let i = 0; i < items.length; i++) {\n  const message = items[i].json.item;\n  const result = await $helpers.httpRequest({\n    method: 'POST',\n    url: URL,\n    headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n    body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n  });\n  results.push({ json: result });\n  if (i < items.length - 1) await new Promise(r => setTimeout(r, 1000));\n}\nreturn results;"
+        "jsCode": "const telefone = $('Coleta').first().json.telefone;\nconst toPhone = '+' + telefone.split('@')[0];\nconst items = $input.all();\nreturn items.map(item => {\n  const message = item.json.item;\n  const body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\n  return { json: { toPhone, message, body } };\n});"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -664,7 +664,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst message = $input.first().json.alertText;\nconst result = await $helpers.httpRequest({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
+        "jsCode": "const message = $input.first().json.alertText;\nconst toPhone = '+5511999950549';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -677,7 +677,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst telefone = $('Coleta').first().json.telefone;\nconst toPhone = '+' + telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Recebi sua mensagem de voz! 🎵\nPor aqui funciono melhor com texto 😊\nPode me escrever o que precisa? Será um prazer ajudar! 🌿';\nconst result = await $helpers.httpRequest({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
+        "jsCode": "const telefone = $('Coleta').first().json.telefone;\nconst toPhone = '+' + telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Recebi sua mensagem de voz! 🎵\\nPor aqui funciono melhor com texto 😊\\nPode me escrever o que precisa? Será um prazer ajudar! 🌿';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -776,7 +776,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst message = $input.first().json.notificacao;\nconst result = await $helpers.httpRequest({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
+        "jsCode": "const message = $input.first().json.notificacao;\nconst toPhone = '+5511999950549';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -897,7 +897,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst item = $input.first().json;\nconst toPhone = '+' + item.telefoneWpp.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = item.mensagem;\nconst result = await $helpers.httpRequest({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
+        "jsCode": "const item = $input.first().json;\nconst toPhone = '+' + item.telefoneWpp.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = item.mensagem;\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1278,7 +1278,7 @@
         -320
       ],
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst message = $input.first().json.notificacao;\nconst result = await $helpers.httpRequest({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
+        "jsCode": "const message = $input.first().json.notificacao;\nconst toPhone = '+5511999950549';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body } }];"
       }
     },
     {
@@ -1545,7 +1545,7 @@
         -400
       ],
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst phone = $input.first().json.phone;\nconst toPhone = '+' + phone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Foi um prazer cuidar de você hoje 🌿✨\nEspero que sua experiência tenha sido relaxante e especial 😊\nQuando puder, não esqueça de deixar sua avaliação no Google. Sua opinião é muito importante para mim 💚\nLink para avaliação:\nhttps://g.page/r/CfOSAyIQuDfGEBM/review';\nconst result = await $helpers.httpRequest({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
+        "jsCode": "const phone = $input.first().json.phone;\nconst toPhone = '+' + phone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Foi um prazer cuidar de você hoje 🌿✨\\nEspero que sua experiência tenha sido relaxante e especial 😊\\nQuando puder, não esqueça de deixar sua avaliação no Google. Sua opinião é muito importante para mim 💚\\nLink para avaliação:\\nhttps://g.page/r/CfOSAyIQuDfGEBM/review';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body } }];"
       }
     },
     {
@@ -1558,7 +1558,7 @@
         -400
       ],
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst phoneDisplay = $('Processa Comando Avaliação').first().json.phoneDisplay;\nconst message = '✅ Mensagem de avaliação enviada para +' + phoneDisplay + ' com sucesso! 🌿';\nconst result = await $helpers.httpRequest({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
+        "jsCode": "const phoneDisplay = $('Processa Comando Avaliação').first().json.phoneDisplay;\nconst message = '✅ Mensagem de avaliação enviada para +' + phoneDisplay + ' com sucesso! 🌿';\nconst toPhone = '+5511999950549';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body } }];"
       }
     },
     {
@@ -1571,7 +1571,7 @@
         -200
       ],
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst erro = $input.first().json.erro;\nconst message = '❌ ' + erro + '\nExemplo: AVALIAÇÃO 11999887766';\nconst result = await $helpers.httpRequest({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: '+5511999950549', type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
+        "jsCode": "const erro = $input.first().json.erro;\nconst message = '❌ ' + erro + '\\nExemplo: AVALIAÇÃO 11999887766';\nconst toPhone = '+5511999950549';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body } }];"
       }
     },
     {
@@ -1865,7 +1865,7 @@
         800
       ],
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Olá ' + item.nome + ' 🌿\n\nEspero que sua sessão de *' + item.ultimo_procedimento + '* tenha sido maravilhosa! ✨\n\nSua avaliação no Google me ajuda muito a continuar levando bem-estar a mais pessoas 💚\n\n👉 https://g.page/r/CfOSAyIQuDfGEBM/review\n\nObrigada de coração! 🌿';\nconst result = await $helpers.httpRequest({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
+        "jsCode": "const item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Olá ' + item.nome + ' 🌿\\n\\nEspero que sua sessão de *' + item.ultimo_procedimento + '* tenha sido maravilhosa! ✨\\n\\nSua avaliação no Google me ajuda muito a continuar levando bem-estar a mais pessoas 💚\\n\\n👉 https://g.page/r/CfOSAyIQuDfGEBM/review\\n\\nObrigada de coração! 🌿';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body } }];"
       }
     },
     {
@@ -1971,7 +1971,7 @@
         1340
       ],
       "parameters": {
-        "jsCode": "const API_KEY = 'ea53799239658212b3a8be3befbffff9';\nconst FROM = '+5511994265257';\nconst URL = 'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly';\nconst item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Olá ' + item.nome + ' 🌿\n\nFaz um tempinho que não nos vemos! Tenho saudades de cuidar do seu bem-estar ✨\n\nEstou com agenda aberta e adoraria te receber para uma nova sessão de *' + (item.ultimo_procedimento || 'massagem') + '*.\n\nQuer agendar? É só me chamar por aqui 😊🌿';\nconst result = await $helpers.httpRequest({\n  method: 'POST',\n  url: URL,\n  headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },\n  body: JSON.stringify({ from: FROM, to: toPhone, type: 'text', text: { body: message } })\n});\nreturn [{ json: result }];"
+        "jsCode": "const item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Olá ' + item.nome + ' 🌿\\n\\nFaz um tempinho que não nos vemos! Tenho saudades de cuidar do seu bem-estar ✨\\n\\nEstou com agenda aberta e adoraria te receber para uma nova sessão de *' + (item.ultimo_procedimento || 'massagem') + '*.\\n\\nQuer agendar? É só me chamar por aqui 😊🌿';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body } }];"
       }
     },
     {
@@ -2794,6 +2794,303 @@
         "query": "=INSERT INTO dm_conversation_history (telefone, role, content, created_at)\nVALUES\n  (REPLACE('{{ $('Coleta').first().json.telefone }}', '@s.whatsapp.net', ''), 'user', '{{ $('Prepara Contexto').first().json.enriched_text.replace(/'/g, \"''\") }}', NOW()),\n  (REPLACE('{{ $('Coleta').first().json.telefone }}', '@s.whatsapp.net', ''), 'assistant', '{{ $json.output.replace(/'/g, \"''\") }}', NOW());\nDELETE FROM dm_conversation_history\nWHERE telefone = REPLACE('{{ $('Coleta').first().json.telefone }}', '@s.whatsapp.net', '')\n  AND id NOT IN (\n    SELECT id FROM dm_conversation_history\n    WHERE telefone = REPLACE('{{ $('Coleta').first().json.telefone }}', '@s.whatsapp.net', '')\n    ORDER BY created_at DESC LIMIT 20\n  );",
         "options": {}
       }
+    },
+    {
+      "id": "6899dbe3-080a-4d03-ae8e-e37d5f6c8f13",
+      "name": "Envia Alerta Técnico HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        500
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
+    },
+    {
+      "id": "503568dd-a145-48fa-aa65-b9cb0170cee3",
+      "name": "Resposta para Mídia HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        500
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
+    },
+    {
+      "id": "be1989b3-8b28-49e3-8db6-3785d69ea7c9",
+      "name": "Notifica Damares HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4640,
+        800
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
+    },
+    {
+      "id": "628a04ee-79d4-495d-b2ec-ad1fee7f4894",
+      "name": "Envia Mensagem Lead HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4640,
+        1600
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
+    },
+    {
+      "id": "c63d18c0-18f8-4e85-af9d-3e92c1221e8a",
+      "name": "Notifica Damares Cancelamento HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5600,
+        -320
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
+    },
+    {
+      "id": "8c6ff90d-a06e-470d-889d-5fba8e3188ba",
+      "name": "Envia Avaliação ao Cliente HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        -400
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
+    },
+    {
+      "id": "d237155e-d14a-4a46-84af-1485426d85bf",
+      "name": "Confirma Damares HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1020,
+        -400
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
+    },
+    {
+      "id": "9414e7fb-e8d9-4d50-b778-034f1e1c8d02",
+      "name": "Avisa Erro Número HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        -200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
+    },
+    {
+      "id": "393d49ca-a02d-4b11-bb99-a96a1423aa71",
+      "name": "Envia Pedido Avaliação HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        7460,
+        800
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
+    },
+    {
+      "id": "b3853417-859f-4d2f-b72d-1c11c8e0f22c",
+      "name": "Envia Mensagem Follow-up HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        7460,
+        1340
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
+    },
+    {
+      "id": "6c332474-2fbb-45ec-8156-475c5d2b89ee",
+      "name": "Envia mensagem para o WhatsApp HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2320,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
     }
   ],
   "connections": {
@@ -2956,7 +3253,7 @@
       "main": [
         [
           {
-            "node": "DELAY 1 SEGUNDO",
+            "node": "Envia mensagem para o WhatsApp HTTP",
             "type": "main",
             "index": 0
           }
@@ -2983,7 +3280,7 @@
       "main": [
         [
           {
-            "node": "Resposta para Mídia",
+            "node": "Envia Alerta Técnico HTTP",
             "type": "main",
             "index": 0
           }
@@ -3083,7 +3380,7 @@
       "main": [
         [
           {
-            "node": "Delay entre Leads",
+            "node": "Envia Mensagem Lead HTTP",
             "type": "main",
             "index": 0
           }
@@ -3346,7 +3643,7 @@
       "main": [
         [
           {
-            "node": "Confirma Damares",
+            "node": "Envia Avaliação ao Cliente HTTP",
             "type": "main",
             "index": 0
           }
@@ -3357,7 +3654,7 @@
       "main": [
         [
           {
-            "node": "CRM — Salva Agendamento",
+            "node": "Notifica Damares HTTP",
             "type": "main",
             "index": 0
           }
@@ -3368,7 +3665,7 @@
       "main": [
         [
           {
-            "node": "CRM — Marca Cancelamento",
+            "node": "Notifica Damares Cancelamento HTTP",
             "type": "main",
             "index": 0
           }
@@ -3470,7 +3767,7 @@
       "main": [
         [
           {
-            "node": "Atualiza Lembrete Avaliação",
+            "node": "Envia Pedido Avaliação HTTP",
             "type": "main",
             "index": 0
           }
@@ -3526,7 +3823,7 @@
       "main": [
         [
           {
-            "node": "Atualiza Próximo Follow-up",
+            "node": "Envia Mensagem Follow-up HTTP",
             "type": "main",
             "index": 0
           }
@@ -3936,6 +4233,127 @@
         [
           {
             "node": "Criar Tabela dm_leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia Alerta Técnico HTTP": {
+      "main": [
+        [
+          {
+            "node": "Resposta para Mídia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resposta para Mídia": {
+      "main": [
+        [
+          {
+            "node": "Resposta para Mídia HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notifica Damares HTTP": {
+      "main": [
+        [
+          {
+            "node": "CRM — Salva Agendamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia Mensagem Lead HTTP": {
+      "main": [
+        [
+          {
+            "node": "Delay entre Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notifica Damares Cancelamento HTTP": {
+      "main": [
+        [
+          {
+            "node": "CRM — Marca Cancelamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia Avaliação ao Cliente HTTP": {
+      "main": [
+        [
+          {
+            "node": "Confirma Damares",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirma Damares": {
+      "main": [
+        [
+          {
+            "node": "Confirma Damares HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Avisa Erro Número": {
+      "main": [
+        [
+          {
+            "node": "Avisa Erro Número HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia Pedido Avaliação HTTP": {
+      "main": [
+        [
+          {
+            "node": "Atualiza Lembrete Avaliação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia Mensagem Follow-up HTTP": {
+      "main": [
+        [
+          {
+            "node": "Atualiza Próximo Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia mensagem para o WhatsApp HTTP": {
+      "main": [
+        [
+          {
+            "node": "DELAY 1 SEGUNDO",
             "type": "main",
             "index": 0
           }
