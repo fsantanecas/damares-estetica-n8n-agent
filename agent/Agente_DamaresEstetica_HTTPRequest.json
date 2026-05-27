@@ -109,25 +109,25 @@
             {
               "id": "dm-col-nome",
               "name": "nome",
-              "value": "={{ $json.body.whatsappMessage.contact && $json.body.whatsappMessage.contact.name ? $json.body.whatsappMessage.contact.name : ($json.body.whatsappMessage.fromName || 'Cliente') }}",
+              "value": "={{ $json.body.whatsappInboundMessage.customerProfile && $json.body.whatsappInboundMessage.customerProfile.name ? $json.body.whatsappInboundMessage.customerProfile.name : 'Cliente' }}",
               "type": "string"
             },
             {
               "id": "dm-col-tel",
               "name": "telefone",
-              "value": "={{ ($json.body.whatsappMessage.from || '').replace('+', '') + '@s.whatsapp.net' }}",
+              "value": "={{ ($json.body.whatsappInboundMessage.from || '').replace('+', '') + '@s.whatsapp.net' }}",
               "type": "string"
             },
             {
               "id": "dm-col-tipo",
               "name": "tipo",
-              "value": "={{ $json.body.whatsappMessage.type === 'text' ? 'conversation' : $json.body.whatsappMessage.type === 'audio' ? 'audioMessage' : $json.body.whatsappMessage.type === 'image' ? 'imageMessage' : $json.body.whatsappMessage.type === 'video' ? 'videoMessage' : ($json.body.whatsappMessage.type || 'unknown') }}",
+              "value": "={{ $json.body.whatsappInboundMessage.type === 'text' ? 'conversation' : $json.body.whatsappInboundMessage.type === 'audio' ? 'audioMessage' : $json.body.whatsappInboundMessage.type === 'image' ? 'imageMessage' : $json.body.whatsappInboundMessage.type === 'video' ? 'videoMessage' : ($json.body.whatsappInboundMessage.type || 'unknown') }}",
               "type": "string"
             },
             {
               "id": "dm-col-msg",
               "name": "mensagem",
-              "value": "={{ $json.body.whatsappMessage.type === 'text' ? $json.body.whatsappMessage.text.body : $json.body.whatsappMessage.type === 'image' ? ('📷 Foto recebida' + ($json.body.whatsappMessage.image && $json.body.whatsappMessage.image.caption ? ': ' + $json.body.whatsappMessage.image.caption : '')) : $json.body.whatsappMessage.type === 'video' ? ('🎬 Vídeo recebido' + ($json.body.whatsappMessage.video && $json.body.whatsappMessage.video.caption ? ': ' + $json.body.whatsappMessage.video.caption : '')) : $json.body.whatsappMessage.type === 'audio' ? '🎵 Áudio recebido' : '[Mensagem recebida]' }}",
+              "value": "={{ $json.body.whatsappInboundMessage.type === 'text' ? $json.body.whatsappInboundMessage.text.body : $json.body.whatsappInboundMessage.type === 'image' ? ('📷 Foto recebida' + ($json.body.whatsappInboundMessage.image && $json.body.whatsappInboundMessage.image.caption ? ': ' + $json.body.whatsappInboundMessage.image.caption : '')) : $json.body.whatsappInboundMessage.type === 'video' ? ('🎬 Vídeo recebido' + ($json.body.whatsappInboundMessage.video && $json.body.whatsappInboundMessage.video.caption ? ': ' + $json.body.whatsappInboundMessage.video.caption : '')) : $json.body.whatsappInboundMessage.type === 'audio' ? '🎵 Áudio recebido' : '[Mensagem recebida]' }}",
               "type": "string"
             },
             {
@@ -3113,7 +3113,7 @@
             {
               "id": "f373e33f-409d-4318-8887-f54086e357fc",
               "leftValue": "={{ $json.body.type }}",
-              "rightValue": "whatsapp.inbound_message",
+              "rightValue": "whatsapp.inbound_message.received",
               "operator": {
                 "type": "string",
                 "operation": "equals"
