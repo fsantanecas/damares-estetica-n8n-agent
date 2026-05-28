@@ -792,14 +792,19 @@
         "rule": {
           "interval": [
             {
-              "field": "cronExpression",
-              "expression": "0 0 16 * * 2"
+              "field": "weeks",
+              "weeksInterval": 1,
+              "triggerAtDay": [
+                2
+              ],
+              "triggerAtHour": 16,
+              "triggerAtMinute": 0
             }
           ]
         }
       },
       "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.3,
+      "typeVersion": 1.2,
       "position": [
         3200,
         1600
@@ -1804,7 +1809,7 @@
       "id": "dm-aval-scheduler",
       "name": "Agendador Avaliação",
       "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.3,
+      "typeVersion": 1.2,
       "position": [
         6500,
         800
@@ -1813,8 +1818,8 @@
         "rule": {
           "interval": [
             {
-              "field": "cronExpression",
-              "expression": "0 0/30 * * * *"
+              "field": "minutes",
+              "minutesInterval": 30
             }
           ]
         }
@@ -1910,7 +1915,7 @@
       "id": "dm-followup-scheduler",
       "name": "Agendador Follow-up",
       "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.3,
+      "typeVersion": 1.2,
       "position": [
         6500,
         1340
@@ -1919,8 +1924,13 @@
         "rule": {
           "interval": [
             {
-              "field": "cronExpression",
-              "expression": "0 0 18 * * 4"
+              "field": "weeks",
+              "weeksInterval": 1,
+              "triggerAtDay": [
+                4
+              ],
+              "triggerAtHour": 18,
+              "triggerAtMinute": 0
             }
           ]
         }
