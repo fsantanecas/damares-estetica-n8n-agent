@@ -902,7 +902,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const item = $input.first().json;\nconst toPhone = '+' + item.telefoneWpp.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = item.mensagem;\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body } }];"
+        "jsCode": "const item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace(/\\D/g, '');\nconst nome = item.nome ? item.nome.split(' ')[0] : 'cliente';\nconst body = JSON.stringify({\n  from: '+5511994265257',\n  to: toPhone,\n  type: 'template',\n  template: {\n    name: 'campanha_leads_damares',\n    language: { code: 'pt_BR' },\n    components: [\n      { type: 'body', parameters: [{ type: 'text', text: nome }] }\n    ]\n  }\n});\nreturn [{ json: { toPhone, body } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1981,7 +1981,7 @@
         1340
       ],
       "parameters": {
-        "jsCode": "const item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace('@s.whatsapp.net', '').replace('+', '');\nconst message = 'Olá ' + item.nome + ' 🌿\\n\\nFaz um tempinho que não nos vemos! Tenho saudades de cuidar do seu bem-estar ✨\\n\\nEstou com agenda aberta e adoraria te receber para uma nova sessão de *' + (item.ultimo_procedimento || 'massagem') + '*.\\n\\nQuer agendar? É só me chamar por aqui 😊🌿';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body } }];"
+        "jsCode": "const item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace(/\\D/g, '');\nconst nome = item.nome ? item.nome.split(' ')[0] : 'querida';\nconst body = JSON.stringify({\n  from: '+5511994265257',\n  to: toPhone,\n  type: 'template',\n  template: {\n    name: 'followup_retorno_damares',\n    language: { code: 'pt_BR' },\n    components: [\n      { type: 'body', parameters: [{ type: 'text', text: nome }] }\n    ]\n  }\n});\nreturn [{ json: { toPhone, body, id: item.id } }];"
       }
     },
     {
