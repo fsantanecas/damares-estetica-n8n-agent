@@ -29,7 +29,7 @@
       },
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO dm_crm (nome, telefone, ultimo_atendimento, atualizado_em)\nVALUES\n  ('Mirella Gualandro', '5511983830603', NOW() - INTERVAL '60 days', NOW()),\n  ('Daniele', '5511987191814', NOW() - INTERVAL '60 days', NOW()),\n  ('Danielle Hersz Admoni', '5511996334163', NOW() - INTERVAL '60 days', NOW()),\n  ('Dra Danielle', '5511983077945', NOW() - INTERVAL '60 days', NOW()),\n  ('Marília', '5512991276226', NOW() - INTERVAL '60 days', NOW()),\n  ('Maria Teresa', '5511991710563', NOW() - INTERVAL '60 days', NOW())\nON CONFLICT (telefone) DO NOTHING;",
+        "query": "INSERT INTO dm_crm (nome, telefone, bairro, ultimo_atendimento, atualizado_em, status, avaliacao_pendente, avaliacao_confirmada, lembretes_avaliacao, total_atendimentos, criado_em)\nVALUES\n  ('Mirella Gualandro', '5511983830603', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Daniele', '5511987191814', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Danielle Hersz Admoni', '5511996334163', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Dra Danielle', '5511983077945', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Marília', '5512991276226', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Maria Teresa', '5511991710563', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW())\nON CONFLICT (telefone) DO UPDATE SET\n  nome = EXCLUDED.nome,\n  atualizado_em = NOW()\nRETURNING id, nome, telefone;",
         "options": {}
       }
     },
@@ -50,7 +50,7 @@
       },
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT * FROM dm_crm WHERE telefone IN ('5511983830603', '5511987191814', '5511996334163', '5511983077945', '5512991276226', '5511991710563') ORDER BY nome;",
+        "query": "SELECT id, nome, telefone, COALESCE(ultimo_procedimento, '') as ultimo_procedimento\nFROM dm_crm\nWHERE telefone IN ('5511983830603', '5511987191814', '5511996334163', '5511983077945', '5512991276226', '5511991710563')\nORDER BY nome;",
         "options": {}
       }
     },
@@ -78,7 +78,7 @@
         300
       ],
       "parameters": {
-        "jsCode": "const item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace(/\\D/g,'');\nconst message = 'Olá ' + (item.nome || 'querida') + ' 🌿\\n\\nFaz um tempinho que não nos vemos! Tenho saudades de cuidar do seu bem-estar ✨\\n\\nEstou com agenda aberta e adoraria te receber para uma nova sessão' +\n  (item.ultimo_procedimento ? ' de *' + item.ultimo_procedimento + '*' : '') +\n  '.\\n\\nQuer agendar? É só me chamar por aqui 😊🌿';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body, id: item.id } }];"
+        "jsCode": "const item = $input.first().json;\nconst nome = item.nome ? item.nome.split(' ')[0] : 'querida';\nconst toPhone = '+' + String(item.telefone).replace(/\\D/g, '');\nconst message =\n  'Olá ' + nome + '! 🌿\\n\\n' +\n  'Sou a Damys, assistente da Damares Estética. Faz um tempinho que não nos vemos! ✨\\n\\n' +\n  'A Damares está com agenda aberta e adoraria te receber para uma sessão de massagem ou tratamento estético a domicílio 💆🏻‍♀️🏡\\n\\n' +\n  'Quer agendar? É só me chamar por aqui 😊🌿';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body, id: item.id } }];"
       }
     },
     {
