@@ -1,0 +1,245 @@
+{
+  "name": "DamaresEstetica — Follow-up Manual Clientes Anteriores",
+  "nodes": [
+    {
+      "id": "followup-manual-trigger",
+      "name": "Follow-up Manual — EXECUTAR UMA VEZ",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "followup-manual-insert",
+      "name": "Insere Clientes no CRM",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        440,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "LQ6Uqet7mGbpcLOH",
+          "name": "postgres_cloudfy"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO dm_crm (nome, telefone, ultimo_atendimento, atualizado_em)\nVALUES\n  ('Mirella Gualandro', '5511983830603', NOW() - INTERVAL '60 days', NOW()),\n  ('Daniele', '5511987191814', NOW() - INTERVAL '60 days', NOW()),\n  ('Danielle Hersz Admoni', '5511996334163', NOW() - INTERVAL '60 days', NOW()),\n  ('Dra Danielle', '5511983077945', NOW() - INTERVAL '60 days', NOW()),\n  ('Marília', '5512991276226', NOW() - INTERVAL '60 days', NOW()),\n  ('Maria Teresa', '5511991710563', NOW() - INTERVAL '60 days', NOW())\nON CONFLICT (telefone) DO NOTHING;",
+        "options": {}
+      }
+    },
+    {
+      "id": "followup-manual-select",
+      "name": "Busca Clientes Follow-up Manual",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        680,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "LQ6Uqet7mGbpcLOH",
+          "name": "postgres_cloudfy"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM dm_crm WHERE telefone IN ('5511983830603', '5511987191814', '5511996334163', '5511983077945', '5512991276226', '5511991710563') ORDER BY nome;",
+        "options": {}
+      }
+    },
+    {
+      "id": "followup-manual-loop",
+      "name": "Loop Follow-up Manual",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        920,
+        300
+      ],
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      }
+    },
+    {
+      "id": "followup-manual-msg",
+      "name": "Monta Mensagem Follow-up Manual",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1160,
+        300
+      ],
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst toPhone = '+' + item.telefone.replace(/\\D/g,'');\nconst message = 'Olá ' + (item.nome || 'querida') + ' 🌿\\n\\nFaz um tempinho que não nos vemos! Tenho saudades de cuidar do seu bem-estar ✨\\n\\nEstou com agenda aberta e adoraria te receber para uma nova sessão' +\n  (item.ultimo_procedimento ? ' de *' + item.ultimo_procedimento + '*' : '') +\n  '.\\n\\nQuer agendar? É só me chamar por aqui 😊🌿';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body, id: item.id } }];"
+      }
+    },
+    {
+      "id": "followup-manual-http",
+      "name": "Envia Follow-up Manual HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1400,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
+    },
+    {
+      "id": "followup-manual-delay",
+      "name": "Delay Follow-up Manual",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1640,
+        300
+      ],
+      "parameters": {
+        "unit": "seconds",
+        "amount": 3
+      }
+    },
+    {
+      "id": "followup-manual-update",
+      "name": "Atualiza Follow-up Manual",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1880,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "LQ6Uqet7mGbpcLOH",
+          "name": "postgres_cloudfy"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE dm_crm SET\n  proximo_followup = NOW() + INTERVAL '30 days',\n  atualizado_em = NOW()\nWHERE id = {{ $('Monta Mensagem Follow-up Manual').first().json.id }};",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Follow-up Manual — EXECUTAR UMA VEZ": {
+      "main": [
+        [
+          {
+            "node": "Insere Clientes no CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insere Clientes no CRM": {
+      "main": [
+        [
+          {
+            "node": "Busca Clientes Follow-up Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca Clientes Follow-up Manual": {
+      "main": [
+        [
+          {
+            "node": "Loop Follow-up Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Follow-up Manual": {
+      "main": [
+        [
+          {
+            "node": "Monta Mensagem Follow-up Manual",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Monta Mensagem Follow-up Manual": {
+      "main": [
+        [
+          {
+            "node": "Envia Follow-up Manual HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia Follow-up Manual HTTP": {
+      "main": [
+        [
+          {
+            "node": "Delay Follow-up Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delay Follow-up Manual": {
+      "main": [
+        [
+          {
+            "node": "Atualiza Follow-up Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualiza Follow-up Manual": {
+      "main": [
+        [
+          {
+            "node": "Loop Follow-up Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "instanceId": "standalone-followup-manual"
+  }
+}
