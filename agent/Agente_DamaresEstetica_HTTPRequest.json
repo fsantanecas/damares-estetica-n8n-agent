@@ -793,13 +793,13 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "0 16 * * 2"
+              "expression": "0 0 16 * * 2"
             }
           ]
         }
       },
       "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
+      "typeVersion": 1.3,
       "position": [
         3200,
         1600
@@ -1804,7 +1804,7 @@
       "id": "dm-aval-scheduler",
       "name": "Agendador Avaliação",
       "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
+      "typeVersion": 1.3,
       "position": [
         6500,
         800
@@ -1814,7 +1814,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "*/30 * * * *"
+              "expression": "0 0/30 * * * *"
             }
           ]
         }
@@ -1910,7 +1910,7 @@
       "id": "dm-followup-scheduler",
       "name": "Agendador Follow-up",
       "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
+      "typeVersion": 1.3,
       "position": [
         6500,
         1340
@@ -1920,7 +1920,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "0 18 * * 4"
+              "expression": "0 0 18 * * 4"
             }
           ]
         }
