@@ -34,33 +34,12 @@
       }
     },
     {
-      "id": "followup-manual-select",
-      "name": "Busca Clientes Follow-up Manual",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        680,
-        300
-      ],
-      "credentials": {
-        "postgres": {
-          "id": "LQ6Uqet7mGbpcLOH",
-          "name": "postgres_cloudfy"
-        }
-      },
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT id, nome, telefone\nFROM dm_crm\nWHERE telefone IN ('5511983830603','5511987191814','5511996334163','5511983077945','5512991276226','5511991710563')\nORDER BY nome;",
-        "options": {}
-      }
-    },
-    {
       "id": "followup-manual-msg",
       "name": "Monta Mensagem Follow-up Manual",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        920,
+        680,
         300
       ],
       "parameters": {
@@ -130,17 +109,6 @@
       ]
     },
     "Insere Clientes no CRM": {
-      "main": [
-        [
-          {
-            "node": "Busca Clientes Follow-up Manual",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Busca Clientes Follow-up Manual": {
       "main": [
         [
           {

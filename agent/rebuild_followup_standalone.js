@@ -1,6 +1,8 @@
-// Rebuilds Followup_Manual_Standalone.json without the loop/wait node
-// Architecture: Trigger -> INSERT -> SELECT -> Code (per item) -> HTTP -> UPDATE
-// No splitInBatches, no wait node — simpler and more reliable for 6 clients
+// Rebuilds Followup_Manual_Standalone.json without loop/wait/separate SELECT
+// Architecture: Trigger -> INSERT RETURNING -> Code (per item) -> HTTP -> UPDATE
+// INSERT RETURNING already gives id/nome/telefone for the 6 clients.
+// Removing the SELECT node was the key fix: SELECT ran once per INSERT result row
+// (6 rows × 6 queries = 36 items), causing messages to be sent to all dm_crm clients.
 
 const fs = require('fs');
 const path = require('path');
@@ -37,6 +39,7 @@ const wf = {
       type: 'n8n-nodes-base.postgres',
       typeVersion: 2.6,
       position: [440, 300],
+      // INSERT RETURNING gives id/nome/telefone — no separate SELECT needed
       credentials: { postgres: pg },
       parameters: {
         operation: 'executeQuery',
@@ -58,29 +61,11 @@ const wf = {
       }
     },
     {
-      id: 'followup-manual-select',
-      name: 'Busca Clientes Follow-up Manual',
-      type: 'n8n-nodes-base.postgres',
-      typeVersion: 2.6,
-      position: [680, 300],
-      credentials: { postgres: pg },
-      parameters: {
-        operation: 'executeQuery',
-        query: [
-          'SELECT id, nome, telefone',
-          'FROM dm_crm',
-          "WHERE telefone IN ('5511983830603','5511987191814','5511996334163','5511983077945','5512991276226','5511991710563')",
-          'ORDER BY nome;'
-        ].join('\n'),
-        options: {}
-      }
-    },
-    {
       id: 'followup-manual-msg',
       name: 'Monta Mensagem Follow-up Manual',
       type: 'n8n-nodes-base.code',
       typeVersion: 2,
-      position: [920, 300],
+      position: [680, 300],
       parameters: {
         mode: 'runOnceForEachItem',
         jsCode
@@ -124,9 +109,6 @@ const wf = {
       main: [[{ node: 'Insere Clientes no CRM', type: 'main', index: 0 }]]
     },
     'Insere Clientes no CRM': {
-      main: [[{ node: 'Busca Clientes Follow-up Manual', type: 'main', index: 0 }]]
-    },
-    'Busca Clientes Follow-up Manual': {
       main: [[{ node: 'Monta Mensagem Follow-up Manual', type: 'main', index: 0 }]]
     },
     'Monta Mensagem Follow-up Manual': {
