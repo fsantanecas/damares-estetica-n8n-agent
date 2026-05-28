@@ -29,7 +29,7 @@
       },
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO dm_crm (nome, telefone, bairro, ultimo_atendimento, atualizado_em, status, avaliacao_pendente, avaliacao_confirmada, lembretes_avaliacao, total_atendimentos, criado_em)\nVALUES\n  ('Mirella Gualandro', '5511983830603', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Daniele', '5511987191814', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Danielle Hersz Admoni', '5511996334163', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Dra Danielle', '5511983077945', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Marília', '5512991276226', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Maria Teresa', '5511991710563', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW())\nON CONFLICT (telefone) DO UPDATE SET\n  nome = EXCLUDED.nome,\n  atualizado_em = NOW()\nRETURNING id, nome, telefone;",
+        "query": "INSERT INTO dm_crm (nome, telefone, bairro, ultimo_atendimento, atualizado_em, status, avaliacao_pendente, avaliacao_confirmada, lembretes_avaliacao, total_atendimentos, criado_em)\nVALUES\n  ('Mirella Gualandro', '5511983830603', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Daniele',            '5511987191814', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Danielle Hersz Admoni','5511996334163','', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Dra Danielle',       '5511983077945', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Marília',            '5512991276226', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW()),\n  ('Maria Teresa',       '5511991710563', '', NOW() - INTERVAL '60 days', NOW(), 'ativo', false, false, 0, 0, NOW())\nON CONFLICT (telefone) DO UPDATE SET\n  nome = EXCLUDED.nome,\n  atualizado_em = NOW()\nRETURNING id, nome, telefone;",
         "options": {}
       }
     },
@@ -50,21 +50,7 @@
       },
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT id, nome, telefone, COALESCE(ultimo_procedimento, '') as ultimo_procedimento\nFROM dm_crm\nWHERE telefone IN ('5511983830603', '5511987191814', '5511996334163', '5511983077945', '5512991276226', '5511991710563')\nORDER BY nome;",
-        "options": {}
-      }
-    },
-    {
-      "id": "followup-manual-loop",
-      "name": "Loop Follow-up Manual",
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        920,
-        300
-      ],
-      "parameters": {
-        "batchSize": 1,
+        "query": "SELECT id, nome, telefone\nFROM dm_crm\nWHERE telefone IN ('5511983830603','5511987191814','5511996334163','5511983077945','5512991276226','5511991710563')\nORDER BY nome;",
         "options": {}
       }
     },
@@ -74,11 +60,12 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1160,
+        920,
         300
       ],
       "parameters": {
-        "jsCode": "const item = $input.first().json;\nconst nome = item.nome ? item.nome.split(' ')[0] : 'querida';\nconst toPhone = '+' + String(item.telefone).replace(/\\D/g, '');\nconst message =\n  'Olá ' + nome + '! 🌿\\n\\n' +\n  'Sou a Damys, assistente da Damares Estética. Faz um tempinho que não nos vemos! ✨\\n\\n' +\n  'A Damares está com agenda aberta e adoraria te receber para uma sessão de massagem ou tratamento estético a domicílio 💆🏻‍♀️🏡\\n\\n' +\n  'Quer agendar? É só me chamar por aqui 😊🌿';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn [{ json: { toPhone, message, body, id: item.id } }];"
+        "mode": "runOnceForEachItem",
+        "jsCode": "const cliente = $input.item.json;\nconst nome = cliente.nome ? cliente.nome.split(' ')[0] : 'querida';\nconst toPhone = '+' + String(cliente.telefone).replace(/\\D/g, '');\nconst message =\n  'Olá ' + nome + '! 🌿\\n\\n' +\n  'Sou a Damys, assistente da Damares Estética. Faz um tempinho que não nos vemos! ✨\\n\\n' +\n  'A Damares está com agenda aberta e adoraria te receber para uma sessão de massagem ou tratamento estético a domicílio 💆🏻\\u200d♀️🏡\\n\\n' +\n  'Quer agendar? É só me chamar por aqui 😊🌿';\nconst body = JSON.stringify({ from: '+5511994265257', to: toPhone, type: 'text', text: { body: message } });\nreturn { json: { toPhone, message, body, id: cliente.id } };"
       }
     },
     {
@@ -87,7 +74,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1400,
+        1160,
         300
       ],
       "parameters": {
@@ -109,26 +96,12 @@
       }
     },
     {
-      "id": "followup-manual-delay",
-      "name": "Delay Follow-up Manual",
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        1640,
-        300
-      ],
-      "parameters": {
-        "unit": "seconds",
-        "amount": 3
-      }
-    },
-    {
       "id": "followup-manual-update",
       "name": "Atualiza Follow-up Manual",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1880,
+        1400,
         300
       ],
       "credentials": {
@@ -139,7 +112,7 @@
       },
       "parameters": {
         "operation": "executeQuery",
-        "query": "=UPDATE dm_crm SET\n  proximo_followup = NOW() + INTERVAL '30 days',\n  atualizado_em = NOW()\nWHERE id = {{ $('Monta Mensagem Follow-up Manual').first().json.id }};",
+        "query": "=UPDATE dm_crm SET\n  proximo_followup = NOW() + INTERVAL '30 days',\n  atualizado_em = NOW()\nWHERE id = {{ $('Monta Mensagem Follow-up Manual').item.json.id }};",
         "options": {}
       }
     }
@@ -171,23 +144,11 @@
       "main": [
         [
           {
-            "node": "Loop Follow-up Manual",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Follow-up Manual": {
-      "main": [
-        [
-          {
             "node": "Monta Mensagem Follow-up Manual",
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "Monta Mensagem Follow-up Manual": {
@@ -205,29 +166,7 @@
       "main": [
         [
           {
-            "node": "Delay Follow-up Manual",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Delay Follow-up Manual": {
-      "main": [
-        [
-          {
             "node": "Atualiza Follow-up Manual",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Atualiza Follow-up Manual": {
-      "main": [
-        [
-          {
-            "node": "Loop Follow-up Manual",
             "type": "main",
             "index": 0
           }
