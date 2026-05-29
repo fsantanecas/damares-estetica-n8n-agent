@@ -33,8 +33,8 @@
  * ──────────────────────────────────────────────────────────────────────────
  * UPDATE THESE TWO CONSTANTS AFTER META APPROVES THE TEMPLATES:
  */
-const TEMPLATE_CAMPANHA = 'campanha_leads_damares';
-const TEMPLATE_FOLLOWUP = 'followup_retorno_damares';
+const TEMPLATE_CAMPANHA = 'template_utility_20260528170912';
+const TEMPLATE_FOLLOWUP = 'template_utility_20260528182324';
 // ──────────────────────────────────────────────────────────────────────────
 
 const fs = require('fs');
