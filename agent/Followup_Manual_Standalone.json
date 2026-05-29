@@ -44,7 +44,7 @@
       ],
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const cliente = $input.item.json;\nconst nome = cliente.nome ? cliente.nome.split(' ')[0] : 'querida';\nconst toPhone = '+' + String(cliente.telefone).replace(/\\D/g, '');\nconst body = JSON.stringify({\n  from: '+5511994265257',\n  to: toPhone,\n  type: 'template',\n  template: {\n    name: 'template_utility_20260528182324',\n    language: { code: 'pt_BR' },\n    components: [\n      { type: 'body', parameters: [{ type: 'text', text: nome }] }\n    ]\n  }\n});\nreturn { json: { toPhone, body, id: cliente.id } };"
+        "jsCode": "const cliente = $input.item.json;\nconst nome = cliente.nome ? cliente.nome.split(' ')[0] : 'querida';\nconst toPhone = '+' + String(cliente.telefone).replace(/\\D/g, '');\nconst body = JSON.stringify({\n  from: '+5511994265257',\n  to: toPhone,\n  type: 'template',\n  template: {\n    name: 'reengajamento_clientes_servicos',\n    language: { code: 'pt_BR' },\n    components: [\n      { type: 'body', parameters: [{ type: 'text', text: nome }] }\n    ]\n  }\n});\nreturn { json: { toPhone, body, id: cliente.id } };"
       }
     },
     {

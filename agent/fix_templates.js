@@ -34,13 +34,14 @@
  * UPDATE THESE TWO CONSTANTS AFTER META APPROVES THE TEMPLATES:
  */
 const TEMPLATE_CAMPANHA = 'template_utility_20260528170912';
-const TEMPLATE_FOLLOWUP = 'template_utility_20260528182324';
+const TEMPLATE_FOLLOWUP = 'reengajamento_clientes_servicos'; // aprovado — substitui template_utility_20260528182324
 // ──────────────────────────────────────────────────────────────────────────
 
 const fs = require('fs');
 const path = require('path');
 
-const MAIN = path.join(__dirname, 'Agente_DamaresEstetica_HTTPRequest.json');
+const MAIN     = path.join(__dirname, 'Agente_DamaresEstetica_HTTPRequest.json');
+const MAIN_V2  = path.join(__dirname, 'Agente_DamaresEstetica_HTTPRequest_v2.json');
 const STANDALONE = path.join(__dirname, 'Followup_Manual_Standalone.json');
 
 function buildTemplateBody(templateName, nomePrimeiro, toPhone) {
@@ -110,8 +111,10 @@ followupNode.parameters.jsCode = [
 ].join('\n');
 console.log('✓ Envia Mensagem Follow-up → template:', TEMPLATE_FOLLOWUP);
 
-fs.writeFileSync(MAIN, JSON.stringify(mainWf, null, 2));
+fs.writeFileSync(MAIN,    JSON.stringify(mainWf, null, 2));
+fs.writeFileSync(MAIN_V2, JSON.stringify(mainWf, null, 2));
 console.log('✓ Saved', path.basename(MAIN));
+console.log('✓ Saved', path.basename(MAIN_V2));
 
 // ─── Standalone workflow ───────────────────────────────────────────────────
 const standalone = JSON.parse(fs.readFileSync(STANDALONE, 'utf8'));
@@ -141,6 +144,7 @@ console.log('✓ Monta Mensagem Follow-up Manual → template:', TEMPLATE_FOLLOW
 fs.writeFileSync(STANDALONE, JSON.stringify(standalone, null, 2));
 console.log('✓ Saved', path.basename(STANDALONE));
 
-console.log('\n✅ Done. Both workflows updated to use WhatsApp Templates.');
-console.log('   After Meta approves the templates, update TEMPLATE_CAMPANHA and TEMPLATE_FOLLOWUP');
-console.log('   at the top of this script and re-run it.');
+console.log('\n✅ Done.');
+console.log('   Campanha  →', TEMPLATE_CAMPANHA, '(sem alteração)');
+console.log('   Follow-up →', TEMPLATE_FOLLOWUP);
+console.log('   Reimportar no n8n:', path.basename(MAIN_V2), '+ Followup_Manual_Standalone.json');
