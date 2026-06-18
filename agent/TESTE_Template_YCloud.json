@@ -1,0 +1,194 @@
+{
+  "name": "TESTE_Template_YCloud",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 🧪 Teste de Template YCloud + Meta\n\n**Como usar:**\n1. Edite o nó **\"Configura Teste\"** com:\n   - Seu número de teste (com DDD, sem +)\n   - Nome do template a testar\n2. Configure a credencial `YCloud Header Auth` no nó HTTP\n3. Clique em **Execute Workflow**\n4. Veja o resultado no nó **\"Resultado do Teste\"**\n\n**O que verificar:**\n- ✅ Status 200 + mensagem no WhatsApp → template funciona\n- ❌ Erro `Parameter mismatch` → template tem variável, ajustar components\n- ❌ Erro `Template not found` → nome errado ou não aprovado ainda\n- ❌ Erro 401 → API Key inválida na credencial",
+        "height": 380,
+        "width": 480,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -200
+      ],
+      "id": "sticky-instrucoes",
+      "name": "Instruções"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        200
+      ],
+      "id": "trigger-manual",
+      "name": "Iniciar Teste"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-from",
+              "name": "from",
+              "value": "+5511994265257",
+              "type": "string"
+            },
+            {
+              "id": "cfg-to",
+              "name": "to_test",
+              "value": "+5511999950549",
+              "type": "string"
+            },
+            {
+              "id": "cfg-template",
+              "name": "template_name",
+              "value": "template_utility_20260528182324",
+              "type": "string"
+            },
+            {
+              "id": "cfg-lang",
+              "name": "language",
+              "value": "pt_BR",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        40,
+        200
+      ],
+      "id": "configura-teste",
+      "name": "Configura Teste"
+    },
+    {
+      "parameters": {
+        "jsCode": "const cfg = $input.first().json;\n\n// Monta payload do template SEM parâmetros (caso A)\nconst payloadSemParams = {\n  from: cfg.from,\n  to: cfg.to_test,\n  type: 'template',\n  template: {\n    name: cfg.template_name,\n    language: { code: cfg.language },\n    components: []\n  }\n};\n\n// Monta payload do template COM parâmetro {{1}} (caso B — para teste alternativo)\nconst payloadComParams = {\n  from: cfg.from,\n  to: cfg.to_test,\n  type: 'template',\n  template: {\n    name: cfg.template_name,\n    language: { code: cfg.language },\n    components: [\n      {\n        type: 'body',\n        parameters: [\n          { type: 'text', text: 'Cliente Teste' }\n        ]\n      }\n    ]\n  }\n};\n\n// Por padrão, envia SEM parâmetros (como configurado no workflow principal)\n// Para testar COM parâmetro, troque payloadSemParams por payloadComParams abaixo\nconst payload = payloadSemParams;\n\nreturn [{\n  json: {\n    body: JSON.stringify(payload),\n    payload_preview: payload,\n    to_display: cfg.to_test,\n    template_used: cfg.template_name\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        200
+      ],
+      "id": "monta-payload",
+      "name": "Monta Payload"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        200
+      ],
+      "id": "envia-template",
+      "name": "Envia Template via YCloud",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUBSTITUIR_PELA_CREDENCIAL",
+          "name": "YCloud Header Auth"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const resp = $input.first().json;\nconst cfg = $('Configura Teste').first().json;\nconst payload = $('Monta Payload').first().json;\n\nconst status = resp.statusCode || resp.status || 'desconhecido';\nconst body = resp.body || resp;\nconst errorMsg = resp.error?.message || body?.message || body?.error?.message || null;\n\nlet diagnostico = '';\nlet sucesso = false;\n\nif (status === 200 || status === 201) {\n  sucesso = true;\n  diagnostico = '✅ SUCESSO — Template enviado!\\n\\n' +\n    'Verifique o WhatsApp ' + cfg.to_test + ' agora.\\n' +\n    'Se a mensagem chegou: o template está OK e pode ser usado no workflow principal.';\n} else if (status === 400) {\n  if (errorMsg && errorMsg.toLowerCase().includes('parameter')) {\n    diagnostico = '❌ ERRO: Parameter mismatch\\n\\n' +\n      'O template tem variável ({{1}}) que não foi preenchida — OU não tem variável mas você passou parâmetro.\\n\\n' +\n      'SOLUÇÃO: Edite o nó \"Monta Payload\" e troque entre payloadSemParams ⇄ payloadComParams.';\n  } else if (errorMsg && errorMsg.toLowerCase().includes('template')) {\n    diagnostico = '❌ ERRO: Template não encontrado\\n\\n' +\n      'Verifique:\\n' +\n      '1. O nome \"' + cfg.template_name + '\" está exatamente como aprovado no painel Meta\\n' +\n      '2. O template está com status APROVADO (não em revisão)\\n' +\n      '3. O idioma \"' + cfg.language + '\" corresponde ao do template';\n  } else {\n    diagnostico = '❌ ERRO 400 — Bad Request\\n\\nMensagem: ' + (errorMsg || 'sem detalhes');\n  }\n} else if (status === 401) {\n  diagnostico = '❌ ERRO: 401 Unauthorized\\n\\n' +\n    'A API Key da YCloud não está válida.\\n' +\n    'Verifique a credencial \"YCloud Header Auth\" no N8N.';\n} else if (status === 404) {\n  diagnostico = '❌ ERRO: 404 Not Found\\n\\nEndpoint não encontrado. Verifique a URL.';\n} else if (status >= 500) {\n  diagnostico = '⚠️ ERRO: Servidor YCloud (' + status + ')\\n\\nTente novamente em alguns minutos.';\n} else {\n  diagnostico = '⚠️ Status inesperado: ' + status + '\\n\\nResposta: ' + JSON.stringify(body, null, 2);\n}\n\nreturn [{\n  json: {\n    sucesso,\n    status_code: status,\n    template_testado: cfg.template_name,\n    numero_destino: cfg.to_test,\n    diagnostico,\n    payload_enviado: payload.payload_preview,\n    resposta_completa: body,\n    erro_detalhado: errorMsg\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        200
+      ],
+      "id": "diagnostico",
+      "name": "Resultado do Teste"
+    }
+  ],
+  "connections": {
+    "Iniciar Teste": {
+      "main": [
+        [
+          {
+            "node": "Configura Teste",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configura Teste": {
+      "main": [
+        [
+          {
+            "node": "Monta Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monta Payload": {
+      "main": [
+        [
+          {
+            "node": "Envia Template via YCloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia Template via YCloud": {
+      "main": [
+        [
+          {
+            "node": "Resultado do Teste",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "teste"
+    },
+    {
+      "name": "ycloud"
+    },
+    {
+      "name": "template"
+    }
+  ]
+}

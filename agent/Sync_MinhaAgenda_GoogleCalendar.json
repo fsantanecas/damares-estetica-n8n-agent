@@ -1,0 +1,608 @@
+{
+  "_meta": {
+    "description": "Sync Minha Agenda → Google Calendar. 2x por dia."
+  },
+  "name": "Sync_MinhaAgenda_GoogleCalendar",
+  "nodes": [
+    {
+      "id": "dm-ma-note",
+      "name": "Documentação Sync",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -340
+      ],
+      "parameters": {
+        "content": "## 🔄 Sync Minha Agenda → Google Calendar\n\n**Frequência:** 2x por dia (08:00 e 18:00, seg–sáb)\n\n**Fluxo:**\n1. Lista XLSX na pasta `Agenda_Sync` do Drive\n2. Baixa e lê o arquivo\n3. Filtra agendamentos futuros\n4. Compara com Google Calendar (próximos 90 dias)\n5. Cria eventos **[MA]** para os novos\n6. Move XLSX para `processados`\n7. Notifica Damares via WhatsApp\n\n**Credenciais necessárias:**\n- `calendar-damares-n8n` — Google Calendar OAuth2 (já existe no agente principal)\n  ⚠️ A conta Google precisa ter escopo de Drive também\n  (ou criar credencial separada Google Drive OAuth2)\n\n**Pasta Agenda_Sync:** `1qH9D31OI6qtI2OlTfCaQaJ3lrv-oOioG`\n**Pasta processados:** `1p5DPJtp3lLq6T8hsewk67K72ZqAuAN6y`",
+        "height": 360,
+        "width": 540,
+        "color": 4
+      }
+    },
+    {
+      "id": "dm-ma-trigger",
+      "name": "Agendador Sync",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * 1-6"
+            },
+            {
+              "field": "cronExpression",
+              "expression": "0 18 * * 1-6"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "dm-ma-list-drive",
+      "name": "Lista Arquivos Drive",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "SUBSTITUIR_ID",
+          "name": "google-drive-damares"
+        }
+      },
+      "parameters": {
+        "method": "GET",
+        "url": "https://www.googleapis.com/drive/v3/files",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "'1qH9D31OI6qtI2OlTfCaQaJ3lrv-oOioG' in parents and mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' and trashed=false"
+            },
+            {
+              "name": "fields",
+              "value": "files(id,name,modifiedTime,trashed)"
+            },
+            {
+              "name": "orderBy",
+              "value": "modifiedTime desc"
+            },
+            {
+              "name": "pageSize",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-ma-filter",
+      "name": "Filtrar XLSX",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Filtra arquivos XLSX na lista retornada pelo Drive\nconst files = $input.all().map(i => i.json.files || []).flat();\nconst xlsx = files.filter(f => f.name && f.name.toLowerCase().endsWith('.xlsx') && !f.trashed);\nif (xlsx.length === 0) {\n  return [{ json: { hasFile: false, fileId: null, fileName: null } }];\n}\nconst f = xlsx[0];\nreturn [{ json: { hasFile: true, fileId: f.id, fileName: f.name } }];"
+      }
+    },
+    {
+      "id": "dm-ma-has-file",
+      "name": "Tem Arquivo?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "chk-has-file",
+              "leftValue": "={{ $json.hasFile }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-ma-download",
+      "name": "Download XLSX",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        0
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "SUBSTITUIR_ID",
+          "name": "google-drive-damares"
+        }
+      },
+      "parameters": {
+        "method": "GET",
+        "url": "=https://www.googleapis.com/drive/v3/files/{{ $json.fileId }}?alt=media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "dm-ma-read-xlsx",
+      "name": "Lê XLSX",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        0
+      ],
+      "parameters": {
+        "operation": "fromFile",
+        "binaryPropertyName": "data",
+        "options": {
+          "headerRow": true,
+          "rawData": false
+        }
+      }
+    },
+    {
+      "id": "dm-ma-parse",
+      "name": "Parse Linhas XLSX",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        0
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Parse das linhas do XLSX, filtra datas futuras\nconst fileId = $('Filtrar XLSX').first().json.fileId;\nconst fileName = $('Filtrar XLSX').first().json.fileName;\n\nconst now = new Date();\nconst nowBRT = new Date(now.getTime() - 3 * 60 * 60 * 1000);\nconst todayISO = nowBRT.toISOString().split('T')[0];\n\nconst futureEvents = [];\n\nfor (const item of $input.all()) {\n  const row = item.json;\n  const dataStr = String(row['Data'] || '');\n  if (!dataStr || dataStr === 'Data') continue;\n\n  const dateMatch = dataStr.match(/(\\d{2})\\/(\\d{2})\\/(\\d{4})/);\n  if (!dateMatch) continue;\n  const [, dd, mm, yyyy] = dateMatch;\n  const dateISO = `${yyyy}-${mm}-${dd}`;\n  if (dateISO < todayISO) continue;\n\n  const horario = String(row['Horário'] || '').trim();\n  const timeParts = horario.split(' às ');\n  if (timeParts.length !== 2) continue;\n  const startTime = timeParts[0].trim();\n  const endTime = timeParts[1].trim();\n  if (!/^\\d{2}:\\d{2}$/.test(startTime) || !/^\\d{2}:\\d{2}$/.test(endTime)) continue;\n\n  const cliente = String(row['Cliente'] || '').trim();\n  const servico = String(row['Serviço(s)'] || row['Servico(s)'] || '').trim();\n  if (!cliente || !servico) continue;\n\n  futureEvents.push({\n    eventKey: `${dateISO}T${startTime}`,\n    startDT: `${dateISO}T${startTime}:00-03:00`,\n    endDT: `${dateISO}T${endTime}:00-03:00`,\n    cliente,\n    servico\n  });\n}\n\nreturn [{ json: { futureEvents, fileId, fileName, todayISO } }];"
+      }
+    },
+    {
+      "id": "dm-ma-get-gcal",
+      "name": "Busca Eventos GCal",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1680,
+        0
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "w6Tw24lXeRMlXejy",
+          "name": "calendar-damares-n8n"
+        }
+      },
+      "parameters": {
+        "method": "GET",
+        "url": "https://www.googleapis.com/calendar/v3/calendars/damaresesteticasp%40gmail.com/events",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "timeMin",
+              "value": "={{ $json.todayISO }}T00:00:00-03:00"
+            },
+            {
+              "name": "timeMax",
+              "value": "={{ DateTime.fromISO($json.todayISO).plus({days:90}).toISODate() }}T23:59:59-03:00"
+            },
+            {
+              "name": "maxResults",
+              "value": "500"
+            },
+            {
+              "name": "singleEvents",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-ma-compare",
+      "name": "Compara XLSX vs GCal",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        0
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Compara eventos do XLSX com os do Google Calendar\nconst parsedData = $('Parse Linhas XLSX').first().json;\nconst futureEvents = parsedData.futureEvents;\nconst fileId = parsedData.fileId;\nconst fileName = parsedData.fileName;\n\nconst gcalItems = ($input.first().json.items || []);\n\nconst existingKeys = new Set();\nfor (const ev of gcalItems) {\n  const dt = ev.start && (ev.start.dateTime || ev.start.date);\n  if (!dt) continue;\n  const m = dt.match(/^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2})/);\n  if (m) existingKeys.add(m[1]);\n}\n\nconst creates = futureEvents.filter(ev => !existingKeys.has(ev.eventKey));\n\nreturn [{ json: { creates, fileId, fileName, totalFuture: futureEvents.length } }];"
+      }
+    },
+    {
+      "id": "dm-ma-has-creates",
+      "name": "Tem Novos Eventos?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "chk-creates",
+              "leftValue": "={{ $json.creates.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-ma-expand",
+      "name": "Expande Creates",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        -200
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const data = $input.first().json;\nreturn data.creates.map(ev => {\n  const body = JSON.stringify({\n    summary: `[MA] ${ev.cliente} — ${ev.servico}`,\n    start: { dateTime: ev.startDT, timeZone: 'America/Sao_Paulo' },\n    end:   { dateTime: ev.endDT,   timeZone: 'America/Sao_Paulo' },\n    description: 'Sincronizado via Minha Agenda'\n  });\n  return { json: { body, fileId: data.fileId, fileName: data.fileName } };\n});"
+      }
+    },
+    {
+      "id": "dm-ma-create-gcal",
+      "name": "Cria Evento [MA] no GCal",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2640,
+        -200
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "w6Tw24lXeRMlXejy",
+          "name": "calendar-damares-n8n"
+        }
+      },
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/calendar/v3/calendars/damaresesteticasp%40gmail.com/events",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "sendBody": true,
+        "contentType": "raw",
+        "options": {},
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}"
+      }
+    },
+    {
+      "id": "dm-ma-aggregate",
+      "name": "Agrega Criações",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2880,
+        -200
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const items = $input.all();\n// O HTTP Request retorna o evento do GCal — fileId vem do nó anterior\nconst fileId   = $('Expande Creates').first().json.fileId;\nconst fileName = $('Expande Creates').first().json.fileName;\nreturn [{ json: { created: items.length, fileId, fileName } }];"
+      }
+    },
+    {
+      "id": "dm-ma-move",
+      "name": "Move para Processados",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3120,
+        0
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "SUBSTITUIR_ID",
+          "name": "google-drive-damares"
+        }
+      },
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://www.googleapis.com/drive/v3/files/{{ $json.fileId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "addParents",
+              "value": "1p5DPJtp3lLq6T8hsewk67K72ZqAuAN6y"
+            },
+            {
+              "name": "removeParents",
+              "value": "1qH9D31OI6qtI2OlTfCaQaJ3lrv-oOioG"
+            },
+            {
+              "name": "fields",
+              "value": "id,parents"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "dm-ma-notify-build",
+      "name": "Monta Notificação",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3360,
+        0
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Monta payload WhatsApp Template para a Damares (sem restrição 24h)\nconst item = $input.first().json;\nconst created = item.created || 0;\n// fileName vem de Agrega Criações (caminho com novos) ou Compara XLSX vs GCal (caminho sem novos)\nconst fileName = item.fileName || $('Compara XLSX vs GCal').first().json.fileName || '';\n\nconst now = new Date();\nconst nowBRT = new Date(now.getTime() - 3 * 60 * 60 * 1000);\nconst hora = nowBRT.toISOString().substring(11, 16);\nconst dia = nowBRT.toISOString().substring(0, 10).split('-').reverse().join('/');\nconst horaBrasilia = `${dia} às ${hora}`;\n\nlet payload;\nif (created > 0) {\n  payload = {\n    from: '+5511994265257',\n    to: '+5511999950549',\n    type: 'template',\n    template: {\n      name: 'sync_agenda_novos',\n      language: { code: 'pt_BR' },\n      components: [\n        {\n          type: 'body',\n          parameters: [\n            { type: 'text', text: String(created) },\n            { type: 'text', text: fileName },\n            { type: 'text', text: horaBrasilia }\n          ]\n        }\n      ]\n    }\n  };\n} else {\n  payload = {\n    from: '+5511994265257',\n    to: '+5511999950549',\n    type: 'template',\n    template: {\n      name: 'sync_agenda_sem_novos',\n      language: { code: 'pt_BR' },\n      components: [\n        {\n          type: 'body',\n          parameters: [\n            { type: 'text', text: fileName },\n            { type: 'text', text: horaBrasilia }\n          ]\n        }\n      ]\n    }\n  };\n}\n\nreturn [{ json: { body: JSON.stringify(payload) } }];"
+      }
+    },
+    {
+      "id": "dm-ma-notify-http",
+      "name": "Notifica Damares WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3600,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "ea53799239658212b3a8be3befbffff9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Agendador Sync": {
+      "main": [
+        [
+          {
+            "node": "Lista Arquivos Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lista Arquivos Drive": {
+      "main": [
+        [
+          {
+            "node": "Filtrar XLSX",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar XLSX": {
+      "main": [
+        [
+          {
+            "node": "Tem Arquivo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tem Arquivo?": {
+      "main": [
+        [
+          {
+            "node": "Download XLSX",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Download XLSX": {
+      "main": [
+        [
+          {
+            "node": "Lê XLSX",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lê XLSX": {
+      "main": [
+        [
+          {
+            "node": "Parse Linhas XLSX",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Linhas XLSX": {
+      "main": [
+        [
+          {
+            "node": "Busca Eventos GCal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca Eventos GCal": {
+      "main": [
+        [
+          {
+            "node": "Compara XLSX vs GCal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compara XLSX vs GCal": {
+      "main": [
+        [
+          {
+            "node": "Tem Novos Eventos?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tem Novos Eventos?": {
+      "main": [
+        [
+          {
+            "node": "Expande Creates",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Move para Processados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expande Creates": {
+      "main": [
+        [
+          {
+            "node": "Cria Evento [MA] no GCal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cria Evento [MA] no GCal": {
+      "main": [
+        [
+          {
+            "node": "Agrega Criações",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agrega Criações": {
+      "main": [
+        [
+          {
+            "node": "Move para Processados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move para Processados": {
+      "main": [
+        [
+          {
+            "node": "Monta Notificação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monta Notificação": {
+      "main": [
+        [
+          {
+            "node": "Notifica Damares WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

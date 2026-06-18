@@ -1,0 +1,200 @@
+{
+  "name": "TESTE_Template_YCloud",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 🧪 Teste de Template YCloud + Meta\n\n**Como usar:**\n1. Edite o nó **\"Configura Teste\"**:\n   - `to_test`: seu número de teste (com +55)\n   - `template_name`: nome do template a testar\n   - `nome_cliente`: nome para preencher variáveis\n2. Confirme a credencial `YCloud Header Auth` no nó HTTP\n3. Clique em **Execute Workflow**\n4. Veja resultado no nó **\"Resultado do Teste\"**\n\n---\n\n**4 cenários no nó \"Monta Payload\":**\n\n| Cenário | Quando usar |\n|---|---|\n| `payloadSemParams` | Template sem variáveis |\n| `payloadHeaderOnly` | Apenas `{{1}}` no header ⭐ atual |\n| `payloadBodyOnly` | Apenas `{{1}}` no body |\n| `payloadHeaderAndBody` | Em header E body |\n\n**Para trocar de cenário:** edite a linha:\n```js\nconst payload = payloadHeaderOnly;\n```\n\n---\n\n**Erros comuns e o que significam:**\n\n- ✅ **Status 200/201** → mensagem enviada, verifique o WhatsApp\n- ❌ **132000 (Param Count Mismatch)** → mudar cenário do payload\n- ❌ **Template not found** → nome errado ou ainda em revisão\n- ❌ **401 Unauthorized** → API Key inválida",
+        "height": 540,
+        "width": 480,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -200
+      ],
+      "id": "sticky-instrucoes",
+      "name": "Instruções"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        200
+      ],
+      "id": "trigger-manual",
+      "name": "Iniciar Teste"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-from",
+              "name": "from",
+              "value": "+5511994265257",
+              "type": "string"
+            },
+            {
+              "id": "cfg-to",
+              "name": "to_test",
+              "value": "+5511999950549",
+              "type": "string"
+            },
+            {
+              "id": "cfg-template",
+              "name": "template_name",
+              "value": "reengajamento_clientes_servicos",
+              "type": "string"
+            },
+            {
+              "id": "cfg-lang",
+              "name": "language",
+              "value": "pt_BR",
+              "type": "string"
+            },
+            {
+              "id": "cfg-nome",
+              "name": "nome_cliente",
+              "value": "Flávio",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        40,
+        200
+      ],
+      "id": "configura-teste",
+      "name": "Configura Teste"
+    },
+    {
+      "parameters": {
+        "jsCode": "const cfg = $input.first().json;\nconst nome = cfg.nome_cliente || 'Cliente Teste';\n\n// ============================================================\n// 4 CENÁRIOS DE PAYLOAD — escolha o que casa com seu template\n// ============================================================\n\n// A) Template SEM variáveis\nconst payloadSemParams = {\n  from: cfg.from,\n  to: cfg.to_test,\n  type: 'template',\n  template: {\n    name: cfg.template_name,\n    language: { code: cfg.language },\n    components: []\n  }\n};\n\n// B) Template com {{1}} APENAS no HEADER  ← reengajamento_clientes_servicos\nconst payloadHeaderOnly = {\n  from: cfg.from,\n  to: cfg.to_test,\n  type: 'template',\n  template: {\n    name: cfg.template_name,\n    language: { code: cfg.language },\n    components: [\n      {\n        type: 'header',\n        parameters: [{ type: 'text', text: nome }]\n      }\n    ]\n  }\n};\n\n// C) Template com {{1}} APENAS no BODY\nconst payloadBodyOnly = {\n  from: cfg.from,\n  to: cfg.to_test,\n  type: 'template',\n  template: {\n    name: cfg.template_name,\n    language: { code: cfg.language },\n    components: [\n      {\n        type: 'body',\n        parameters: [{ type: 'text', text: nome }]\n      }\n    ]\n  }\n};\n\n// D) Template com {{1}} em HEADER e BODY\nconst payloadHeaderAndBody = {\n  from: cfg.from,\n  to: cfg.to_test,\n  type: 'template',\n  template: {\n    name: cfg.template_name,\n    language: { code: cfg.language },\n    components: [\n      {\n        type: 'header',\n        parameters: [{ type: 'text', text: nome }]\n      },\n      {\n        type: 'body',\n        parameters: [{ type: 'text', text: nome }]\n      }\n    ]\n  }\n};\n\n// ============================================================\n// ESCOLHA AQUI o cenário do template que está testando:\n// ============================================================\nconst payload = payloadHeaderOnly;  // ← padrão para reengajamento_clientes_servicos\n\nreturn [{\n  json: {\n    body: JSON.stringify(payload),\n    payload_preview: payload,\n    to_display: cfg.to_test,\n    template_used: cfg.template_name\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        200
+      ],
+      "id": "monta-payload",
+      "name": "Monta Payload"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages/sendDirectly",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        200
+      ],
+      "id": "envia-template",
+      "name": "Envia Template via YCloud",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUBSTITUIR_PELA_CREDENCIAL",
+          "name": "YCloud Header Auth"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const resp = $input.first().json;\nconst cfg = $('Configura Teste').first().json;\nconst payload = $('Monta Payload').first().json;\n\nconst status = resp.statusCode || resp.status || 'desconhecido';\nconst body = resp.body || resp;\nconst errorMsg = resp.error?.message || body?.message || body?.error?.message || null;\n\nlet diagnostico = '';\nlet sucesso = false;\n\nif (status === 200 || status === 201) {\n  sucesso = true;\n  diagnostico = '✅ SUCESSO — Template enviado!\\n\\n' +\n    'Verifique o WhatsApp ' + cfg.to_test + ' agora.\\n' +\n    'Se a mensagem chegou: o template está OK e pode ser usado no workflow principal.';\n} else if (status === 400) {\n  if (errorMsg && errorMsg.toLowerCase().includes('parameter')) {\n    diagnostico = '❌ ERRO: Parameter mismatch\\n\\n' +\n      'O template tem variável ({{1}}) que não foi preenchida — OU não tem variável mas você passou parâmetro.\\n\\n' +\n      'SOLUÇÃO: Edite o nó \"Monta Payload\" e troque entre payloadSemParams ⇄ payloadComParams.';\n  } else if (errorMsg && errorMsg.toLowerCase().includes('template')) {\n    diagnostico = '❌ ERRO: Template não encontrado\\n\\n' +\n      'Verifique:\\n' +\n      '1. O nome \"' + cfg.template_name + '\" está exatamente como aprovado no painel Meta\\n' +\n      '2. O template está com status APROVADO (não em revisão)\\n' +\n      '3. O idioma \"' + cfg.language + '\" corresponde ao do template';\n  } else {\n    diagnostico = '❌ ERRO 400 — Bad Request\\n\\nMensagem: ' + (errorMsg || 'sem detalhes');\n  }\n} else if (status === 401) {\n  diagnostico = '❌ ERRO: 401 Unauthorized\\n\\n' +\n    'A API Key da YCloud não está válida.\\n' +\n    'Verifique a credencial \"YCloud Header Auth\" no N8N.';\n} else if (status === 404) {\n  diagnostico = '❌ ERRO: 404 Not Found\\n\\nEndpoint não encontrado. Verifique a URL.';\n} else if (status >= 500) {\n  diagnostico = '⚠️ ERRO: Servidor YCloud (' + status + ')\\n\\nTente novamente em alguns minutos.';\n} else {\n  diagnostico = '⚠️ Status inesperado: ' + status + '\\n\\nResposta: ' + JSON.stringify(body, null, 2);\n}\n\nreturn [{\n  json: {\n    sucesso,\n    status_code: status,\n    template_testado: cfg.template_name,\n    numero_destino: cfg.to_test,\n    diagnostico,\n    payload_enviado: payload.payload_preview,\n    resposta_completa: body,\n    erro_detalhado: errorMsg\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        200
+      ],
+      "id": "diagnostico",
+      "name": "Resultado do Teste"
+    }
+  ],
+  "connections": {
+    "Iniciar Teste": {
+      "main": [
+        [
+          {
+            "node": "Configura Teste",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configura Teste": {
+      "main": [
+        [
+          {
+            "node": "Monta Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monta Payload": {
+      "main": [
+        [
+          {
+            "node": "Envia Template via YCloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia Template via YCloud": {
+      "main": [
+        [
+          {
+            "node": "Resultado do Teste",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "teste"
+    },
+    {
+      "name": "ycloud"
+    },
+    {
+      "name": "template"
+    }
+  ]
+}

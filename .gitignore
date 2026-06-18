@@ -23,6 +23,7 @@ __pycache__/
 
 # ── Documentos com dados de clientes / leads (PII) ───────────
 *.pdf
+!docs/Documentacao_Agente_DamaresEstetica.pdf
 
 # ── Temporários ───────────────────────────────────────────────
 *.tmp

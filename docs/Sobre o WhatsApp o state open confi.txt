@@ -1,0 +1,13 @@
+Sobre o WhatsApp: o state: open confirma a conexão, mas a restrição do WhatsApp para envio pode continuar ativa mesmo depois de liberar a conexão — são dois bloqueios separados. Aguarde mais algumas horas e tente novamente. Se em 24h ainda não funcionar, o número pode ter restrição mais longa.
+
+Sobre o Loop Over Items removido:
+
+Impacto pequeno, mas existe. O loop servia para enviar as bolhas com 1 segundo de intervalo entre elas:
+
+
+Bolha 1 → aguarda 1s → Bolha 2 → aguarda 1s → Bolha 3
+Sem o loop, quando o agente separar a resposta em múltiplas bolhas com \, todas serão enviadas quase simultaneamente pelo n8n, sem delay entre elas. Para respostas de 1 bolha (a maioria dos casos), zero impacto.
+
+O risco real é: bolhas chegando fora de ordem no WhatsApp quando houver 2 ou mais separadores \ na resposta.
+
+Quando o problema do WhatsApp for resolvido e você confirmar que as mensagens estão chegando, posso reimplementar o sequenciamento de forma mais robusta — sem depender do SplitInBatches que estava quebrando no contexto paralelo.
