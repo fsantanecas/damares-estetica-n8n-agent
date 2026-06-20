@@ -3476,13 +3476,13 @@
       "continueOnFail": true,
       "parameters": {
         "method": "POST",
-        "url": "https://api.openai.com/v1/audio/transcriptions",
+        "url": "https://api.groq.com/openai/v1/audio/transcriptions",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer INSERIR_OPENAI_API_KEY"
+              "value": "Bearer INSERIR_GROQ_API_KEY"
             }
           ]
         },
@@ -3498,7 +3498,7 @@
             {
               "parameterType": "formData",
               "name": "model",
-              "value": "whisper-1"
+              "value": "whisper-large-v3-turbo"
             },
             {
               "parameterType": "formData",
