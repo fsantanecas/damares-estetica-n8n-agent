@@ -3614,7 +3614,7 @@
         ],
         [
           {
-            "node": "Resposta para Mídia",
+            "node": "Busca URL Mídia",
             "type": "main",
             "index": 0
           }
@@ -3628,14 +3628,14 @@
         ],
         [
           {
-            "node": "Busca URL Mídia",
+            "node": "Monta Alerta Técnico",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Busca URL Mídia",
+            "node": "Monta Alerta Técnico",
             "type": "main",
             "index": 0
           }
