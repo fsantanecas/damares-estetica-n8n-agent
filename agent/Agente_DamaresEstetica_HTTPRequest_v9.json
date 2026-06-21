@@ -141,6 +141,12 @@
               "name": "audioId",
               "value": "={{ $json.body.whatsappInboundMessage && $json.body.whatsappInboundMessage.audio ? ($json.body.whatsappInboundMessage.audio.id || $json.body.whatsappInboundMessage.audio.mediaId || '') : '' }}",
               "type": "string"
+            },
+            {
+              "id": "dm-col-audiolink",
+              "name": "audioLink",
+              "value": "={{ $json.body.whatsappInboundMessage && $json.body.whatsappInboundMessage.audio ? ($json.body.whatsappInboundMessage.audio.link || $json.body.whatsappInboundMessage.audio.url || \"\") : \"\" }}",
+              "type": "string"
             }
           ]
         },
@@ -3410,22 +3416,20 @@
     {
       "id": "dm-busca-url-midia",
       "name": "Busca URL Mídia",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
       "position": [
         -80,
         800
       ],
-      "continueOnFail": true,
       "parameters": {
-        "method": "GET",
-        "url": "={{ 'https://api.ycloud.com/v2/whatsapp/media/' + $('Coleta').first().json.audioId }}",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
+        "assignments": {
+          "assignments": [
             {
-              "name": "X-API-Key",
-              "value": "ea53799239658212b3a8be3befbffff9"
+              "id": "dm-bum-url",
+              "name": "url",
+              "value": "={{ $('Coleta').first().json.audioLink }}",
+              "type": "string"
             }
           ]
         },
